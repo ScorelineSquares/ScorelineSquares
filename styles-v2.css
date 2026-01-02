@@ -150,7 +150,7 @@ input{
   display:flex;
   justify-content:flex-end;
   align-items:flex-start;
-  padding-top:36px; /* aligns with top header row */
+  padding-top:28px; /* aligns with top header row */
   font-weight:800;
   letter-spacing:.2px;
   white-space:nowrap;
