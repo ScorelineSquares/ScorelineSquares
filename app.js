@@ -1,10 +1,9 @@
 /**
  * Scoreline Squares — Trial
- * Headings layout:
- *  - HOME shown once above grid
- *  - AWAY shown once to the left of grid (horizontal)
- * Grid stays: top 0–9 (home digits), left 0–9 (away digits)
- * Square IDs: H{col}-A{row}
+ * - HOME TEAM shown once above grid
+ * - AWAY TEAM shown once to the left (horizontal)
+ * - Grid headers are 0–9 (top=Home columns, left=Away rows)
+ * - Square IDs like H1-A6 (Home col 1, Away row 6)
  */
 
 const PRICE = 11.5;
@@ -60,47 +59,227 @@ function selectedIds(){
   });
 }
 
-/* ---------- Inject headings around existing grid (no style overhaul) ---------- */
-function ensureBoardChrome(){
+/* ---------- Inject board layout into the grid card (once) ---------- */
+function ensureBoardLayout(){
   const gridCard = document.querySelectorAll(".card")[1];
   if(!gridCard) return;
 
-  // Already added?
-  if(document.getElementById("boardChrome")) return;
+  if(document.getElementById("boardRoot")) return;
 
   const gridWrap = gridCard.querySelector(".grid-wrap");
-  const gridEl = $("grid");
-  if(!gridWrap || !gridEl) return;
+  if(!gridWrap) return;
 
-  // Create wrapper that holds: away label (left) + gridWrap (right)
-  const chrome = document.createElement("div");
-  chrome.id = "boardChrome";
-  chrome.style.display = "grid";
-  chrome.style.gridTemplateColumns = "160px 1fr";
-  chrome.style.gap = "10px";
-  chrome.style.alignItems = "start";
-  chrome.style.marginTop = "10px";
+  // Create board container
+  const board = document.createElement("div");
+  board.className = "board";
+  board.id = "boardRoot";
 
-  // Home title above the grid, aligned with the grid itself
+  // Home title above grid (centered)
   const homeTitle = document.createElement("div");
-  homeTitle.id = "homeTitleLine";
-  homeTitle.style.gridColumn = "2 / 3";
-  homeTitle.style.fontWeight = "800";
-  homeTitle.style.marginBottom = "6px";
-  homeTitle.style.color = "var(--text, #e9eef6)";
-  homeTitle.innerHTML = `HOME TEAM: <span id="homeTitle" style="color:#c7d2fe;">TBD (Home)</span>`;
+  homeTitle.className = "home-title";
+  homeTitle.innerHTML = `HOME TEAM: <span id="homeTitle">TBD (Home)</span>`;
 
-  // Away title to the left of the grid
+  // Row: Away title left + grid on right
+  const row = document.createElement("div");
+  row.className = "board-row";
+
   const awayTitle = document.createElement("div");
-  awayTitle.id = "awayTitleLine";
-  awayTitle.style.gridColumn = "1 / 2";
-  awayTitle.style.marginTop = "36px"; // aligns visually with top number row
-  awayTitle.style.fontWeight = "800";
-  awayTitle.style.color = "var(--text, #e9eef6)";
-  awayTitle.innerHTML = `AWAY TEAM: <span id="awayTitle" style="color:#a7f3d0;">TBD (Away)</span>`;
+  awayTitle.className = "away-title";
+  awayTitle.innerHTML = `AWAY TEAM: <span id="awayTitle">TBD (Away)</span>`;
 
-  // Move gridWrap into our chrome container (right column)
-  const parent = gridWrap.parentNode;
-  parent.removeChild(gridWrap);
+  // Move existing gridWrap into board row
+  gridWrap.parentNode.removeChild(gridWrap);
 
- 
+  row.appendChild(awayTitle);
+  row.appendChild(gridWrap);
+
+  board.appendChild(homeTitle);
+  board.appendChild(row);
+
+  // Insert board right after the existing grid header section if present
+  const headerBits = gridCard.querySelector(".grid-head");
+  if(headerBits){
+    headerBits.insertAdjacentElement("afterend", board);
+  }else{
+    gridCard.prepend(board);
+  }
+}
+
+/* ---------- Admin team inputs (inject) ---------- */
+function ensureAdminTeamInputs(){
+  const adminDetails = document.querySelector("details.admin");
+  if(!adminDetails) return;
+  if(document.getElementById("homeTeam")) return;
+
+  const wrap = document.createElement("div");
+  wrap.style.marginTop = "10px";
+  wrap.innerHTML = `
+    <div class="muted small" style="margin:8px 0 6px;">Team setup</div>
+
+    <label class="small">Home team (top)</label>
+    <input id="homeTeam" placeholder="e.g. Chiefs" />
+
+    <label class="small">Away team (side)</label>
+    <input id="awayTeam" placeholder="e.g. Eagles" />
+
+    <button type="button" id="saveTeamsBtn" style="margin-top:10px;">Save team names</button>
+  `;
+  adminDetails.appendChild(wrap);
+
+  document.getElementById("saveTeamsBtn").onclick = () => {
+    const h = document.getElementById("homeTeam").value.trim();
+    const a = document.getElementById("awayTeam").value.trim();
+    teams = { home: h || "TBD", away: a || "TBD" };
+    saveTeams();
+    render();
+    alert("Saved. Team names updated.");
+  };
+}
+
+/* ---------- Render ---------- */
+function render(){
+  ensureBoardLayout();
+  ensureAdminTeamInputs();
+
+  // Header stats
+  const priceEl = $("pricePerSquare");
+  if(priceEl) priceEl.textContent = PRICE.toFixed(2);
+
+  const remEl = $("remaining");
+  if(remEl) remEl.textContent = remaining();
+
+  const yearEl = $("year");
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+  const qty = Number($("quantity").value || 1);
+  $("payBtn").textContent = `Simulate Payment for £${(qty * PRICE).toFixed(2)}`;
+
+  // Selected IDs
+  const sel = selectedIds();
+  $("summaryText").textContent = sel.length
+    ? `Selected: ${sel.join(", ")}`
+    : `Click squares to select them (IDs like H1-A6).`;
+
+  // Update team labels once
+  const homeTitle = document.getElementById("homeTitle");
+  const awayTitle = document.getElementById("awayTitle");
+  if(homeTitle) homeTitle.textContent = `${teams.home} (Home)`;
+  if(awayTitle) awayTitle.textContent = `${teams.away} (Away)`;
+
+  // Admin inputs reflect saved values
+  const homeInput = $("homeTeam");
+  const awayInput = $("awayTeam");
+  if(homeInput && awayInput){
+    homeInput.value = teams.home === "TBD" ? "" : teams.home;
+    awayInput.value = teams.away === "TBD" ? "" : teams.away;
+  }
+
+  // Render 11×11 grid
+  const gridEl = $("grid");
+  gridEl.innerHTML = "";
+
+  // Corner
+  const corner = document.createElement("div");
+  corner.className = "hcell";
+  corner.textContent = "";
+  gridEl.appendChild(corner);
+
+  // Top headers 0..9 (Home columns)
+  for(let col=0; col<10; col++){
+    const h = document.createElement("div");
+    h.className = "hcell";
+    h.textContent = String(col);
+    gridEl.appendChild(h);
+  }
+
+  // Rows 0..9 (Away rows)
+  for(let row=0; row<10; row++){
+    const lh = document.createElement("div");
+    lh.className = "hcell";
+    lh.textContent = String(row);
+    gridEl.appendChild(lh);
+
+    for(let col=0; col<10; col++){
+      const i = idx(row,col);
+      const taken = !!grid[i];
+      const isSel = selected.has(i);
+
+      const d = document.createElement("div");
+      d.className = "cell" + (taken ? " taken" : "") + (isSel ? " selected" : "");
+      d.textContent = taken ? grid[i].username : "";
+      d.title = taken
+        ? `${squareId(row,col)} • Taken by ${grid[i].username}`
+        : `${squareId(row,col)} • Click to select`;
+      d.onclick = () => toggle(i);
+
+      gridEl.appendChild(d);
+    }
+  }
+}
+
+/* ---------- Selecting ---------- */
+function toggle(i){
+  if(grid[i]) return;
+  selected.has(i) ? selected.delete(i) : selected.add(i);
+  render();
+}
+
+/* ---------- Submit ---------- */
+$("entryForm").onsubmit = (ev) => {
+  ev.preventDefault();
+
+  const qty = Number($("quantity").value || 1);
+  if(selected.size !== qty){
+    alert(`Select exactly ${qty} square(s).`);
+    return;
+  }
+
+  const username = $("username").value.trim();
+  const email = $("email").value.trim();
+  if(!username || !email){
+    alert("Username & Email required.");
+    return;
+  }
+
+  for(const i of selected){
+    grid[i] = { username, email, ts: new Date().toISOString() };
+  }
+  selected.clear();
+  saveGrid();
+  render();
+
+  $("username").value = "";
+  $("email").value = "";
+  $("quantity").value = 1;
+};
+
+/* ---------- Admin ---------- */
+$("resetBtn").onclick = () => {
+  if(confirm("Reset game? This clears all entries.")){
+    grid = Array(TOTAL).fill(null);
+    selected.clear();
+    saveGrid();
+    render();
+  }
+};
+
+$("exportBtn").onclick = () => {
+  const rows = [["square_id","away_row","home_col","username","email","timestamp"]];
+  for(let row=0; row<10; row++){
+    for(let col=0; col<10; col++){
+      const i = idx(row,col);
+      if(!grid[i]) continue;
+      rows.push([squareId(row,col), row, col, grid[i].username, grid[i].email, grid[i].ts || ""]);
+    }
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
+  a.download = "scoreline-squares-entries.csv";
+  a.click();
+};
+
+$("quantity").oninput = render;
+
+/* ---------- Start ---------- */
+render();
