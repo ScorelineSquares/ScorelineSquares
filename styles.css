@@ -198,3 +198,12 @@ input:focus{
   margin:0 auto;
   padding:0 18px 28px;
 }
+/* Selected (before payment) */
+.cell.selected{
+  outline: 3px solid rgba(124,92,255,.85);
+  background: rgba(124,92,255,.18);
+}
+.cell:hover{
+  filter: brightness(1.08);
+}
+
