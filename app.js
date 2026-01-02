@@ -1,124 +1,124 @@
-const PRICE = 11.5;
-const TOTAL = 100;
-const KEY = "scoreline_squares_v5";
-
-const $ = id => document.getElementById(id);
-
-let grid = load();
-let selected = new Set();
-
-/* ---------- Storage ---------- */
-function load(){
-  const raw = localStorage.getItem(KEY);
-  if(raw){
-    const p = JSON.parse(raw);
-    if(Array.isArray(p) && p.length === TOTAL) return p;
-  }
-  return Array(TOTAL).fill(null);
-}
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(grid));
+:root{
+  --bg:#0b0f14;
+  --card:#121924;
+  --text:#e9eef6;
+  --muted:#a8b3c7;
+  --accent:#7c5cff;
+  --good:#2dd4bf;
+  --line:rgba(255,255,255,.12);
+  --radius:16px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
 
-/* ---------- Helpers ---------- */
-function idx(row,col){ return row*10+col }
-function label(i){ return `${Math.floor(i/10)}x${i%10}` }
+*{ box-sizing:border-box }
 
-/* ---------- Render ---------- */
-function render(){
-  $("pricePerSquare").textContent = PRICE.toFixed(2);
-  $("remaining").textContent = grid.filter(v=>!v).length;
-  $("year").textContent = new Date().getFullYear();
-
-  const q = Number($("quantity").value || 1);
-  $("payBtn").textContent = `Simulate Payment for £${(q*PRICE).toFixed(2)}`;
-
-  $("summaryText").textContent =
-    selected.size
-      ? `Selected: ${[...selected].map(label).join(", ")}`
-      : "Click squares to select them";
-
-  const g = $("grid");
-  g.innerHTML = "";
-
-  // top-left
-  g.appendChild(document.createElement("div"));
-
-  // column headers
-  for(let c=0;c<10;c++){
-    const h=document.createElement("div");
-    h.className="hcell";
-    h.textContent=c;
-    g.appendChild(h);
-  }
-
-  // rows
-  for(let r=0;r<10;r++){
-    const h=document.createElement("div");
-    h.className="hcell";
-    h.textContent=r;
-    g.appendChild(h);
-
-    for(let c=0;c<10;c++){
-      const i=idx(r,c);
-      const d=document.createElement("div");
-      d.className="cell"+
-        (grid[i]?" taken":"")+
-        (selected.has(i)?" selected":"");
-      d.textContent = grid[i]?.username || "";
-      d.onclick=()=>toggle(i);
-      g.appendChild(d);
-    }
-  }
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:
+    radial-gradient(900px 500px at 20% -10%, rgba(124,92,255,.28), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(45,212,191,.20), transparent 55%),
+    var(--bg);
+  color:var(--text);
 }
 
-/* ---------- Actions ---------- */
-function toggle(i){
-  if(grid[i]) return;
-  selected.has(i)?selected.delete(i):selected.add(i);
-  render();
+/* Layout */
+.topbar, .notice, .layout, .footer{
+  max-width:1100px;
+  margin:0 auto;
+  padding:16px;
 }
 
-$("entryForm").onsubmit=e=>{
-  e.preventDefault();
-  const q=Number($("quantity").value||1);
-  if(selected.size!==q){
-    alert(`Select exactly ${q} square(s)`);
-    return;
-  }
-  const u=$("username").value.trim();
-  const eMail=$("email").value.trim();
-  if(!u||!eMail) return alert("Username & Email required");
+.layout{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:16px;
+}
 
-  for(const i of selected){
-    grid[i]={username:u,email:eMail};
-  }
-  selected.clear();
-  save();
-  render();
-};
+@media(max-width:900px){
+  .layout{ grid-template-columns:1fr }
+}
 
-$("resetBtn").onclick=()=>{
-  if(confirm("Reset game?")){
-    grid=Array(TOTAL).fill(null);
-    selected.clear();
-    save();
-    render();
-  }
-};
+/* Cards */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px;
+}
 
-$("exportBtn").onclick=()=>{
-  const rows=[["row","col","user","email"]];
-  grid.forEach((v,i)=>{
-    if(v) rows.push([Math.floor(i/10),i%10,v.username,v.email]);
-  });
-  const csv=rows.map(r=>r.join(",")).join("\n");
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv]));
-  a.download="entries.csv";
-  a.click();
-};
+.muted{ color:var(--muted) }
+.small{ font-size:12px }
 
-$("quantity").oninput=render;
+/* Form */
+label{ display:block; margin-top:10px; font-weight:600 }
+input{
+  width:100%;
+  padding:10px;
+  margin-top:4px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#0f1620;
+  color:var(--text);
+}
 
-render();
+button{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* GRID */
+.grid-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:36px repeat(10, 56px);
+  grid-template-rows:36px repeat(10, 56px);
+  gap:2px;
+  min-width:596px;
+  min-height:596px;
+}
+
+/* Headers */
+.hcell{
+  background:#1f2937;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--mono);
+  font-size:12px;
+  border-radius:6px;
+  pointer-events:none;
+}
+
+/* Squares */
+.cell{
+  background:#111827;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.cell.selected{
+  outline:3px solid var(--accent);
+  background:rgba(124,92,255,.35);
+}
+
+.cell.taken{
+  background:rgba(45,212,191,.25);
+  cursor:not-allowed;
+}
