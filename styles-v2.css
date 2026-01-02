@@ -1,286 +1,223 @@
-body{ outline: 6px solid hotpink !important; }
-/**
- * Scoreline Squares — Trial
- * - HOME TEAM shown once above grid
- * - AWAY TEAM shown once to the left (horizontal)
- * - Grid headers are 0–9 (top=Home columns, left=Away rows)
- * - Square IDs like H1-A6 (Home col 1, Away row 6)
- */
-
-const PRICE = 11.5;
-const TOTAL = 100;
-
-const GRID_KEY = "scoreline_grid_v9";
-const TEAM_KEY = "scoreline_teams_v4";
-
-const $ = (id) => document.getElementById(id);
-
-let grid = loadGrid();
-let selected = new Set();
-let teams = loadTeams();
-
-/* ---------- Storage ---------- */
-function loadGrid(){
-  try{
-    const raw = localStorage.getItem(GRID_KEY);
-    if(raw){
-      const p = JSON.parse(raw);
-      if(Array.isArray(p) && p.length === TOTAL) return p;
-    }
-  }catch(e){}
-  return Array(TOTAL).fill(null);
-}
-function saveGrid(){ localStorage.setItem(GRID_KEY, JSON.stringify(grid)); }
-
-function loadTeams(){
-  try{
-    const raw = localStorage.getItem(TEAM_KEY);
-    if(raw){
-      const p = JSON.parse(raw);
-      return {
-        home: (p.home || "TBD").trim() || "TBD",
-        away: (p.away || "TBD").trim() || "TBD",
-      };
-    }
-  }catch(e){}
-  return { home:"TBD", away:"TBD" };
-}
-function saveTeams(){ localStorage.setItem(TEAM_KEY, JSON.stringify(teams)); }
-
-/* ---------- Helpers ---------- */
-function idx(row,col){ return row * 10 + col; } // row=away, col=home
-function squareId(row,col){ return `H${col}-A${row}`; }
-function remaining(){ return grid.filter(v=>!v).length; }
-
-function selectedIds(){
-  return [...selected].sort((a,b)=>a-b).map(i=>{
-    const row = Math.floor(i/10);
-    const col = i % 10;
-    return squareId(row,col);
-  });
+:root{
+  --bg:#0b0f14;
+  --card:#121924;
+  --card2:#0f1620;
+  --text:#e9eef6;
+  --muted:#a8b3c7;
+  --accent:#7c5cff;
+  --good:#2dd4bf;
+  --line:rgba(255,255,255,.10);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius:18px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
 
-/* ---------- Inject board layout into the grid card (once) ---------- */
-function ensureBoardLayout(){
-  const gridCard = document.querySelectorAll(".card")[1];
-  if(!gridCard) return;
+*{ box-sizing:border-box }
 
-  if(document.getElementById("boardRoot")) return;
-
-  const gridWrap = gridCard.querySelector(".grid-wrap");
-  if(!gridWrap) return;
-
-  // Create board container
-  const board = document.createElement("div");
-  board.className = "board";
-  board.id = "boardRoot";
-
-  // Home title above grid (centered)
-  const homeTitle = document.createElement("div");
-  homeTitle.className = "home-title";
-  homeTitle.innerHTML = `HOME TEAM: <span id="homeTitle">TBD (Home)</span>`;
-
-  // Row: Away title left + grid on right
-  const row = document.createElement("div");
-  row.className = "board-row";
-
-  const awayTitle = document.createElement("div");
-  awayTitle.className = "away-title";
-  awayTitle.innerHTML = `AWAY TEAM: <span id="awayTitle">TBD (Away)</span>`;
-
-  // Move existing gridWrap into board row
-  gridWrap.parentNode.removeChild(gridWrap);
-
-  row.appendChild(awayTitle);
-  row.appendChild(gridWrap);
-
-  board.appendChild(homeTitle);
-  board.appendChild(row);
-
-  // Insert board right after the existing grid header section if present
-  const headerBits = gridCard.querySelector(".grid-head");
-  if(headerBits){
-    headerBits.insertAdjacentElement("afterend", board);
-  }else{
-    gridCard.prepend(board);
-  }
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:
+    radial-gradient(900px 500px at 20% -10%, rgba(124,92,255,.28), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(45,212,191,.20), transparent 55%),
+    var(--bg);
+  color:var(--text);
 }
 
-/* ---------- Admin team inputs (inject) ---------- */
-function ensureAdminTeamInputs(){
-  const adminDetails = document.querySelector("details.admin");
-  if(!adminDetails) return;
-  if(document.getElementById("homeTeam")) return;
-
-  const wrap = document.createElement("div");
-  wrap.style.marginTop = "10px";
-  wrap.innerHTML = `
-    <div class="muted small" style="margin:8px 0 6px;">Team setup</div>
-
-    <label class="small">Home team (top)</label>
-    <input id="homeTeam" placeholder="e.g. Chiefs" />
-
-    <label class="small">Away team (side)</label>
-    <input id="awayTeam" placeholder="e.g. Eagles" />
-
-    <button type="button" id="saveTeamsBtn" style="margin-top:10px;">Save team names</button>
-  `;
-  adminDetails.appendChild(wrap);
-
-  document.getElementById("saveTeamsBtn").onclick = () => {
-    const h = document.getElementById("homeTeam").value.trim();
-    const a = document.getElementById("awayTeam").value.trim();
-    teams = { home: h || "TBD", away: a || "TBD" };
-    saveTeams();
-    render();
-    alert("Saved. Team names updated.");
-  };
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px;
+  max-width:1150px;
+  margin:0 auto;
 }
 
-/* ---------- Render ---------- */
-function render(){
-  ensureBoardLayout();
-  ensureAdminTeamInputs();
+.brand{ display:flex; gap:12px; align-items:center; }
+.ball{ font-size:28px }
+.company{ font-weight:700 }
+.game{ color:var(--muted) }
 
-  // Header stats
-  const priceEl = $("pricePerSquare");
-  if(priceEl) priceEl.textContent = PRICE.toFixed(2);
+.badge{
+  margin-left:8px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:rgba(239,68,68,.18);
+  border:1px solid rgba(239,68,68,.35);
+  color:#fecaca;
+  font-size:12px;
+}
 
-  const remEl = $("remaining");
-  if(remEl) remEl.textContent = remaining();
+.price{ text-align:right }
+.price-amount{ font-size:22px; font-weight:800 }
+.price-label{ font-size:12px; color:var(--muted) }
 
-  const yearEl = $("year");
-  if(yearEl) yearEl.textContent = new Date().getFullYear();
+.notice{
+  max-width:1150px;
+  margin:0 auto 16px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(245,158,11,.12);
+  border:1px solid rgba(245,158,11,.35);
+  color:#fde68a;
+}
 
-  const qty = Number($("quantity").value || 1);
-  $("payBtn").textContent = `Simulate Payment for £${(qty * PRICE).toFixed(2)}`;
+.layout{
+  max-width:1150px;
+  margin:0 auto;
+  padding:0 18px 22px;
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:16px;
+}
 
-  // Selected IDs
-  const sel = selectedIds();
-  $("summaryText").textContent = sel.length
-    ? `Selected: ${sel.join(", ")}`
-    : `Click squares to select them (IDs like H1-A6).`;
+@media (max-width:900px){
+  .layout{ grid-template-columns:1fr }
+}
 
-  // Update team labels once
-  const homeTitle = document.getElementById("homeTitle");
-  const awayTitle = document.getElementById("awayTitle");
-  if(homeTitle) homeTitle.textContent = `${teams.home} (Home)`;
-  if(awayTitle) awayTitle.textContent = `${teams.away} (Away)`;
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.06), transparent 22%), var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
 
-  // Admin inputs reflect saved values
-  const homeInput = $("homeTeam");
-  const awayInput = $("awayTeam");
-  if(homeInput && awayInput){
-    homeInput.value = teams.home === "TBD" ? "" : teams.home;
-    awayInput.value = teams.away === "TBD" ? "" : teams.away;
-  }
+.muted{ color:var(--muted) }
+.small{ font-size:12px }
 
-  // Render 11×11 grid
-  const gridEl = $("grid");
-  gridEl.innerHTML = "";
+label{ display:block; font-weight:600; margin:10px 0 6px }
 
-  // Corner
-  const corner = document.createElement("div");
-  corner.className = "hcell";
-  corner.textContent = "";
-  gridEl.appendChild(corner);
+input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+}
 
-  // Top headers 0..9 (Home columns)
-  for(let col=0; col<10; col++){
-    const h = document.createElement("div");
-    h.className = "hcell";
-    h.textContent = String(col);
-    gridEl.appendChild(h);
-  }
+.btn{
+  width:100%;
+  margin-top:12px;
+  padding:10px;
+  border-radius:12px;
+  font-weight:700;
+  border:1px solid rgba(124,92,255,.55);
+  background:linear-gradient(180deg, rgba(124,92,255,.95), rgba(124,92,255,.75));
+  color:white;
+  cursor:pointer;
+}
 
-  // Rows 0..9 (Away rows)
-  for(let row=0; row<10; row++){
-    const lh = document.createElement("div");
-    lh.className = "hcell";
-    lh.textContent = String(row);
-    gridEl.appendChild(lh);
+.btn.danger{
+  background:rgba(239,68,68,.15);
+  border-color:rgba(239,68,68,.35);
+}
 
-    for(let col=0; col<10; col++){
-      const i = idx(row,col);
-      const taken = !!grid[i];
-      const isSel = selected.has(i);
+.footer{
+  max-width:1150px;
+  margin:0 auto;
+  padding:18px;
+  color:var(--muted);
+}
 
-      const d = document.createElement("div");
-      d.className = "cell" + (taken ? " taken" : "") + (isSel ? " selected" : "");
-      d.textContent = taken ? grid[i].username : "";
-      d.title = taken
-        ? `${squareId(row,col)} • Taken by ${grid[i].username}`
-        : `${squareId(row,col)} • Click to select`;
-      d.onclick = () => toggle(i);
+/* ===== Headings positioned like classic board ===== */
+.board{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
-      gridEl.appendChild(d);
-    }
+.home-title{
+  text-align:center;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.home-title span{ color:#c7d2fe; }
+
+.board-row{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+
+/* Away label horizontal, aligned with row numbers */
+.away-title{
+  min-width:190px;
+  max-width:240px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:flex-start;
+  padding-top:36px; /* aligns with top header row */
+  font-weight:800;
+  letter-spacing:.2px;
+  white-space:nowrap;
+}
+
+.away-title span{ color:#a7f3d0; }
+
+@media(max-width:700px){
+  .board-row{ flex-direction:column; }
+  .away-title{
+    min-width:auto;
+    max-width:none;
+    padding-top:0;
+    justify-content:flex-start;
   }
 }
 
-/* ---------- Selecting ---------- */
-function toggle(i){
-  if(grid[i]) return;
-  selected.has(i) ? selected.delete(i) : selected.add(i);
-  render();
+/* Grid wrapper */
+.grid-wrap{
+  width:100%;
+  overflow-x:auto;
+  border-radius:12px;
+  padding-bottom:2px;
 }
 
-/* ---------- Submit ---------- */
-$("entryForm").onsubmit = (ev) => {
-  ev.preventDefault();
+/* 11×11 grid */
+.grid{
+  display:grid;
+  grid-template-columns:36px repeat(10, 56px);
+  grid-template-rows:36px repeat(10, 56px);
+  gap:2px;
+  min-width:596px;
+  min-height:596px;
+}
 
-  const qty = Number($("quantity").value || 1);
-  if(selected.size !== qty){
-    alert(`Select exactly ${qty} square(s).`);
-    return;
-  }
+/* Headers */
+.hcell{
+  background:rgba(255,255,255,.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--mono);
+  font-size:12px;
+  color:#e5e7eb;
+  border-radius:8px;
+  pointer-events:none;
+}
 
-  const username = $("username").value.trim();
-  const email = $("email").value.trim();
-  if(!username || !email){
-    alert("Username & Email required.");
-    return;
-  }
+/* Squares */
+.cell{
+  background:rgba(255,255,255,.04);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  border-radius:8px;
+  cursor:pointer;
+  user-select:none;
+}
 
-  for(const i of selected){
-    grid[i] = { username, email, ts: new Date().toISOString() };
-  }
-  selected.clear();
-  saveGrid();
-  render();
+.cell.taken{
+  background:rgba(45,212,191,.18);
+  border:1px solid rgba(45,212,191,.35);
+  cursor:not-allowed;
+}
 
-  $("username").value = "";
-  $("email").value = "";
-  $("quantity").value = 1;
-};
-
-/* ---------- Admin ---------- */
-$("resetBtn").onclick = () => {
-  if(confirm("Reset game? This clears all entries.")){
-    grid = Array(TOTAL).fill(null);
-    selected.clear();
-    saveGrid();
-    render();
-  }
-};
-
-$("exportBtn").onclick = () => {
-  const rows = [["square_id","away_row","home_col","username","email","timestamp"]];
-  for(let row=0; row<10; row++){
-    for(let col=0; col<10; col++){
-      const i = idx(row,col);
-      if(!grid[i]) continue;
-      rows.push([squareId(row,col), row, col, grid[i].username, grid[i].email, grid[i].ts || ""]);
-    }
-  }
-  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"}));
-  a.download = "scoreline-squares-entries.csv";
-  a.click();
-};
-
-$("quantity").oninput = render;
-
-/* ---------- Start ---------- */
-render();
+.cell.selected{
+  outline:2px solid rgba(124,92,255,.9);
+  background:rgba(124,92,255,.22);
+}
