@@ -142,18 +142,20 @@ input{
   gap:12px;
   align-items:flex-start;
 }
-
-/* Away label horizontal, aligned with row numbers */
 .away-title{
   min-width:190px;
   max-width:240px;
   display:flex;
-  justify-content:flex-end;
-  align-items:flex-start;
-  padding-top:28px; /* aligns with top header row */
+  justify-content:center;
+  align-items:center;
+  padding-top:0;
   font-weight:800;
   letter-spacing:.2px;
   white-space:nowrap;
+
+  /* Rotate 90° anticlockwise */
+  transform: rotate(-90deg);
+  transform-origin: center;
 }
 
 .away-title span{ color:#a7f3d0; }
