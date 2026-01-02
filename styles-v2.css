@@ -128,13 +128,12 @@ input{
   flex-direction:column;
   gap:10px;
 }
-
 .home-title{
   text-align:center;
   font-weight:800;
   letter-spacing:.2px;
+  margin-bottom:4px;   /* pull it down onto the grid */
 }
-
 .home-title span{ color:#c7d2fe; }
 
 .board-row{
@@ -143,21 +142,19 @@ input{
   align-items:flex-start;
 }
 .away-title{
-  min-width:190px;
-  max-width:240px;
+  width:32px;                  /* narrow so it hugs the grid */
   display:flex;
   justify-content:center;
   align-items:center;
-  padding-top:0;
   font-weight:800;
   letter-spacing:.2px;
   white-space:nowrap;
 
-  /* Rotate 90° anticlockwise */
   transform: rotate(-90deg);
   transform-origin: center;
-}
 
+  margin-right:-6px;           /* pull text INTO the grid */
+}
 .away-title span{ color:#a7f3d0; }
 
 @media(max-width:700px){
