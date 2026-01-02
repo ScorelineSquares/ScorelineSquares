@@ -142,18 +142,23 @@ input{
   align-items:flex-start;
 }
 .away-title{
-  width:32px;                  /* narrow so it hugs the grid */
+  width:34px;                /* tight column */
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   font-weight:800;
   letter-spacing:.2px;
   white-space:nowrap;
 
+  /* rotate 90° anticlockwise */
   transform: rotate(-90deg);
   transform-origin: center;
 
-  margin-right:-6px;           /* pull text INTO the grid */
+  /* HUG the grid */
+  margin-right:-10px;        /* pull into grid */
+  
+  /* ALIGN with top header row (0–9) */
+  margin-top:36px;           /* same as header cell height */
 }
 
 .away-title span{ color:#a7f3d0; }
