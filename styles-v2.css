@@ -1,4 +1,4 @@
-/* ===== RESET ===== */
+/* ================= RESET ================= */
 *{
   box-sizing:border-box;
   margin:0;
@@ -11,7 +11,7 @@ body{
   color:#e5e7eb;
 }
 
-/* ===== TOP BAR ===== */
+/* ================= TOP BAR ================= */
 .topbar{
   display:flex;
   justify-content:space-between;
@@ -64,7 +64,7 @@ body{
   opacity:.7;
 }
 
-/* ===== NOTICE ===== */
+/* ================= NOTICE ================= */
 .notice{
   margin:12px 18px;
   padding:8px 12px;
@@ -73,7 +73,7 @@ body{
   font-size:.8rem;
 }
 
-/* ===== LAYOUT ===== */
+/* ================= LAYOUT ================= */
 .layout{
   display:grid;
   grid-template-columns:320px 1fr;
@@ -88,7 +88,7 @@ body{
   box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
-/* ===== FORM ===== */
+/* ================= FORM ================= */
 label{
   display:block;
   margin-bottom:10px;
@@ -129,7 +129,7 @@ input{
   margin-top:12px;
 }
 
-/* ===== GRID AREA ===== */
+/* ================= GRID HEADER ================= */
 .grid-head{
   margin-bottom:8px;
 }
@@ -143,7 +143,7 @@ input{
   font-size:.75rem;
 }
 
-/* ===== HOME TITLE ===== */
+/* ================= HOME TITLE ================= */
 .home-title{
   text-align:center;
   font-weight:800;
@@ -155,14 +155,14 @@ input{
   color:#c7d2fe;
 }
 
-/* ===== BOARD ROW (AWAY + GRID) ===== */
+/* ================= BOARD ROW ================= */
 .board-row{
   display:flex;
   gap:4px;
-  align-items:stretch;
+  align-items:stretch; /* allows AWAY to centre vertically */
 }
 
-/* ===== AWAY TITLE (FINAL CORRECT VERSION) ===== */
+/* ================= AWAY TITLE (FINAL) ================= */
 .away-title{
   width:36px;
   display:flex;
@@ -172,18 +172,19 @@ input{
   letter-spacing:.2px;
   white-space:nowrap;
 
-  /* rotate CLOCKWISE */
-  transform: rotate(90deg);
+  /* rotate like printed boards */
+  transform: rotate(-90deg);
   transform-origin: center;
 
-  margin-right:-12px;          /* hug grid edge */
+  /* sit outside row numbers & hug grid */
+  margin-right:-24px;
 }
 
 .away-title span{
   color:#a7f3d0;
 }
 
-/* ===== GRID ===== */
+/* ================= GRID ================= */
 .grid-wrap{
   overflow-x:auto;
 }
@@ -217,7 +218,7 @@ input{
   background:#065f46;
 }
 
-/* ===== FOOTER ===== */
+/* ================= FOOTER ================= */
 .footer{
   text-align:center;
   padding:14px;
@@ -225,7 +226,7 @@ input{
   opacity:.5;
 }
 
-/* ===== MOBILE ===== */
+/* ================= MOBILE ================= */
 @media(max-width:900px){
   .layout{
     grid-template-columns:1fr;
