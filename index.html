@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares – Superbowl Squares (TEST MODE)</title>
-  <link rel="stylesheet" href="styles-v2.css" />
+  <title>Scoreline Squares</title>
+  <link rel="stylesheet" href="home.css" />
 </head>
-
 <body>
 
 <header class="topbar">
@@ -14,104 +13,177 @@
     <span class="ball"></span>
     <div>
       <div class="company">Scoreline Squares</div>
-      <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
+      <div class="tagline">Squares competitions for the biggest games</div>
     </div>
   </div>
 
-  <div class="price">
-    <div class="price-amount">£11.50</div>
-    <div class="price-label">per square</div>
-  </div>
+  <nav class="nav">
+    <a class="navlink" href="superbowl.html">Superbowl Squares</a>
+    <a class="navlink" href="#competitions">Competitions</a>
+  </nav>
 </header>
 
-<div class="notice">
-  TEST MODE: simulation only – no real money involved.
-</div>
+<main class="container">
 
-<main class="layout">
+  <section class="hero">
+    <div class="hero-left">
+      <div class="pill">LIVE & UPCOMING</div>
+      <h1>Pick your game. Buy your squares. Track boards and winners.</h1>
+      <p class="sub">
+        A simple, transparent squares experience across multiple sports — under one home: <b>Scoreline Squares</b>.
+      </p>
 
-  <!-- LEFT PANEL -->
-  <section class="card">
-    <h2>Join the game</h2>
-    <p class="muted">
-      Enter a Username and Email, choose how many squares you want, then click
-      <strong>Simulate Payment</strong>.
-    </p>
+      <div class="cta-row">
+        <a class="btn primary" href="superbowl.html">Enter Superbowl Squares</a>
+        <a class="btn" href="#how">How it works</a>
+      </div>
 
-    <form id="entryForm">
-      <label>
-        Username
-        <input id="username" required />
-      </label>
-
-      <label>
-        Email
-        <input id="email" type="email" required />
-      </label>
-
-      <label>
-        Number of squares
-        <input id="quantity" type="number" min="1" value="1" required />
-      </label>
-
-      <button class="btn primary" type="submit">
-        Simulate Payment for £11.50
-      </button>
-
-      <div class="summary" id="summaryText"></div>
-    </form>
-
-    <div class="meta">
-      <div><strong>Payouts:</strong> £250 at end of 1st, 2nd, 3rd & 4th quarters</div>
-      <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
+      <div class="trust-row">
+        <div class="trust-item">
+          <div class="trust-top">Transparent</div>
+          <div class="trust-sub">Public boards, clear payouts</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-top">Multi-sport</div>
+          <div class="trust-sub">NFL + GAA Football + Hurling</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-top">Board history</div>
+          <div class="trust-sub">View sold-out boards anytime</div>
+        </div>
+      </div>
     </div>
 
-    <details class="admin">
-      <summary>Admin (trial only)</summary>
-      <p class="muted">These controls are for testing.</p>
-      <button class="btn">Export entries (CSV)</button>
-      <button class="btn">Reset game</button>
-    </details>
+    <div class="hero-right">
+      <div class="featured-card">
+        <div class="featured-top">
+          <div>
+            <div class="featured-title">Featured</div>
+            <div class="featured-game">Superbowl Squares</div>
+          </div>
+          <span class="badge live">TEST MODE</span>
+        </div>
+
+        <div class="featured-stats">
+          <div class="stat">
+            <div class="stat-label">Price per square</div>
+            <div class="stat-value">£11.50</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Payouts</div>
+            <div class="stat-value">Quarterly</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Boards</div>
+            <div class="stat-value">Auto-rollover</div>
+          </div>
+        </div>
+
+        <a class="btn primary full" href="superbowl.html">View board</a>
+
+        <div class="featured-note">
+          In test mode: simulated payments + simulated refunds (for trial).
+        </div>
+      </div>
+    </div>
   </section>
 
-  <!-- RIGHT PANEL -->
-  <section class="card">
-
-    <div class="grid-head">
-      <h2>Squares</h2>
-      <div class="muted">
-        A 10×10 grid (100 squares). In test mode, squares are assigned in order as people “pay”.
-      </div>
+  <section id="competitions" class="section">
+    <div class="section-head">
+      <h2>Competitions</h2>
+      <p class="muted">Choose a squares game. Sold-out boards are valid for competition.</p>
     </div>
 
-    <!-- HOME TITLE -->
-    <div class="home-title">
-      <span>HOME TEAM:</span>&nbsp;TBD (Home)
+    <div class="grid">
+      <!-- Superbowl -->
+      <article class="game-card">
+        <div class="game-top">
+          <div class="game-name">Superbowl Squares</div>
+          <span class="badge live">LIVE</span>
+        </div>
+        <div class="game-meta">NFL • Final</div>
+        <div class="game-details">
+          <div><span class="k">Price</span> <span class="v">£11.50</span></div>
+          <div><span class="k">Payouts</span> <span class="v">Quarters</span></div>
+          <div><span class="k">Status</span> <span class="v">Open boards</span></div>
+        </div>
+        <a class="btn primary full" href="superbowl.html">Enter</a>
+      </article>
+
+      <!-- GAA Football -->
+      <article class="game-card">
+        <div class="game-top">
+          <div class="game-name">GAA Men’s SFC All-Ireland Final</div>
+          <span class="badge soon">COMING</span>
+        </div>
+        <div class="game-meta">GAA • Football</div>
+        <div class="game-details">
+          <div><span class="k">Price</span> <span class="v">TBC</span></div>
+          <div><span class="k">Payouts</span> <span class="v">TBC</span></div>
+          <div><span class="k">Status</span> <span class="v">Planned</span></div>
+        </div>
+        <a class="btn full disabled" href="gaa-football.html" aria-disabled="true">Coming soon</a>
+      </article>
+
+      <!-- GAA Hurling -->
+      <article class="game-card">
+        <div class="game-top">
+          <div class="game-name">GAA Senior Hurling Final</div>
+          <span class="badge soon">COMING</span>
+        </div>
+        <div class="game-meta">GAA • Hurling</div>
+        <div class="game-details">
+          <div><span class="k">Price</span> <span class="v">TBC</span></div>
+          <div><span class="k">Payouts</span> <span class="v">TBC</span></div>
+          <div><span class="k">Status</span> <span class="v">Planned</span></div>
+        </div>
+        <a class="btn full disabled" href="gaa-hurling.html" aria-disabled="true">Coming soon</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="how" class="section how">
+    <div class="section-head">
+      <h2>How it works</h2>
+      <p class="muted">Simple, fair, and designed for public transparency.</p>
     </div>
 
-    <!-- BOARD ROW -->
-    <div class="board-row">
-
-      <!-- AWAY TITLE COLUMN -->
-      <div class="away-title">
-        <span>AWAY TEAM:</span>&nbsp;TBD (Away)
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <div class="how-title">Choose a competition</div>
+        <div class="how-text">Select Superbowl, GAA Football Final, or Hurling Final.</div>
       </div>
-
-      <!-- GRID -->
-      <div class="grid-wrap">
-        <div class="grid" id="grid"></div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <div class="how-title">Buy squares</div>
+        <div class="how-text">Enter quantity. Squares are assigned randomly.</div>
       </div>
-
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <div class="how-title">Boards roll over</div>
+        <div class="how-text">When a board sells out, it’s archived and a new board opens.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">4</div>
+        <div class="how-title">Sold-out boards only</div>
+        <div class="how-text">Only fully sold boards are valid. Non-full boards near kickoff are refunded.</div>
+      </div>
     </div>
-
   </section>
 
 </main>
 
 <footer class="footer">
-  © <span id="year"></span> Scoreline Squares • Trial mode
+  <div>© <span id="year"></span> Scoreline Squares</div>
+  <div class="footer-links">
+    <a href="#competitions">Competitions</a>
+    <a href="superbowl.html">Superbowl Squares</a>
+  </div>
 </footer>
 
-<script src="app.js"></script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
