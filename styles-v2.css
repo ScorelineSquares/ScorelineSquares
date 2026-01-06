@@ -144,3 +144,9 @@ input{
 @media(max-width:900px){
   .layout{ grid-template-columns:1fr; }
 }
+/* Highlight selected SOLD square */
+.cell.square.taken.selected {
+  outline: 3px solid #22c55e;   /* green ring */
+  outline-offset: -3px;
+  background: rgba(34, 197, 94, 0.15);
+}
