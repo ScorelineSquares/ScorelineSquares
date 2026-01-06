@@ -1,90 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares — Superbowl Squares (TEST MODE)</title>
+  <title>Scoreline Squares – Superbowl Squares (TEST MODE)</title>
   <link rel="stylesheet" href="styles-v2.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="ball" aria-hidden="true">🏈</span>
-      <div>
-        <div class="company">Scoreline Squares</div>
-        <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
-      </div>
-    </div>
-    <div class="price">
-      <div class="price-amount">£<span id="pricePerSquare">11.50</span></div>
-      <div class="price-label">per square</div>
-    </div>
-  </header>
 
-  <div class="notice" role="status">
-    TEST MODE: simulation only — no real money involved.
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="ball"></span>
+    <div>
+      <div class="company">Scoreline Squares</div>
+      <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
+    </div>
   </div>
 
-  <main class="layout">
-    <section class="card">
-      <h2>Join the game</h2>
-      <p class="muted">Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want, then click <strong>Simulate Payment</strong>.</p>
+  <div class="price">
+    <div class="price-amount">£11.50</div>
+    <div class="price-label">per square</div>
+  </div>
+</header>
 
-      <form id="entryForm">
-        <label>
-          Username
-          <input id="username" name="username" autocomplete="nickname" required />
-        </label>
+<div class="notice">
+  TEST MODE: simulation only – no real money involved.
+</div>
 
-        <label>
-          Email
-          <input id="email" name="email" type="email" autocomplete="email" required />
-        </label>
+<main class="layout">
 
-        <label>
-          Number of squares
-          <input id="quantity" name="quantity" type="number" min="1" value="1" required />
-        </label>
+  <!-- LEFT PANEL -->
+  <section class="card">
+    <h2>Join the game</h2>
+    <p class="muted">
+      Enter a Username and Email, choose how many squares you want, then click
+      <strong>Simulate Payment</strong>.
+    </p>
 
-        <button class="btn primary" type="submit" id="payBtn">
-          Simulate Payment
-        </button>
+    <form id="entryForm">
+      <label>
+        Username
+        <input id="username" required />
+      </label>
 
-        <div class="summary" id="summaryText"></div>
-      </form>
+      <label>
+        Email
+        <input id="email" type="email" required />
+      </label>
 
-      <div class="meta">
-        <div><strong>Payouts:</strong> <span id="payoutText">£250 at end of 1st, 2nd, 3rd & 4th quarters</span></div>
-        <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
+      <label>
+        Number of squares
+        <input id="quantity" type="number" min="1" value="1" required />
+      </label>
+
+      <button class="btn primary" type="submit">
+        Simulate Payment for £11.50
+      </button>
+
+      <div class="summary" id="summaryText"></div>
+    </form>
+
+    <div class="meta">
+      <div><strong>Payouts:</strong> £250 at end of 1st, 2nd, 3rd & 4th quarters</div>
+      <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
+    </div>
+
+    <details class="admin">
+      <summary>Admin (trial only)</summary>
+      <p class="muted">These controls are for testing.</p>
+      <button class="btn">Export entries (CSV)</button>
+      <button class="btn">Reset game</button>
+    </details>
+  </section>
+
+  <!-- RIGHT PANEL -->
+  <section class="card">
+
+    <div class="grid-head">
+      <h2>Squares</h2>
+      <div class="muted">
+        A 10×10 grid (100 squares). In test mode, squares are assigned in order as people “pay”.
+      </div>
+    </div>
+
+    <!-- HOME TITLE -->
+    <div class="home-title">
+      <span>HOME TEAM:</span>&nbsp;TBD (Home)
+    </div>
+
+    <!-- BOARD ROW -->
+    <div class="board-row">
+
+      <!-- AWAY TITLE COLUMN -->
+      <div class="away-title">
+        <span>AWAY TEAM:</span>&nbsp;TBD (Away)
       </div>
 
-      <details class="admin">
-        <summary>Admin (trial only)</summary>
-        <p class="muted">These controls are for testing.</p>
-        <div class="admin-actions">
-          <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
-          <button class="btn danger" id="resetBtn" type="button">Reset game</button>
-        </div>
-        <div class="muted small">Tip: Share this page link with friends to test together.</div>
-      </details>
-    </section>
-
-    <section class="card">
-      <div class="grid-head">
-        <h2>Squares</h2>
-        <div class="muted small">A 10×10 grid (100 squares). In test mode, squares are assigned in order as people “pay”.</div>
-      </div>
-
+      <!-- GRID -->
       <div class="grid-wrap">
-        <div class="grid" id="grid" aria-label="Squares grid"></div>
+        <div class="grid" id="grid"></div>
       </div>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
-  </footer>
+    </div>
 
-  <script src="app.js"></script>
+  </section>
+
+</main>
+
+<footer class="footer">
+  © <span id="year"></span> Scoreline Squares • Trial mode
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
