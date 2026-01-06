@@ -1,19 +1,20 @@
-/* Scoreline Squares (Trial) – Multi-board, sold-out archive, 1-hour kickoff refund rule
+/* Scoreline Squares (Trial) – Multi-board, sold-out archive + viewable boards, 1-hour kickoff refund rule
    - Random assignment (no choosing)
    - SOLD squares show tooltip with username on hover/click
    - When board hits 100 SOLD -> archived with reference, new board auto-created
-   - Only sold-out boards are "valid"
-   - 1 hour before kickoff: if active board not full -> VOID + mark all entrants REFUNDED (simulated)
+   - Sold-out boards list is clickable; each opens a read-only grid view
+   - Purchase summary includes board reference
+   - 1 hour before kickoff: if active board not full -> VOID + mark all entrants REFUNDED (simulated), new board opens
 */
 
 (() => {
   const GRID_SIZE = 10;
   const TOTAL = GRID_SIZE * GRID_SIZE;
 
-  const SEASON_LABEL = "Superbowl 2026"; // change later per season
-  const STORAGE_KEY = "scoreline_squares_trial_boards_v1";
+  const SEASON_LABEL = "Superbowl 2026";
+  const STORAGE_KEY = "scoreline_squares_trial_boards_v2";
 
-  // ---- DOM (existing IDs from your page) ----
+  // ---- DOM ----
   const gridEl = document.getElementById("grid");
   const formEl = document.getElementById("entryForm");
   const remainingEl = document.getElementById("remaining");
@@ -22,20 +23,9 @@
 
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // We'll inject a small "Current / Sold-out boards" toggle UI above the grid
   const gridCard = gridEl?.closest(".card") || gridEl?.parentElement;
-  const injectedUI = {
-    navWrap: null,
-    currentBtn: null,
-    archiveBtn: null,
-    titleLine: null,
-    adminWrap: null,
-    kickoffInput: null,
-    runCheckBtn: null,
-    archiveWrap: null,
-  };
 
-  // ---- Tooltip (single floating) ----
+  // ---- Tooltip ----
   const tooltip = document.createElement("div");
   Object.assign(tooltip.style, {
     position: "fixed",
@@ -57,14 +47,35 @@
 
   let pinned = null;
 
-  // ---- State model ----
-  // state = { seasonLabel, nextRefNumber, activeBoardId, boards: [Board] }
-  // Board = { id, ref, createdAt, kickoffAt, status: 'open'|'soldout'|'void', sold: {idx: Entry}, refunds: Entry[] }
+  // ---- State ----
+  // state = { seasonLabel, nextRefNumber, activeBoardId, boards:[Board] }
+  // Board = { id, ref, createdAt, kickoffAt, status:'open'|'soldout'|'void', sold:{idx:Entry}, refunds:Entry[] }
   // Entry = { username, email, ts }
   let state = loadState();
   ensureActiveBoard();
 
-  // ---- Helpers ----
+  // ---- View modes ----
+  // current: active board purchase view
+  // archiveList: list of sold-out boards
+  // archiveView: view one sold-out board grid (read-only)
+  let viewMode = "current";
+  let selectedArchiveBoardId = null;
+
+  // ---- Injected UI ----
+  const ui = {
+    nav: null,
+    btnCurrent: null,
+    btnArchive: null,
+    titleLine: null,
+
+    adminWrap: null,
+    kickoffInput: null,
+    runCheckBtn: null,
+
+    archiveWrap: null,
+    archiveBackBtn: null,
+  };
+
   function now() { return Date.now(); }
 
   function uid() {
@@ -80,30 +91,26 @@
       .replaceAll("'", "&#039;");
   }
 
+  function setSummary(msg) {
+    if (summaryEl) summaryEl.textContent = msg;
+  }
+
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
-        return {
-          seasonLabel: SEASON_LABEL,
-          nextRefNumber: 1,
-          activeBoardId: null,
-          boards: [],
-        };
+        return { seasonLabel: SEASON_LABEL, nextRefNumber: 1, activeBoardId: null, boards: [] };
       }
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") throw new Error("bad");
+
       if (!Array.isArray(parsed.boards)) parsed.boards = [];
       if (typeof parsed.nextRefNumber !== "number") parsed.nextRefNumber = 1;
       if (typeof parsed.seasonLabel !== "string") parsed.seasonLabel = SEASON_LABEL;
+
       return parsed;
     } catch {
-      return {
-        seasonLabel: SEASON_LABEL,
-        nextRefNumber: 1,
-        activeBoardId: null,
-        boards: [],
-      };
+      return { seasonLabel: SEASON_LABEL, nextRefNumber: 1, activeBoardId: null, boards: [] };
     }
   }
 
@@ -111,22 +118,12 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function getBoard(boardId) {
-    return state.boards.find(b => b.id === boardId) || null;
+  function getBoard(id) {
+    return state.boards.find(b => b.id === id) || null;
   }
 
   function getActiveBoard() {
     return getBoard(state.activeBoardId);
-  }
-
-  function ensureActiveBoard() {
-    // If no active board, or active is not open, create one.
-    const active = getActiveBoard();
-    if (!active || active.status !== "open") {
-      const b = createBoard();
-      state.activeBoardId = b.id;
-      saveState();
-    }
   }
 
   function createBoard() {
@@ -137,29 +134,31 @@
       id: uid(),
       ref,
       createdAt: now(),
-      kickoffAt: null, // set by admin (ms timestamp)
-      status: "open", // open | soldout | void
-      sold: {},       // idx -> entry
-      refunds: [],    // entries refunded when voided
+      kickoffAt: null,
+      status: "open",
+      sold: {},
+      refunds: [],
     };
     state.boards.unshift(b); // newest first
     return b;
   }
 
-  function soldCount(board) {
-    return Object.keys(board.sold).length;
+  function ensureActiveBoard() {
+    const active = getActiveBoard();
+    if (!active || active.status !== "open") {
+      const b = createBoard();
+      state.activeBoardId = b.id;
+      saveState();
+    }
   }
 
-  function remaining(board) {
-    return TOTAL - soldCount(board);
-  }
+  function soldCount(board) { return Object.keys(board.sold).length; }
+  function remaining(board) { return TOTAL - soldCount(board); }
 
   function availableIndices(board) {
     const soldSet = new Set(Object.keys(board.sold).map(Number));
     const avail = [];
-    for (let i = 0; i < TOTAL; i++) {
-      if (!soldSet.has(i)) avail.push(i);
-    }
+    for (let i = 0; i < TOTAL; i++) if (!soldSet.has(i)) avail.push(i);
     return avail;
   }
 
@@ -178,14 +177,10 @@
     return `H${col}-A${row}`;
   }
 
-  function setSummary(msg) {
-    if (summaryEl) summaryEl.textContent = msg;
-  }
-
   // ---- Tooltip ----
   function tooltipHtml(entry) {
-    return `<div style="font-weight:800; margin-bottom:4px;">SOLD</div>
-            <div style="opacity:0.9;">Buyer: <span style="font-weight:700;">${escapeHtml(entry.username)}</span></div>`;
+    return `<div style="font-weight:900; margin-bottom:4px;">SOLD</div>
+            <div style="opacity:0.92;">Buyer: <span style="font-weight:800;">${escapeHtml(entry.username)}</span></div>`;
   }
 
   function showTooltipAt(x, y, html) {
@@ -213,9 +208,9 @@
     tooltip.innerHTML = "";
   }
 
-  // ---- UI injection (Current / Archive toggle + Kickoff admin) ----
-  function ensureInjectedUI() {
-    if (!gridCard || injectedUI.navWrap) return;
+  // ---- UI injection ----
+  function ensureUI() {
+    if (!gridCard || ui.nav) return;
 
     const nav = document.createElement("div");
     nav.style.display = "flex";
@@ -229,45 +224,45 @@
     left.style.gap = "8px";
     left.style.alignItems = "center";
 
-    const currentBtn = document.createElement("button");
-    currentBtn.type = "button";
-    currentBtn.textContent = "Current board";
-    currentBtn.className = "btn";
-    currentBtn.style.marginTop = "0";
+    const btnCurrent = document.createElement("button");
+    btnCurrent.type = "button";
+    btnCurrent.className = "btn";
+    btnCurrent.style.marginTop = "0";
+    btnCurrent.textContent = "Current board";
 
-    const archiveBtn = document.createElement("button");
-    archiveBtn.type = "button";
-    archiveBtn.textContent = "Sold-out boards";
-    archiveBtn.className = "btn";
-    archiveBtn.style.marginTop = "0";
+    const btnArchive = document.createElement("button");
+    btnArchive.type = "button";
+    btnArchive.className = "btn";
+    btnArchive.style.marginTop = "0";
+    btnArchive.textContent = "Sold-out boards";
+
+    left.appendChild(btnCurrent);
+    left.appendChild(btnArchive);
 
     const titleLine = document.createElement("div");
-    titleLine.style.fontWeight = "800";
-    titleLine.style.opacity = "0.9";
-
-    left.appendChild(currentBtn);
-    left.appendChild(archiveBtn);
+    titleLine.style.fontWeight = "900";
+    titleLine.style.opacity = "0.92";
 
     nav.appendChild(left);
     nav.appendChild(titleLine);
 
     // Admin kickoff controls
     const adminWrap = document.createElement("div");
-    adminWrap.style.margin = "10px 0 0 0";
+    adminWrap.style.marginTop = "10px";
     adminWrap.style.paddingTop = "10px";
     adminWrap.style.borderTop = "1px solid rgba(255,255,255,0.08)";
 
     const adminTitle = document.createElement("div");
     adminTitle.textContent = "Admin (trial): Kickoff / 1-hour check";
-    adminTitle.style.fontWeight = "800";
+    adminTitle.style.fontWeight = "900";
     adminTitle.style.marginBottom = "8px";
     adminTitle.style.opacity = "0.9";
 
-    const row = document.createElement("div");
-    row.style.display = "flex";
-    row.style.gap = "8px";
-    row.style.flexWrap = "wrap";
-    row.style.alignItems = "center";
+    const adminRow = document.createElement("div");
+    adminRow.style.display = "flex";
+    adminRow.style.gap = "8px";
+    adminRow.style.flexWrap = "wrap";
+    adminRow.style.alignItems = "center";
 
     const kickoffInput = document.createElement("input");
     kickoffInput.type = "datetime-local";
@@ -282,62 +277,75 @@
     const helper = document.createElement("div");
     helper.className = "muted";
     helper.style.marginTop = "6px";
-    helper.textContent = "Set kickoff for the current board. 1 hour before kickoff, if not full -> VOID + refunds (simulated).";
+    helper.textContent = "Set kickoff for the current board. If not full at 1-hour cutoff -> VOID + refunds (simulated) and a new board opens.";
 
-    row.appendChild(kickoffInput);
-    row.appendChild(runCheckBtn);
+    adminRow.appendChild(kickoffInput);
+    adminRow.appendChild(runCheckBtn);
     adminWrap.appendChild(adminTitle);
-    adminWrap.appendChild(row);
+    adminWrap.appendChild(adminRow);
     adminWrap.appendChild(helper);
 
-    // Archive view container
+    // Archive container
     const archiveWrap = document.createElement("div");
     archiveWrap.style.display = "none";
     archiveWrap.style.marginTop = "12px";
 
-    // Insert nav at top of the card (before existing content)
+    // Back button (for archive board view)
+    const archiveBackBtn = document.createElement("button");
+    archiveBackBtn.type = "button";
+    archiveBackBtn.className = "btn";
+    archiveBackBtn.style.marginTop = "0";
+    archiveBackBtn.textContent = "← Back to sold-out boards";
+    archiveBackBtn.style.display = "none";
+    archiveBackBtn.style.marginBottom = "10px";
+
+    archiveWrap.appendChild(archiveBackBtn);
+
     gridCard.insertBefore(nav, gridCard.firstChild);
     gridCard.appendChild(adminWrap);
     gridCard.appendChild(archiveWrap);
 
-    injectedUI.navWrap = nav;
-    injectedUI.currentBtn = currentBtn;
-    injectedUI.archiveBtn = archiveBtn;
-    injectedUI.titleLine = titleLine;
-    injectedUI.adminWrap = adminWrap;
-    injectedUI.kickoffInput = kickoffInput;
-    injectedUI.runCheckBtn = runCheckBtn;
-    injectedUI.archiveWrap = archiveWrap;
+    ui.nav = nav;
+    ui.btnCurrent = btnCurrent;
+    ui.btnArchive = btnArchive;
+    ui.titleLine = titleLine;
+    ui.adminWrap = adminWrap;
+    ui.kickoffInput = kickoffInput;
+    ui.runCheckBtn = runCheckBtn;
+    ui.archiveWrap = archiveWrap;
+    ui.archiveBackBtn = archiveBackBtn;
 
-    currentBtn.addEventListener("click", () => setView("current"));
-    archiveBtn.addEventListener("click", () => setView("archive"));
+    btnCurrent.addEventListener("click", () => {
+      viewMode = "current";
+      selectedArchiveBoardId = null;
+      render();
+    });
+
+    btnArchive.addEventListener("click", () => {
+      viewMode = "archiveList";
+      selectedArchiveBoardId = null;
+      render();
+    });
+
+    archiveBackBtn.addEventListener("click", () => {
+      viewMode = "archiveList";
+      selectedArchiveBoardId = null;
+      render();
+    });
 
     kickoffInput.addEventListener("change", () => {
       const b = getActiveBoard();
       if (!b) return;
       const val = kickoffInput.value;
-      if (!val) {
-        b.kickoffAt = null;
-      } else {
-        b.kickoffAt = new Date(val).getTime();
-      }
+      b.kickoffAt = val ? new Date(val).getTime() : null;
       saveState();
       render();
     });
 
-    runCheckBtn.addEventListener("click", () => {
-      runOneHourCheck();
-    });
+    runCheckBtn.addEventListener("click", () => runOneHourCheck());
   }
 
-  let viewMode = "current"; // current | archive
-
-  function setView(mode) {
-    viewMode = mode;
-    render();
-  }
-
-  // ---- Core rules ----
+  // ---- Rules ----
   function markSoldOutIfFull(board) {
     if (board.status !== "open") return false;
     if (soldCount(board) >= TOTAL) {
@@ -345,13 +353,6 @@
       return true;
     }
     return false;
-  }
-
-  function autoOpenNewBoardIfNeeded() {
-    const active = getActiveBoard();
-    if (!active || active.status !== "open") {
-      ensureActiveBoard();
-    }
   }
 
   function runOneHourCheck() {
@@ -366,8 +367,6 @@
     const oneHourBefore = b.kickoffAt - 60 * 60 * 1000;
     const t = now();
 
-    // In real life this would run automatically on server time.
-    // In trial mode, we run it when you click.
     if (t < oneHourBefore) {
       setSummary("Not within 1 hour of kickoff yet (trial check uses current time).");
       return;
@@ -379,13 +378,11 @@
     }
 
     if (soldCount(b) < TOTAL) {
-      // VOID + refunds
       const entries = Object.values(b.sold);
       b.refunds = entries;
       b.sold = {};
       b.status = "void";
 
-      // Open a new board for continued sales (trial behaviour)
       const newBoard = createBoard();
       state.activeBoardId = newBoard.id;
 
@@ -395,7 +392,6 @@
       return;
     }
 
-    // If full, it should already be soldout, but handle just in case
     b.status = "soldout";
     const newBoard = createBoard();
     state.activeBoardId = newBoard.id;
@@ -404,13 +400,13 @@
     render();
   }
 
-  // ---- Random purchase on active board ----
+  // ---- Purchase ----
   function handlePurchase(username, email, qty) {
     const b = getActiveBoard();
     if (!b) return;
 
     if (b.status !== "open") {
-      setSummary("This board is not open. Please switch to the current board.");
+      setSummary("This board is not open.");
       return;
     }
 
@@ -425,81 +421,91 @@
       b.sold[idx] = { username, email, ts: now() };
     });
 
-    const wasSoldOut = markSoldOutIfFull(b);
+    const ids = chosen.map(indexToId).join(", ");
+    const receiptLine = `Board: ${b.ref}`;
 
-    if (wasSoldOut) {
-      // auto-open next board
+    const soldOutNow = markSoldOutIfFull(b);
+
+    if (soldOutNow) {
       const newBoard = createBoard();
       state.activeBoardId = newBoard.id;
       saveState();
 
-      const ids = chosen.map(indexToId).join(", ");
-      setSummary(`Assigned (random): ${ids}. ✅ Board sold out and archived! New board opened.`);
+      setSummary(`✅ Purchase complete.\n${receiptLine}\nAssigned (random): ${ids}\n\nBoard sold out and archived! A new board has opened.`);
       render();
       return;
     }
 
     saveState();
-    const ids = chosen.map(indexToId).join(", ");
-    setSummary(`Assigned (random): ${ids}`);
+    setSummary(`✅ Purchase complete.\n${receiptLine}\nAssigned (random): ${ids}`);
     render();
   }
 
-  // ---- Render (Current vs Archive) ----
+  // ---- Rendering ----
   function render() {
-    ensureInjectedUI();
-    autoOpenNewBoardIfNeeded();
+    ensureUI();
+    ensureActiveBoard();
 
     const active = getActiveBoard();
 
-    // Title line
-    if (injectedUI.titleLine) {
-      if (viewMode === "current") {
-        injectedUI.titleLine.textContent = active ? active.ref : "No active board";
-      } else {
-        injectedUI.titleLine.textContent = `${state.seasonLabel} • Sold-out boards`;
+    // Update title line
+    if (ui.titleLine) {
+      if (viewMode === "current") ui.titleLine.textContent = active ? active.ref : "No active board";
+      if (viewMode === "archiveList") ui.titleLine.textContent = `${state.seasonLabel} • Sold-out boards`;
+      if (viewMode === "archiveView") {
+        const b = getBoard(selectedArchiveBoardId);
+        ui.titleLine.textContent = b ? b.ref : `${state.seasonLabel} • Board`;
       }
     }
 
-    // Keep kickoff input in sync
-    if (injectedUI.kickoffInput && active && viewMode === "current") {
+    // Show/hide admin + archive containers
+    if (ui.adminWrap) ui.adminWrap.style.display = (viewMode === "current") ? "block" : "none";
+    if (ui.archiveWrap) ui.archiveWrap.style.display = (viewMode === "current") ? "none" : "block";
+    if (ui.archiveBackBtn) ui.archiveBackBtn.style.display = (viewMode === "archiveView") ? "inline-block" : "none";
+
+    // Sync kickoff input for current view
+    if (ui.kickoffInput && active && viewMode === "current") {
       if (active.kickoffAt) {
-        // format to datetime-local (approx; timezone local)
         const d = new Date(active.kickoffAt);
         const pad = (n) => String(n).padStart(2, "0");
-        const val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        injectedUI.kickoffInput.value = val;
+        ui.kickoffInput.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
       } else {
-        injectedUI.kickoffInput.value = "";
+        ui.kickoffInput.value = "";
       }
     }
 
-    // Toggle views
-    if (injectedUI.archiveWrap) {
-      injectedUI.archiveWrap.style.display = (viewMode === "archive") ? "block" : "none";
-    }
-    if (gridEl) {
-      gridEl.style.display = (viewMode === "archive") ? "none" : "grid";
-    }
-    if (injectedUI.adminWrap) {
-      injectedUI.adminWrap.style.display = (viewMode === "archive") ? "none" : "block";
-    }
+    pinned = null;
+    hideTooltip();
 
-    // Render archive list
-    if (viewMode === "archive") {
-      renderArchive();
-      if (remainingEl) remainingEl.textContent = active ? String(remaining(active)) : "0";
+    // Remaining display: show for current board only (keeps your left panel accurate)
+    if (remainingEl) remainingEl.textContent = active ? String(remaining(active)) : "0";
+
+    if (viewMode === "current") {
+      renderBoardGrid(active, { readOnly: false });
       return;
     }
 
-    // Render current board grid
-    if (!gridEl || !active) return;
+    if (viewMode === "archiveList") {
+      renderArchiveList();
+      return;
+    }
 
-    if (remainingEl) remainingEl.textContent = String(remaining(active));
+    if (viewMode === "archiveView") {
+      const b = getBoard(selectedArchiveBoardId);
+      renderArchiveBoardView(b);
+      return;
+    }
+  }
+
+  function renderBoardGrid(board, { readOnly }) {
+    if (!gridEl || !board) return;
+
+    // Ensure grid element visible
+    gridEl.style.display = "grid";
+    if (ui.archiveWrap) ui.archiveWrap.style.display = (viewMode === "current") ? "none" : "block";
 
     gridEl.innerHTML = "";
 
-    // Build 11x11 with headers
     for (let r = -1; r < GRID_SIZE; r++) {
       for (let c = -1; c < GRID_SIZE; c++) {
         const cell = document.createElement("div");
@@ -515,7 +521,7 @@
           cell.textContent = String(r);
         } else {
           const idx = r * GRID_SIZE + c;
-          const entry = active.sold[idx];
+          const entry = board.sold[idx];
 
           cell.className = "cell square";
           cell.dataset.index = String(idx);
@@ -524,6 +530,7 @@
             cell.classList.add("taken");
             cell.innerHTML = `<span style="font-weight:900; font-size:11px; letter-spacing:.6px;">SOLD</span>`;
 
+            // hover/click username
             cell.addEventListener("mouseenter", (e) => {
               if (pinned !== null) return;
               const ev = /** @type {MouseEvent} */ (e);
@@ -552,8 +559,17 @@
               showTooltipAt(rect.left + rect.width / 2, rect.top + rect.height / 2, tooltipHtml(entry));
             });
           } else {
-            // unsold squares not clickable (random assignment only)
+            // unsold cell
             cell.style.cursor = "default";
+            if (readOnly) {
+              // show empty square for archived boards (should not happen if sold-out, but safe)
+              cell.innerHTML = "";
+            }
+          }
+
+          if (readOnly) {
+            // prevent any accidental changes; squares are view-only
+            cell.style.cursor = entry ? "pointer" : "default";
           }
         }
 
@@ -562,34 +578,46 @@
     }
   }
 
-  function renderArchive() {
-    const wrap = injectedUI.archiveWrap;
-    if (!wrap) return;
+  function renderArchiveList() {
+    if (!ui.archiveWrap) return;
+
+    // Clear everything except back button (first child)
+    ui.archiveWrap.innerHTML = "";
+    ui.archiveWrap.appendChild(ui.archiveBackBtn);
+
+    // Hide grid while browsing list
+    if (gridEl) gridEl.style.display = "none";
 
     const soldOutBoards = state.boards.filter(b => b.status === "soldout");
-    wrap.innerHTML = "";
 
     if (soldOutBoards.length === 0) {
       const empty = document.createElement("div");
       empty.className = "muted";
       empty.textContent = "No sold-out boards yet.";
-      wrap.appendChild(empty);
+      ui.archiveWrap.appendChild(empty);
       return;
     }
 
-    soldOutBoards.forEach((b) => {
+    const note = document.createElement("div");
+    note.className = "muted";
+    note.style.marginBottom = "10px";
+    note.textContent = "Tap/click a board to open it and view all SOLD squares.";
+    ui.archiveWrap.appendChild(note);
+
+    soldOutBoards.forEach(b => {
       const card = document.createElement("div");
       card.style.padding = "12px";
       card.style.borderRadius = "12px";
       card.style.background = "rgba(255,255,255,0.04)";
-      card.style.border = "1px solid rgba(255,255,255,0.06)";
+      card.style.border = "1px solid rgba(255,255,255,0.08)";
       card.style.marginTop = "10px";
+      card.style.cursor = "pointer";
 
       const top = document.createElement("div");
       top.style.display = "flex";
       top.style.justifyContent = "space-between";
-      top.style.gap = "10px";
       top.style.alignItems = "baseline";
+      top.style.gap = "12px";
 
       const title = document.createElement("div");
       title.style.fontWeight = "900";
@@ -605,13 +633,61 @@
       const hint = document.createElement("div");
       hint.className = "muted";
       hint.style.marginTop = "6px";
-      hint.textContent = "Archived board (valid for competition). Squares are view-only.";
+      hint.textContent = "Open board →";
 
       card.appendChild(top);
       card.appendChild(hint);
 
-      wrap.appendChild(card);
+      card.addEventListener("click", () => {
+        selectedArchiveBoardId = b.id;
+        viewMode = "archiveView";
+        render();
+      });
+
+      ui.archiveWrap.appendChild(card);
     });
+  }
+
+  function renderArchiveBoardView(board) {
+    if (!ui.archiveWrap) return;
+
+    ui.archiveWrap.innerHTML = "";
+    ui.archiveWrap.appendChild(ui.archiveBackBtn);
+
+    if (!board) {
+      const msg = document.createElement("div");
+      msg.className = "muted";
+      msg.textContent = "Board not found.";
+      ui.archiveWrap.appendChild(msg);
+      if (gridEl) gridEl.style.display = "none";
+      return;
+    }
+
+    const header = document.createElement("div");
+    header.style.marginBottom = "10px";
+
+    const title = document.createElement("div");
+    title.style.fontWeight = "900";
+    title.style.marginBottom = "4px";
+    title.textContent = board.ref;
+
+    const meta = document.createElement("div");
+    meta.className = "muted";
+    meta.textContent = `Status: SOLD OUT • Created: ${new Date(board.createdAt).toLocaleString()}`;
+
+    const tip = document.createElement("div");
+    tip.className = "muted";
+    tip.style.marginTop = "6px";
+    tip.textContent = "Hover/tap SOLD squares to see the buyer’s username.";
+
+    header.appendChild(title);
+    header.appendChild(meta);
+    header.appendChild(tip);
+
+    ui.archiveWrap.appendChild(header);
+
+    // Show grid and render as read-only
+    renderBoardGrid(board, { readOnly: true });
   }
 
   // ---- Form submit ----
@@ -632,7 +708,7 @@
     });
   }
 
-  // Close pinned tooltip when clicking elsewhere
+  // Close pinned tooltip on outside click
   document.addEventListener("click", () => {
     if (pinned !== null) {
       pinned = null;
