@@ -1,234 +1,117 @@
-/* ================= RESET ================= */
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreline Squares – Superbowl Squares (TEST MODE)</title>
+  <link rel="stylesheet" href="styles-v2.css" />
+</head>
 
-body{
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(135deg,#020617,#020617 35%,#042f2e);
-  color:#e5e7eb;
-}
+<body>
 
-/* ================= TOP BAR ================= */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 18px;
-  background:linear-gradient(90deg,#020617,#020617 40%,#064e3b);
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
+<header class="topbar">
+  <div class="brand">
+    <span class="ball"></span>
+    <div>
+      <div class="company">Scoreline Squares</div>
+      <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
+    </div>
+  </div>
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+  <div class="price">
+    <div class="price-amount">£11.50</div>
+    <div class="price-label">per square</div>
+  </div>
+</header>
 
-.ball{
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  background:#a855f7;
-}
+<div class="notice">
+  TEST MODE: simulation only – no real money involved.
+</div>
 
-.company{
-  font-weight:800;
-}
+<main class="layout">
 
-.game{
-  font-size:.85rem;
-  opacity:.8;
-}
+  <!-- LEFT PANEL -->
+  <section class="card">
+    <h2>Join the game</h2>
+    <p class="muted">
+      Enter a Username and Email, choose how many squares you want, then click
+      <strong>Simulate Payment</strong>.
+    </p>
 
-.badge{
-  margin-left:6px;
-  font-size:.7rem;
-  padding:2px 6px;
-  border-radius:999px;
-  background:#7c3aed;
-}
+    <form id="entryForm">
+      <label>
+        Username
+        <input id="username" required />
+      </label>
 
-.price{
-  text-align:right;
-}
+      <label>
+        Email
+        <input id="email" type="email" required />
+      </label>
 
-.price-amount{
-  font-weight:800;
-}
+      <label>
+        Number of squares
+        <input id="quantity" type="number" min="1" value="1" required />
+      </label>
 
-.price-label{
-  font-size:.75rem;
-  opacity:.7;
-}
+      <button class="btn primary" type="submit">
+        Simulate Payment for £11.50
+      </button>
 
-/* ================= NOTICE ================= */
-.notice{
-  margin:12px 18px;
-  padding:8px 12px;
-  background:#064e3b;
-  border-radius:8px;
-  font-size:.8rem;
-}
+      <div class="summary" id="summaryText"></div>
+    </form>
 
-/* ================= LAYOUT ================= */
-.layout{
-  display:grid;
-  grid-template-columns:320px 1fr;
-  gap:16px;
-  padding:16px;
-}
+    <div class="meta">
+      <div><strong>Payouts:</strong> £250 at end of 1st, 2nd, 3rd & 4th quarters</div>
+      <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
+    </div>
 
-.card{
-  background:#020617;
-  border-radius:14px;
-  padding:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-}
+    <details class="admin">
+      <summary>Admin (trial only)</summary>
+      <p class="muted">These controls are for testing.</p>
+      <button class="btn">Export entries (CSV)</button>
+      <button class="btn">Reset game</button>
+    </details>
+  </section>
 
-/* ================= FORM ================= */
-label{
-  display:block;
-  margin-bottom:10px;
-  font-size:.8rem;
-}
+  <!-- RIGHT PANEL -->
+  <section class="card">
 
-input{
-  width:100%;
-  padding:8px;
-  margin-top:4px;
-  border-radius:8px;
-  border:none;
-  background:#020617;
-  color:#fff;
-}
+    <div class="grid-head">
+      <h2>Squares</h2>
+      <div class="muted">
+        A 10×10 grid (100 squares). In test mode, squares are assigned in order as people “pay”.
+      </div>
+    </div>
 
-.btn{
-  margin-top:10px;
-  padding:10px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  font-weight:700;
-}
+    <!-- HOME TITLE -->
+    <div class="home-title">
+      <span>HOME TEAM:</span>&nbsp;TBD (Home)
+    </div>
 
-.btn.primary{
-  background:#7c3aed;
-  color:#fff;
-}
+    <!-- BOARD ROW -->
+    <div class="board-row">
 
-.meta{
-  margin-top:12px;
-  font-size:.8rem;
-  opacity:.85;
-}
+      <!-- AWAY TITLE COLUMN -->
+      <div class="away-title">
+        <span>AWAY TEAM:</span>&nbsp;TBD (Away)
+      </div>
 
-.admin{
-  margin-top:12px;
-}
+      <!-- GRID -->
+      <div class="grid-wrap">
+        <div class="grid" id="grid"></div>
+      </div>
 
-/* ================= GRID HEADER ================= */
-.grid-head{
-  margin-bottom:8px;
-}
+    </div>
 
-.grid-head h2{
-  margin-bottom:4px;
-}
+  </section>
 
-.muted{
-  opacity:.6;
-  font-size:.75rem;
-}
+</main>
 
-/* ================= HOME TITLE ================= */
-.home-title{
-  text-align:center;
-  font-weight:800;
-  letter-spacing:.2px;
-  margin-bottom:2px;
-}
+<footer class="footer">
+  © <span id="year"></span> Scoreline Squares • Trial mode
+</footer>
 
-.home-title span{
-  color:#c7d2fe;
-}
-
-/* ================= BOARD ROW ================= */
-.board-row{
-  display:flex;
-  gap:4px;
-  align-items:stretch; /* allows AWAY to centre vertically */
-}
-
-/* ================= AWAY TITLE (FINAL) ================= */
-.away-title{
-  width:36px;
-  display:flex;
-  align-items:center;          /* vertical centre */
-  justify-content:center;      /* horizontal centre */
-  font-weight:800;
-  letter-spacing:.2px;
-  white-space:nowrap;
-
-  /* rotate like printed boards */
-  transform: rotate(-90deg);
-  transform-origin: center;
-
-  /* sit outside row numbers & hug grid */
-  margin-right:-24px;
-}
-
-.away-title span{
-  color:#a7f3d0;
-}
-
-/* ================= GRID ================= */
-.grid-wrap{
-  overflow-x:auto;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:36px repeat(10,1fr);
-  gap:4px;
-}
-
-.cell{
-  background:#020617;
-  border-radius:6px;
-  height:36px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:.75rem;
-}
-
-.header{
-  background:#020617;
-  opacity:.6;
-}
-
-.square{
-  cursor:pointer;
-}
-
-.square.taken{
-  background:#065f46;
-}
-
-/* ================= FOOTER ================= */
-.footer{
-  text-align:center;
-  padding:14px;
-  font-size:.7rem;
-  opacity:.5;
-}
-
-/* ================= MOBILE ================= */
-@media(max-width:900px){
-  .layout{
-    grid-template-columns:1fr;
-  }
-}
+<script src="app.js"></script>
+</body>
+</html>
