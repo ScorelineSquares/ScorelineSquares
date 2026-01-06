@@ -1,11 +1,16 @@
-/* Scoreline Squares (Trial) – Multi-board, sold-out archive + viewable boards, Find My Board search
+/* Scoreline Squares (Trial) – Multi-board + archive viewer + Find My Board + Find My Squares + Printable view + URL hash routing
    - Random assignment (no choosing)
    - SOLD squares show tooltip with username on hover/click
    - When board hits 100 SOLD -> archived with reference, new board auto-created
-   - Sold-out boards list is clickable; each opens a read-only grid view
-   - Purchase summary includes board reference
-   - "Find my board" search (by board number / ref) opens sold-out board
-   - 1 hour before kickoff: if active board not full -> VOID + refunds recorded (simulated), new board opens
+   - Sold-out boards list clickable; opens read-only grid view
+   - Receipt summary includes board reference
+   - Find my board (by number/ref) opens sold-out board
+   - Find my squares (by username OR email) lists all boards + square IDs owned
+   - Printable board view (Print button in board view)
+   - URL hash routing:
+       #board=0003  -> opens that sold-out board
+       #find=user:john  -> runs Find My Squares (username contains)
+       #find=email:test@x.com -> runs Find My Squares (email contains)
 */
 
 (() => {
@@ -13,7 +18,7 @@
   const TOTAL = GRID_SIZE * GRID_SIZE;
 
   const SEASON_LABEL = "Superbowl 2026";
-  const STORAGE_KEY = "scoreline_squares_trial_boards_v3";
+  const STORAGE_KEY = "scoreline_squares_trial_boards_v4";
 
   // ---- DOM ----
   const gridEl = document.getElementById("grid");
@@ -52,11 +57,12 @@
   let state = loadState();
   ensureActiveBoard();
 
-  // ---- View modes ----
-  let viewMode = "current"; // current | archiveList | archiveView
+  // ---- Views ----
+  // current | archiveList | archiveView | findSquares
+  let viewMode = "current";
   let selectedArchiveBoardId = null;
 
-  // ---- Injected UI ----
+  // ---- UI refs ----
   const ui = {
     nav: null,
     btnCurrent: null,
@@ -64,8 +70,10 @@
     titleLine: null,
 
     findWrap: null,
-    findInput: null,
-    findBtn: null,
+    findBoardInput: null,
+    findBoardBtn: null,
+    findSquaresInput: null,
+    findSquaresBtn: null,
     findMsg: null,
 
     adminWrap: null,
@@ -73,9 +81,11 @@
     runCheckBtn: null,
 
     archiveWrap: null,
-    archiveBackBtn: null,
+    backBtn: null,
+    printBtn: null,
   };
 
+  // ---- Helpers ----
   function now(){ return Date.now(); }
 
   function uid(){
@@ -95,7 +105,6 @@
     if (summaryEl) summaryEl.textContent = msg;
   }
 
-  // ---------- Storage ----------
   function loadState(){
     try{
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -132,9 +141,9 @@
       ref,
       createdAt: now(),
       kickoffAt: null,
-      status: "open",
-      sold: {},   // idx -> entry
-      refunds: [],// entries refunded if voided
+      status: "open",   // open | soldout | void
+      sold: {},         // idx -> entry
+      refunds: [],      // entries refunded if voided
     };
     state.boards.unshift(b);
     return b;
@@ -149,7 +158,6 @@
     }
   }
 
-  // ---------- Board helpers ----------
   function soldCount(board){ return Object.keys(board.sold).length; }
   function remaining(board){ return TOTAL - soldCount(board); }
 
@@ -166,16 +174,31 @@
       const j = Math.floor(Math.random()*(i+1));
       [copy[i], copy[j]] = [copy[j], copy[i]];
     }
-    return copy.slice(0,count);
+    return copy.slice(0, count);
   }
 
-  function indexToId(idx){
+  function idxToSquareId(idx){
     const row = Math.floor(idx / GRID_SIZE);
     const col = idx % GRID_SIZE;
     return `H${col}-A${row}`;
   }
 
-  // ---------- Tooltip ----------
+  function normalizeBoardSearch(q){
+    const s = (q || "").trim();
+    if(!s) return null;
+    const m = s.match(/(\d{1,6})/);
+    if(!m) return null;
+    const num = Number.parseInt(m[1], 10);
+    if(!Number.isFinite(num) || num <= 0) return null;
+    return String(num).padStart(4, "0");
+  }
+
+  function findSoldOutBoardByNumber(padded4){
+    const soldOutBoards = state.boards.filter(b => b.status === "soldout");
+    return soldOutBoards.find(b => b.ref.includes(`#${padded4}`)) || null;
+  }
+
+  // ---- Tooltip ----
   function tooltipHtml(entry){
     return `<div style="font-weight:900; margin-bottom:4px;">SOLD</div>
             <div style="opacity:0.92;">Buyer: <span style="font-weight:800;">${escapeHtml(entry.username)}</span></div>`;
@@ -206,11 +229,32 @@
     tooltip.innerHTML = "";
   }
 
-  // ---------- UI injection ----------
+  // ---- Print styles (injected once) ----
+  function ensurePrintStyles(){
+    if (document.getElementById("printStyles")) return;
+
+    const style = document.createElement("style");
+    style.id = "printStyles";
+    style.textContent = `
+      @media print {
+        body { background: #fff !important; color: #000 !important; }
+        .topbar, .notice, .layout > section:first-child, .admin, .btn, input { display:none !important; }
+        .layout { display:block !important; padding:0 !important; }
+        .card { box-shadow:none !important; border:none !important; background:#fff !important; }
+        .muted { color:#333 !important; opacity:1 !important; }
+        .grid { gap:1px !important; }
+        .cell { border:1px solid #ccc !important; background:#fff !important; color:#000 !important; }
+        .square.taken { background:#f3f4f6 !important; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // ---- UI injection ----
   function ensureUI(){
     if(!gridCard || ui.nav) return;
 
-    // Nav row
+    // NAV
     const nav = document.createElement("div");
     nav.style.display = "flex";
     nav.style.gap = "8px";
@@ -245,47 +289,76 @@
     nav.appendChild(left);
     nav.appendChild(titleLine);
 
-    // Find my board
+    // FIND WRAP (board + squares)
     const findWrap = document.createElement("div");
     findWrap.style.margin = "10px 0 0 0";
     findWrap.style.paddingTop = "10px";
     findWrap.style.borderTop = "1px solid rgba(255,255,255,0.08)";
 
     const findTitle = document.createElement("div");
-    findTitle.textContent = "Find my board";
+    findTitle.textContent = "Find my board / squares";
     findTitle.style.fontWeight = "900";
     findTitle.style.marginBottom = "8px";
     findTitle.style.opacity = "0.9";
 
-    const findRow = document.createElement("div");
-    findRow.style.display = "flex";
-    findRow.style.gap = "8px";
-    findRow.style.flexWrap = "wrap";
-    findRow.style.alignItems = "center";
+    const rows = document.createElement("div");
+    rows.style.display = "grid";
+    rows.style.gridTemplateColumns = "1fr";
+    rows.style.gap = "10px";
 
-    const findInput = document.createElement("input");
-    findInput.placeholder = "Enter board number (e.g. 0003)";
-    findInput.style.maxWidth = "260px";
+    // Find board row
+    const rowBoard = document.createElement("div");
+    rowBoard.style.display = "flex";
+    rowBoard.style.gap = "8px";
+    rowBoard.style.flexWrap = "wrap";
+    rowBoard.style.alignItems = "center";
 
-    const findBtn = document.createElement("button");
-    findBtn.type = "button";
-    findBtn.className = "btn";
-    findBtn.style.marginTop = "0";
-    findBtn.textContent = "Find";
+    const findBoardInput = document.createElement("input");
+    findBoardInput.placeholder = "Board number (e.g. 0003)";
+    findBoardInput.style.maxWidth = "260px";
+
+    const findBoardBtn = document.createElement("button");
+    findBoardBtn.type = "button";
+    findBoardBtn.className = "btn";
+    findBoardBtn.style.marginTop = "0";
+    findBoardBtn.textContent = "Open board";
+
+    rowBoard.appendChild(findBoardInput);
+    rowBoard.appendChild(findBoardBtn);
+
+    // Find squares row
+    const rowSquares = document.createElement("div");
+    rowSquares.style.display = "flex";
+    rowSquares.style.gap = "8px";
+    rowSquares.style.flexWrap = "wrap";
+    rowSquares.style.alignItems = "center";
+
+    const findSquaresInput = document.createElement("input");
+    findSquaresInput.placeholder = "Username or Email (e.g. john or john@mail.com)";
+    findSquaresInput.style.maxWidth = "320px";
+
+    const findSquaresBtn = document.createElement("button");
+    findSquaresBtn.type = "button";
+    findSquaresBtn.className = "btn";
+    findSquaresBtn.style.marginTop = "0";
+    findSquaresBtn.textContent = "Find my squares";
+
+    rowSquares.appendChild(findSquaresInput);
+    rowSquares.appendChild(findSquaresBtn);
 
     const findMsg = document.createElement("div");
     findMsg.className = "muted";
     findMsg.style.marginTop = "6px";
-    findMsg.textContent = "Use the board number from your receipt (e.g. Board #0003).";
+    findMsg.textContent = "Board search works for SOLD-OUT boards only. Squares search checks all boards.";
 
-    findRow.appendChild(findInput);
-    findRow.appendChild(findBtn);
+    rows.appendChild(rowBoard);
+    rows.appendChild(rowSquares);
 
     findWrap.appendChild(findTitle);
-    findWrap.appendChild(findRow);
+    findWrap.appendChild(rows);
     findWrap.appendChild(findMsg);
 
-    // Admin kickoff
+    // ADMIN
     const adminWrap = document.createElement("div");
     adminWrap.style.marginTop = "10px";
     adminWrap.style.paddingTop = "10px";
@@ -325,19 +398,35 @@
     adminWrap.appendChild(adminRow);
     adminWrap.appendChild(helper);
 
-    // Archive wrap + back button
+    // ARCHIVE WRAP + buttons
     const archiveWrap = document.createElement("div");
     archiveWrap.style.display = "none";
     archiveWrap.style.marginTop = "12px";
 
-    const archiveBackBtn = document.createElement("button");
-    archiveBackBtn.type = "button";
-    archiveBackBtn.className = "btn";
-    archiveBackBtn.style.marginTop = "0";
-    archiveBackBtn.textContent = "← Back to sold-out boards";
-    archiveBackBtn.style.display = "none";
-    archiveBackBtn.style.marginBottom = "10px";
-    archiveWrap.appendChild(archiveBackBtn);
+    const backBtn = document.createElement("button");
+    backBtn.type = "button";
+    backBtn.className = "btn";
+    backBtn.style.marginTop = "0";
+    backBtn.textContent = "← Back";
+    backBtn.style.display = "none";
+    backBtn.style.marginBottom = "10px";
+
+    const printBtn = document.createElement("button");
+    printBtn.type = "button";
+    printBtn.className = "btn";
+    printBtn.style.marginTop = "0";
+    printBtn.textContent = "Print this board";
+    printBtn.style.display = "none";
+    printBtn.style.marginBottom = "10px";
+    printBtn.style.marginLeft = "8px";
+
+    const btnRow = document.createElement("div");
+    btnRow.style.display = "flex";
+    btnRow.style.alignItems = "center";
+    btnRow.appendChild(backBtn);
+    btnRow.appendChild(printBtn);
+
+    archiveWrap.appendChild(btnRow);
 
     // Mount
     gridCard.insertBefore(nav, gridCard.firstChild);
@@ -352,8 +441,10 @@
     ui.titleLine = titleLine;
 
     ui.findWrap = findWrap;
-    ui.findInput = findInput;
-    ui.findBtn = findBtn;
+    ui.findBoardInput = findBoardInput;
+    ui.findBoardBtn = findBoardBtn;
+    ui.findSquaresInput = findSquaresInput;
+    ui.findSquaresBtn = findSquaresBtn;
     ui.findMsg = findMsg;
 
     ui.adminWrap = adminWrap;
@@ -361,27 +452,38 @@
     ui.runCheckBtn = runCheckBtn;
 
     ui.archiveWrap = archiveWrap;
-    ui.archiveBackBtn = archiveBackBtn;
+    ui.backBtn = backBtn;
+    ui.printBtn = printBtn;
 
-    // Events
+    // Events - nav
     btnCurrent.addEventListener("click", () => {
       viewMode = "current";
       selectedArchiveBoardId = null;
+      window.location.hash = "";
       render();
     });
 
     btnArchive.addEventListener("click", () => {
       viewMode = "archiveList";
       selectedArchiveBoardId = null;
+      window.location.hash = "#archive=1";
       render();
     });
 
-    archiveBackBtn.addEventListener("click", () => {
-      viewMode = "archiveList";
-      selectedArchiveBoardId = null;
+    backBtn.addEventListener("click", () => {
+      // back from archiveView or findSquares to archiveList
+      if (viewMode === "archiveView") {
+        viewMode = "archiveList";
+        selectedArchiveBoardId = null;
+        window.location.hash = "#archive=1";
+      } else if (viewMode === "findSquares") {
+        viewMode = "archiveList";
+        window.location.hash = "#archive=1";
+      }
       render();
     });
 
+    // Events - admin
     kickoffInput.addEventListener("change", () => {
       const b = getActiveBoard();
       if(!b) return;
@@ -393,58 +495,60 @@
 
     runCheckBtn.addEventListener("click", () => runOneHourCheck());
 
-    // Find my board
-    findBtn.addEventListener("click", () => findBoard());
-    findInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        findBoard();
-      }
+    // Events - find board
+    findBoardBtn.addEventListener("click", () => openBoardFromInput());
+    findBoardInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); openBoardFromInput(); }
+    });
+
+    // Events - find squares
+    findSquaresBtn.addEventListener("click", () => runFindSquaresFromInput());
+    findSquaresInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); runFindSquaresFromInput(); }
+    });
+
+    // Print
+    printBtn.addEventListener("click", () => {
+      ensurePrintStyles();
+      window.print();
     });
   }
 
-  function normalizeBoardSearch(q){
-    const s = (q || "").trim();
-    if(!s) return null;
-
-    // Accept: "0003", "3", "Board #0003", "Superbowl 2026 • Board #0003"
-    const m = s.match(/(\d{1,6})/);
-    if(!m) return null;
-
-    const num = Number.parseInt(m[1], 10);
-    if(!Number.isFinite(num) || num <= 0) return null;
-
-    return String(num).padStart(4, "0");
+  function openBoardFromInput(){
+    const target = normalizeBoardSearch(ui.findBoardInput?.value || "");
+    if(!target){
+      ui.findMsg.textContent = "Enter a board number (e.g. 0003).";
+      return;
+    }
+    const b = findSoldOutBoardByNumber(target);
+    if(!b){
+      ui.findMsg.textContent = `No sold-out board found for #${target}.`;
+      return;
+    }
+    openSoldOutBoard(b);
   }
 
-  function findBoard(){
-    const q = ui.findInput?.value || "";
-    const target = normalizeBoardSearch(q);
-
-    if(!target){
-      ui.findMsg.textContent = "Please enter a board number (e.g. 0003).";
-      return;
-    }
-
-    const soldOutBoards = state.boards.filter(b => b.status === "soldout");
-    const match = soldOutBoards.find(b => b.ref.includes(`#${target}`));
-
-    if(!match){
-      ui.findMsg.textContent = `No sold-out board found for #${target}. (Only sold-out boards are searchable.)`;
-      return;
-    }
-
-    // Open it
-    selectedArchiveBoardId = match.id;
+  function openSoldOutBoard(board){
+    selectedArchiveBoardId = board.id;
     viewMode = "archiveView";
-    ui.findMsg.textContent = `Found #${target}. Opening board…`;
+    window.location.hash = `#board=${encodeURIComponent(board.ref.match(/#(\d{4})/)?.[1] || "")}`;
     render();
   }
 
-  // ---------- Rules ----------
+  function runFindSquaresFromInput(){
+    const q = (ui.findSquaresInput?.value || "").trim();
+    if(!q){
+      ui.findMsg.textContent = "Enter a Username or Email to search.";
+      return;
+    }
+    window.location.hash = `#find=${encodeURIComponent(q)}`;
+    runFindSquares(q);
+  }
+
+  // ---- Core rules ----
   function markSoldOutIfFull(board){
     if(board.status !== "open") return false;
-    if(Object.keys(board.sold).length >= TOTAL){
+    if(soldCount(board) >= TOTAL){
       board.status = "soldout";
       return true;
     }
@@ -473,7 +577,7 @@
       return;
     }
 
-    if(Object.keys(b.sold).length < TOTAL){
+    if(soldCount(b) < TOTAL){
       const entries = Object.values(b.sold);
       b.refunds = entries;
       b.sold = {};
@@ -496,7 +600,7 @@
     render();
   }
 
-  // ---------- Purchase ----------
+  // ---- Purchase ----
   function handlePurchase(username, email, qty){
     const b = getActiveBoard();
     if(!b) return;
@@ -517,7 +621,7 @@
       b.sold[idx] = { username, email, ts: now() };
     });
 
-    const ids = chosen.map(indexToId).join(", ");
+    const ids = chosen.map(idxToSquareId).join(", ");
     const receipt = `Board: ${b.ref}`;
 
     const soldOutNow = markSoldOutIfFull(b);
@@ -537,7 +641,7 @@
     render();
   }
 
-  // ---------- Rendering ----------
+  // ---- Render ----
   function render(){
     ensureUI();
     ensureActiveBoard();
@@ -548,21 +652,25 @@
     if(ui.titleLine){
       if(viewMode === "current") ui.titleLine.textContent = active ? active.ref : "No active board";
       if(viewMode === "archiveList") ui.titleLine.textContent = `${state.seasonLabel} • Sold-out boards`;
-      if(viewMode === "archiveView"){
+      if(viewMode === "archiveView") {
         const b = getBoard(selectedArchiveBoardId);
         ui.titleLine.textContent = b ? b.ref : `${state.seasonLabel} • Board`;
       }
+      if(viewMode === "findSquares") ui.titleLine.textContent = `${state.seasonLabel} • Find my squares`;
     }
 
-    // Remaining (current board only; left panel)
+    // Remaining (active board)
     if(remainingEl) remainingEl.textContent = active ? String(remaining(active)) : "0";
 
-    // Admin + archive toggles
+    // Show/hide admin/archive
     if(ui.adminWrap) ui.adminWrap.style.display = (viewMode === "current") ? "block" : "none";
     if(ui.archiveWrap) ui.archiveWrap.style.display = (viewMode === "current") ? "none" : "block";
-    if(ui.archiveBackBtn) ui.archiveBackBtn.style.display = (viewMode === "archiveView") ? "inline-block" : "none";
 
-    // Sync kickoff input in current view
+    // Back/Print buttons
+    if(ui.backBtn) ui.backBtn.style.display = (viewMode === "archiveView" || viewMode === "findSquares") ? "inline-block" : "none";
+    if(ui.printBtn) ui.printBtn.style.display = (viewMode === "archiveView") ? "inline-block" : "none";
+
+    // Sync kickoff input
     if(ui.kickoffInput && active && viewMode === "current"){
       if(active.kickoffAt){
         const d = new Date(active.kickoffAt);
@@ -573,13 +681,13 @@
       }
     }
 
-    // Close tooltip on rerender
     pinned = null;
     hideTooltip();
 
     if(viewMode === "current"){
       if(gridEl) gridEl.style.display = "grid";
-      renderBoardGrid(active);
+      renderBoardGrid(active, { readOnly: false });
+      if(ui.archiveWrap) ui.archiveWrap.innerHTML = ui.archiveWrap.firstChild ? ui.archiveWrap.firstChild.outerHTML : "";
       return;
     }
 
@@ -592,28 +700,34 @@
       renderArchiveBoardView(getBoard(selectedArchiveBoardId));
       return;
     }
+
+    if(viewMode === "findSquares"){
+      // archiveWrap holds the results panel in this mode
+      // (content rendered by runFindSquares)
+      return;
+    }
   }
 
-  function renderBoardGrid(board){
+  function renderBoardGrid(board, { readOnly }){
     if(!gridEl || !board) return;
 
     gridEl.innerHTML = "";
 
-    for(let r=-1;r<GRID_SIZE;r++){
-      for(let c=-1;c<GRID_SIZE;c++){
+    for(let r=-1; r<GRID_SIZE; r++){
+      for(let c=-1; c<GRID_SIZE; c++){
         const cell = document.createElement("div");
 
         if(r===-1 && c===-1){
           cell.className = "cell header";
           cell.textContent = "";
-        }else if(r===-1){
+        } else if(r===-1){
           cell.className = "cell header";
           cell.textContent = String(c);
-        }else if(c===-1){
+        } else if(c===-1){
           cell.className = "cell header";
           cell.textContent = String(r);
-        }else{
-          const idx = r*GRID_SIZE+c;
+        } else {
+          const idx = r*GRID_SIZE + c;
           const entry = board.sold[idx];
 
           cell.className = "cell square";
@@ -625,19 +739,16 @@
 
             cell.addEventListener("mouseenter",(e)=>{
               if(pinned!==null) return;
-              const ev = e;
-              showTooltipAt(ev.clientX, ev.clientY, tooltipHtml(entry));
+              showTooltipAt(e.clientX, e.clientY, tooltipHtml(entry));
             });
             cell.addEventListener("mousemove",(e)=>{
               if(pinned!==null) return;
-              const ev = e;
-              showTooltipAt(ev.clientX, ev.clientY, tooltipHtml(entry));
+              showTooltipAt(e.clientX, e.clientY, tooltipHtml(entry));
             });
             cell.addEventListener("mouseleave",()=>{
               if(pinned!==null) return;
               hideTooltip();
             });
-
             cell.addEventListener("click",(e)=>{
               e.stopPropagation();
               const idxNum = Number(cell.dataset.index);
@@ -648,8 +759,12 @@
               const rect = cell.getBoundingClientRect();
               showTooltipAt(rect.left+rect.width/2, rect.top+rect.height/2, tooltipHtml(entry));
             });
-          }else{
+          } else {
             cell.style.cursor = "default";
+          }
+
+          if(readOnly){
+            cell.style.cursor = entry ? "pointer" : "default";
           }
         }
 
@@ -663,14 +778,14 @@
     if(gridEl) gridEl.style.display = "none";
 
     ui.archiveWrap.innerHTML = "";
-    ui.archiveWrap.appendChild(ui.archiveBackBtn);
+    ui.archiveWrap.appendChild(makeTopButtonsRow());
 
     const soldOut = state.boards.filter(b => b.status === "soldout");
 
     const note = document.createElement("div");
     note.className = "muted";
     note.style.marginBottom = "10px";
-    note.textContent = "Click a board to open it. Or use “Find my board” above.";
+    note.textContent = "Click a board to open it. Or use Find my board above.";
     ui.archiveWrap.appendChild(note);
 
     if(soldOut.length === 0){
@@ -718,6 +833,8 @@
       card.addEventListener("click", ()=>{
         selectedArchiveBoardId = b.id;
         viewMode = "archiveView";
+        const num = b.ref.match(/#(\d{4})/)?.[1] || "";
+        window.location.hash = `#board=${encodeURIComponent(num)}`;
         render();
       });
 
@@ -727,9 +844,11 @@
 
   function renderArchiveBoardView(board){
     if(!ui.archiveWrap) return;
+
+    ui.archiveWrap.innerHTML = "";
+    ui.archiveWrap.appendChild(makeTopButtonsRow(true));
+
     if(!board){
-      ui.archiveWrap.innerHTML = "";
-      ui.archiveWrap.appendChild(ui.archiveBackBtn);
       const msg = document.createElement("div");
       msg.className = "muted";
       msg.textContent = "Board not found.";
@@ -737,9 +856,6 @@
       if(gridEl) gridEl.style.display = "none";
       return;
     }
-
-    ui.archiveWrap.innerHTML = "";
-    ui.archiveWrap.appendChild(ui.archiveBackBtn);
 
     const header = document.createElement("div");
     header.style.marginBottom = "10px";
@@ -765,10 +881,227 @@
     ui.archiveWrap.appendChild(header);
 
     if(gridEl) gridEl.style.display = "grid";
-    renderBoardGrid(board);
+    renderBoardGrid(board, { readOnly: true });
   }
 
-  // ---------- Form submit ----------
+  function makeTopButtonsRow(showPrint){
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.alignItems = "center";
+    row.style.marginBottom = "10px";
+
+    const back = document.createElement("button");
+    back.type = "button";
+    back.className = "btn";
+    back.style.marginTop = "0";
+    back.textContent = "← Back";
+    back.addEventListener("click", () => {
+      viewMode = "archiveList";
+      selectedArchiveBoardId = null;
+      window.location.hash = "#archive=1";
+      render();
+    });
+
+    row.appendChild(back);
+
+    if(showPrint){
+      const print = document.createElement("button");
+      print.type = "button";
+      print.className = "btn";
+      print.style.marginTop = "0";
+      print.style.marginLeft = "8px";
+      print.textContent = "Print this board";
+      print.addEventListener("click", () => {
+        ensurePrintStyles();
+        window.print();
+      });
+      row.appendChild(print);
+    }
+
+    return row;
+  }
+
+  // ---- Find my squares ----
+  function runFindSquares(query){
+    const q = (query || "").trim().toLowerCase();
+    if(!q) return;
+
+    // Decide if this looks like an email
+    const looksEmail = q.includes("@");
+
+    const matches = []; // { board, squares:[{id, idx, entry}] }
+    for(const b of state.boards){
+      const squares = [];
+      for(const [k, entry] of Object.entries(b.sold)){
+        const idx = Number(k);
+        const u = (entry.username || "").toLowerCase();
+        const e = (entry.email || "").toLowerCase();
+
+        const hit = looksEmail ? e.includes(q) : u.includes(q) || e.includes(q);
+        if(hit){
+          squares.push({ id: idxToSquareId(idx), idx, entry });
+        }
+      }
+      if(squares.length){
+        matches.push({ board: b, squares });
+      }
+    }
+
+    // Switch view and render results panel
+    viewMode = "findSquares";
+    selectedArchiveBoardId = null;
+    renderFindSquaresResults(query, matches);
+  }
+
+  function renderFindSquaresResults(query, matches){
+    ensureUI();
+    if(!ui.archiveWrap) return;
+
+    if(gridEl) gridEl.style.display = "none";
+    ui.archiveWrap.style.display = "block";
+    ui.adminWrap.style.display = "none";
+    ui.backBtn.style.display = "inline-block";
+    ui.printBtn.style.display = "none";
+
+    ui.archiveWrap.innerHTML = "";
+    ui.archiveWrap.appendChild(makeTopButtonsRow(false));
+
+    const h = document.createElement("div");
+    h.style.marginBottom = "10px";
+
+    const title = document.createElement("div");
+    title.style.fontWeight = "900";
+    title.textContent = `Results for: ${query}`;
+
+    const sub = document.createElement("div");
+    sub.className = "muted";
+    sub.style.marginTop = "6px";
+    sub.textContent = "Click a board result to open it (sold-out boards open as full grids).";
+
+    h.appendChild(title);
+    h.appendChild(sub);
+    ui.archiveWrap.appendChild(h);
+
+    if(!matches.length){
+      const empty = document.createElement("div");
+      empty.className = "muted";
+      empty.textContent = "No matches found in any board.";
+      ui.archiveWrap.appendChild(empty);
+      return;
+    }
+
+    matches.forEach(({ board, squares }) => {
+      const card = document.createElement("div");
+      card.style.padding = "12px";
+      card.style.borderRadius = "12px";
+      card.style.background = "rgba(255,255,255,0.04)";
+      card.style.border = "1px solid rgba(255,255,255,0.08)";
+      card.style.marginTop = "10px";
+
+      const top = document.createElement("div");
+      top.style.display = "flex";
+      top.style.justifyContent = "space-between";
+      top.style.alignItems = "baseline";
+      top.style.gap = "12px";
+
+      const title = document.createElement("div");
+      title.style.fontWeight = "900";
+      title.textContent = board.ref;
+
+      const meta = document.createElement("div");
+      meta.className = "muted";
+      meta.textContent = `${board.status.toUpperCase()} • ${squares.length} square(s)`;
+
+      top.appendChild(title);
+      top.appendChild(meta);
+
+      const list = document.createElement("div");
+      list.className = "muted";
+      list.style.marginTop = "8px";
+      list.textContent = `Squares: ${squares.map(s => s.id).join(", ")}`;
+
+      const openBtn = document.createElement("button");
+      openBtn.type = "button";
+      openBtn.className = "btn";
+      openBtn.style.marginTop = "10px";
+      openBtn.textContent = board.status === "soldout" ? "Open board" : "View board (not sold out)";
+      openBtn.addEventListener("click", () => {
+        if(board.status === "soldout"){
+          openSoldOutBoard(board);
+        } else {
+          // Non-soldout board: show message (trial mode)
+          setSummary(`That board is ${board.status.toUpperCase()} and not valid for competition.`);
+        }
+      });
+
+      card.appendChild(top);
+      card.appendChild(list);
+      card.appendChild(openBtn);
+
+      ui.archiveWrap.appendChild(card);
+    });
+  }
+
+  // ---- URL Hash routing ----
+  function parseHash(){
+    const h = (window.location.hash || "").replace(/^#/, "").trim();
+    if(!h) return { type: "none" };
+
+    // #board=0003
+    if(h.startsWith("board=")){
+      const v = decodeURIComponent(h.slice("board=".length));
+      const padded = normalizeBoardSearch(v);
+      return padded ? { type: "board", num: padded } : { type: "none" };
+    }
+
+    // #archive=1
+    if(h.startsWith("archive=")) return { type: "archive" };
+
+    // #find=...
+    if(h.startsWith("find=")){
+      const v = decodeURIComponent(h.slice("find=".length));
+      return { type: "find", query: v };
+    }
+
+    return { type: "none" };
+  }
+
+  function applyHash(){
+    const parsed = parseHash();
+    if(parsed.type === "board"){
+      const b = findSoldOutBoardByNumber(parsed.num);
+      if(b){
+        selectedArchiveBoardId = b.id;
+        viewMode = "archiveView";
+        render();
+      } else {
+        // fall back to archive list
+        viewMode = "archiveList";
+        render();
+      }
+      return;
+    }
+
+    if(parsed.type === "archive"){
+      viewMode = "archiveList";
+      render();
+      return;
+    }
+
+    if(parsed.type === "find"){
+      runFindSquares(parsed.query);
+      // keep viewMode set by runFindSquares
+      return;
+    }
+
+    // default
+    viewMode = "current";
+    render();
+  }
+
+  window.addEventListener("hashchange", applyHash);
+
+  // ---- Form submit ----
   if(formEl){
     formEl.addEventListener("submit",(e)=>{
       e.preventDefault();
@@ -776,6 +1109,7 @@
       const username = document.getElementById("username")?.value?.trim();
       const email = document.getElementById("email")?.value?.trim();
       const qtyRaw = document.getElementById("quantity")?.value;
+
       const qty = Math.max(1, Number.parseInt(qtyRaw || "1", 10) || 1);
 
       if(!username) return setSummary("Please enter a username.");
@@ -800,6 +1134,6 @@
     }
   });
 
-  // Initial render
-  render();
+  // ---- Start ----
+  applyHash();
 })();
