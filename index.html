@@ -2,329 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Scoreline Squares</title>
+
+  <!-- HOMEPAGE STYLES -->
   <link rel="stylesheet" href="home.css" />
 </head>
 <body>
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="logo" href="index.html" aria-label="Scoreline Squares Home">
-        <span class="logo-mark" aria-hidden="true"></span>
-        <span class="logo-text">
-          <span class="logo-name">Scoreline</span>
-          <span class="logo-sub">Squares</span>
-        </span>
-      </a>
+<header class="topbar">
+  <div class="logo">🏈 Scoreline Squares</div>
+  <nav>
+    <a href="#">Competitions</a>
+    <a href="#">How it works</a>
+    <a href="index.html">Home</a>
+  </nav>
+</header>
 
-      <div class="topbar-actions" aria-label="Header actions">
-        <button class="icon-btn" type="button" title="Wallet (trial)" aria-label="Wallet">
-          £0.00
-        </button>
-        <button class="icon-btn" type="button" title="Account (trial)" aria-label="Account">👤</button>
-        <button class="icon-btn" type="button" title="Cart (trial)" aria-label="Cart">🛒</button>
-        <button class="burger" type="button" aria-label="Menu" id="menuBtn">☰</button>
+<section class="hero">
+  <h1>Win Big With Scoreline Squares</h1>
+  <p>Simple. Fair. Transparent sports squares competitions.</p>
+  <a class="cta" href="#">View Live Competitions</a>
+</section>
+
+<section class="featured">
+  <h2>Featured Competition</h2>
+
+  <div class="card featured-card">
+    <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2" alt="Stadium">
+    <div class="card-body">
+      <h3>GAA Men’s SFC All-Ireland Final</h3>
+      <p>Coming soon under Scoreline Squares.</p>
+      <span class="tag coming">Coming Soon</span>
+    </div>
+  </div>
+</section>
+
+<section class="ending">
+  <h2>Ending Soon</h2>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b" alt="Superbowl">
+      <div class="card-body">
+        <h3>Superbowl Squares</h3>
+        <p>Quarterly payouts • NFL</p>
+        <strong>£11.50 per square</strong>
+        <a class="enter" href="index.html">Enter Now</a>
       </div>
     </div>
+  </div>
+</section>
 
-    <nav class="menu" id="menu">
-      <a href="superbowl.html">Superbowl Squares</a>
-      <a href="#ending-soon">Ending Soon</a>
-      <a href="#competitions">Competitions</a>
-      <a href="#how">How it works</a>
-    </nav>
-  </header>
+<section class="competitions">
+  <h2>All Competitions</h2>
 
-  <!-- HERO / CAROUSEL -->
-  <main class="page">
-    <section class="hero">
-      <div class="hero-card">
-        <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
+  <ul>
+    <li>
+      <strong>Superbowl Squares</strong>
+      <span class="live">LIVE</span>
+    </li>
+    <li>
+      GAA Men’s SFC All-Ireland Final
+      <span class="coming">Coming Soon</span>
+    </li>
+    <li>
+      GAA Senior Hurling Final
+      <span class="coming">Coming Soon</span>
+    </li>
+  </ul>
+</section>
 
-        <div class="hero-content">
-          <div class="hero-eyebrow">FEATURED COMPETITION</div>
+<section class="how">
+  <h2>How it works</h2>
+  <ol>
+    <li>Choose a competition</li>
+    <li>Select how many squares you want</li>
+    <li>Squares are assigned randomly</li>
+    <li>Only fully sold boards are valid</li>
+    <li>View sold-out boards anytime</li>
+  </ol>
+</section>
 
-          <h1 class="hero-title" id="heroTitle">Superbowl Squares</h1>
-          <p class="hero-sub" id="heroSub">
-            Buy squares. Board rolls over when sold out. View sold-out boards anytime.
-          </p>
-
-          <div class="hero-cta-row">
-            <a class="btn btn-gold" id="heroCta" href="superbowl.html">
-              Enter Now <span aria-hidden="true">›</span>
-            </a>
-            <a class="btn btn-ghost" href="#how">How it works</a>
-          </div>
-
-          <div class="hero-dots" id="heroDots" aria-label="Carousel dots"></div>
-        </div>
-      </div>
-
-      <!-- STATS STRIP -->
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-icon" aria-hidden="true">🏆</div>
-          <div class="stat-text">
-            <div class="stat-value">317,254</div>
-            <div class="stat-label">Entries (example)</div>
-          </div>
-        </div>
-        <div class="stat">
-          <div class="stat-icon" aria-hidden="true">💷</div>
-          <div class="stat-text">
-            <div class="stat-value">£97.1M</div>
-            <div class="stat-label">Given in prizes (example)</div>
-          </div>
-        </div>
-        <div class="stat">
-          <div class="stat-icon" aria-hidden="true">👥</div>
-          <div class="stat-text">
-            <div class="stat-value">500k+</div>
-            <div class="stat-label">Community (example)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TRUST STRIP -->
-      <div class="trust">
-        <div class="trust-left">
-          <div class="trust-title">Excellent</div>
-          <div class="trust-sub">Reviews (placeholder)</div>
-        </div>
-        <div class="trust-stars" aria-label="Trust rating">
-          ★★★★☆ <span class="trust-brand">Trustpilot</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- CATEGORY TABS (visual only for now) -->
-    <section class="tabs">
-      <button class="tab active" type="button">Cash</button>
-      <button class="tab" type="button">Sports</button>
-      <button class="tab" type="button">Instant Wins</button>
-    </section>
-
-    <!-- ENDING SOON -->
-    <section class="section" id="ending-soon">
-      <div class="section-head">
-        <h2>Ending Soon</h2>
-        <p>Competitions that are nearly full (placeholder for now).</p>
-      </div>
-
-      <div class="cards">
-        <article class="card">
-          <div class="card-media media-1" aria-hidden="true"></div>
-          <div class="card-body">
-            <div class="card-top">
-              <div class="card-title">Superbowl Squares</div>
-              <span class="badge live">LIVE</span>
-            </div>
-            <div class="card-meta">NFL • Quarterly payouts</div>
-            <div class="card-row">
-              <span>Price</span><b>£11.50</b>
-            </div>
-            <div class="card-row">
-              <span>Status</span><b>Open boards</b>
-            </div>
-            <a class="btn btn-gold full" href="superbowl.html">Enter Now ›</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-media media-2" aria-hidden="true"></div>
-          <div class="card-body">
-            <div class="card-top">
-              <div class="card-title">GAA Men’s SFC All-Ireland Final</div>
-              <span class="badge soon">COMING</span>
-            </div>
-            <div class="card-meta">GAA • Football</div>
-            <div class="card-row">
-              <span>Price</span><b>TBC</b>
-            </div>
-            <div class="card-row">
-              <span>Status</span><b>Planned</b>
-            </div>
-            <button class="btn full disabled" type="button" aria-disabled="true">Coming soon</button>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-media media-3" aria-hidden="true"></div>
-          <div class="card-body">
-            <div class="card-top">
-              <div class="card-title">GAA Senior Hurling Final</div>
-              <span class="badge soon">COMING</span>
-            </div>
-            <div class="card-meta">GAA • Hurling</div>
-            <div class="card-row">
-              <span>Price</span><b>TBC</b>
-            </div>
-            <div class="card-row">
-              <span>Status</span><b>Planned</b>
-            </div>
-            <button class="btn full disabled" type="button" aria-disabled="true">Coming soon</button>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- COMPETITIONS LIST -->
-    <section class="section" id="competitions">
-      <div class="section-head">
-        <h2>Competitions</h2>
-        <p>Choose a game. Sold-out boards remain viewable for transparency.</p>
-      </div>
-
-      <div class="list">
-        <a class="list-item" href="superbowl.html">
-          <div>
-            <div class="li-title">Superbowl Squares</div>
-            <div class="li-sub">NFL • Live</div>
-          </div>
-          <div class="li-right">
-            <span class="li-pill">Enter</span>
-          </div>
-        </a>
-
-        <div class="list-item disabled" aria-disabled="true">
-          <div>
-            <div class="li-title">GAA Men’s SFC All-Ireland Final</div>
-            <div class="li-sub">Football • Coming soon</div>
-          </div>
-          <div class="li-right">
-            <span class="li-pill muted">Soon</span>
-          </div>
-        </div>
-
-        <div class="list-item disabled" aria-disabled="true">
-          <div>
-            <div class="li-title">GAA Senior Hurling Final</div>
-            <div class="li-sub">Hurling • Coming soon</div>
-          </div>
-          <div class="li-right">
-            <span class="li-pill muted">Soon</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="section" id="how">
-      <div class="section-head">
-        <h2>How it works</h2>
-        <p>Simple, public, transparent.</p>
-      </div>
-
-      <div class="how">
-        <div class="how-item">
-          <div class="how-num">1</div>
-          <div>
-            <div class="how-title">Choose a competition</div>
-            <div class="how-sub">Superbowl now, GAA finals next.</div>
-          </div>
-        </div>
-        <div class="how-item">
-          <div class="how-num">2</div>
-          <div>
-            <div class="how-title">Buy your squares</div>
-            <div class="how-sub">Enter quantity; squares assigned randomly.</div>
-          </div>
-        </div>
-        <div class="how-item">
-          <div class="how-num">3</div>
-          <div>
-            <div class="how-title">Sold-out boards only</div>
-            <div class="how-sub">Only fully sold boards are valid.</div>
-          </div>
-        </div>
-        <div class="how-item">
-          <div class="how-num">4</div>
-          <div>
-            <div class="how-title">Board archive</div>
-            <div class="how-sub">View sold-out boards and winners anytime.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div>© <span id="year"></span> Scoreline Squares</div>
-      <div class="footer-links">
-        <a href="superbowl.html">Superbowl Squares</a>
-        <a href="#competitions">Competitions</a>
-      </div>
-    </footer>
-  </main>
-
-  <script>
-    // year
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // simple mobile menu
-    const menuBtn = document.getElementById("menuBtn");
-    const menu = document.getElementById("menu");
-    menuBtn.addEventListener("click", () => menu.classList.toggle("open"));
-
-    // hero carousel (simple)
-    const slides = [
-      {
-        title: "Superbowl Squares",
-        sub: "Buy squares. Board rolls over when sold out. View sold-out boards anytime.",
-        href: "superbowl.html",
-        theme: "hero-1"
-      },
-      {
-        title: "GAA Men’s SFC All-Ireland Final",
-        sub: "Coming soon — multi-sport squares under Scoreline Squares.",
-        href: "#competitions",
-        theme: "hero-2"
-      },
-      {
-        title: "GAA Senior Hurling Final",
-        sub: "Coming soon — same transparent board system, new sport.",
-        href: "#competitions",
-        theme: "hero-3"
-      }
-    ];
-
-    let current = 0;
-    const heroTitle = document.getElementById("heroTitle");
-    const heroSub = document.getElementById("heroSub");
-    const heroCta = document.getElementById("heroCta");
-    const heroMedia = document.getElementById("heroMedia");
-    const dots = document.getElementById("heroDots");
-
-    function renderDots() {
-      dots.innerHTML = "";
-      slides.forEach((_, i) => {
-        const b = document.createElement("button");
-        b.className = "dot" + (i === current ? " active" : "");
-        b.type = "button";
-        b.addEventListener("click", () => { current = i; renderSlide(); });
-        dots.appendChild(b);
-      });
-    }
-
-    function renderSlide() {
-      const s = slides[current];
-      heroTitle.textContent = s.title;
-      heroSub.textContent = s.sub;
-      heroCta.href = s.href;
-
-      heroMedia.classList.remove("hero-1","hero-2","hero-3");
-      heroMedia.classList.add(s.theme);
-
-      renderDots();
-    }
-
-    renderSlide();
-    setInterval(() => {
-      current = (current + 1) % slides.length;
-      renderSlide();
-    }, 6500);
-  </script>
+<footer>
+  © 2026 Scoreline Squares
+</footer>
 
 </body>
 </html>
