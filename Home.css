@@ -375,3 +375,44 @@ p{ margin:0; }
   .nav-links{ display:none; }
   .hero-stats{ grid-template-columns: 1fr; }
 }
+/* Competition cards with background images */
+.comp-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 160px;
+  display: flex;
+  align-items: flex-end;
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+/* Dark overlay for readability */
+.comp-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85),
+    rgba(0,0,0,0.25)
+  );
+}
+
+/* Content stays above overlay */
+.comp-card-content {
+  position: relative;
+  padding: 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* Badge override for dark cards */
+.comp-card .badge {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
