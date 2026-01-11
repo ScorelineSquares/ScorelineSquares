@@ -3,107 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares • Superbowl Squares (TEST MODE)</title>
+  <title>Superbowl Squares</title>
 
-  <!-- We are inside /superbowl/, so go UP one level -->
+  <!-- Existing CSS -->
   <link rel="stylesheet" href="../Superbowl.css" />
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="ball" aria-hidden="true">🏈</span>
-      <div>
-        <div class="company">Scoreline Squares</div>
-        <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
-      </div>
-    </div>
 
-    <div class="price">
-      <div class="price-amount">£<span id="pricePerSquare">11.50</span></div>
-      <div class="price-label">per square</div>
+<header class="topbar">
+  <div class="brand">
+    <span class="ball">🏈</span>
+    <div>
+      <div class="company">Scoreline Squares</div>
+      <div class="game">Superbowl Squares</div>
     </div>
-  </header>
-
-  <div class="notice" role="status" style="display:flex; gap:12px; justify-content:space-between; align-items:center;">
-    <span>TEST MODE: simulation only — no real money involved.</span>
-    <a class="btn" href="../index.html">← Back to home</a>
   </div>
 
-  <!-- GRID FIRST -->
-  <main class="layout layout-grid-first">
+  <a class="btn" href="../index.html">← Back to homepage</a>
+</header>
 
-    <!-- GRID CARD (FIRST) -->
-    <section class="card">
-      <div class="grid-head">
-        <h2>Squares</h2>
-        <div class="muted small">
-          A 10×10 grid (100 squares). In test mode, squares are assigned in order as people “pay”.
-        </div>
+<main class="layout">
+
+  <!-- BOARD FIRST -->
+  <section class="card board-card">
+    <h1 class="board-title">SUPER BOWL SQUARES</h1>
+
+    <!-- TOP LABEL -->
+    <div class="axis-label top-label">
+      HOME TEAM
+    </div>
+
+    <div class="board-wrapper">
+
+      <!-- LEFT LABEL -->
+      <div class="axis-label left-label">
+        AWAY TEAM
       </div>
 
-      <div class="grid-wrap">
-        <div class="grid" id="grid" aria-label="Squares grid"></div>
-      </div>
-    </section>
-
-    <!-- FORM CARD (SECOND) -->
-    <section class="card">
-      <h2>Join the game</h2>
-      <p class="muted">
-        Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want,
-        then click <strong>Simulate Payment</strong>.
-      </p>
-
-      <form id="entryForm">
-        <label>
-          Username
-          <input id="username" name="username" autocomplete="nickname" required />
-        </label>
-
-        <label>
-          Email
-          <input id="email" name="email" type="email" autocomplete="email" required />
-        </label>
-
-        <label>
-          Number of squares
-          <input id="quantity" name="quantity" type="number" min="1" value="1" required />
-        </label>
-
-        <button class="btn primary" type="submit" id="payBtn">
-          Simulate Payment
-        </button>
-
-        <div class="summary" id="summaryText"></div>
-      </form>
-
-      <div class="meta">
-        <div><strong>Payouts:</strong> <span id="payoutText">£250 at end of 1st, 2nd, 3rd & 4th quarters</span></div>
-        <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
+      <!-- GRID -->
+      <div class="grid" id="grid" aria-label="Superbowl squares grid">
+        <!-- JS fills 100 squares -->
       </div>
 
-      <details class="admin">
-        <summary>Admin (trial only)</summary>
-        <p class="muted">These controls are for testing.</p>
-        <div class="admin-actions">
-          <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
-          <button class="btn danger" id="resetBtn" type="button">Reset game</button>
-        </div>
-        <div class="muted small">Tip: Share this page link with friends to test together.</div>
-      </details>
-    </section>
+    </div>
+  </section>
 
-  </main>
+  <!-- ENTRY FORM BELOW GRID -->
+  <section class="card">
+    <h2>Join the game</h2>
+    <p class="muted">
+      Enter your <strong>username</strong> and <strong>email</strong>, choose how many squares you want,
+      then simulate payment.
+    </p>
 
-  <footer class="footer">
-    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
-  </footer>
+    <form id="entryForm">
+      <label>
+        Username
+        <input id="username" name="username" required />
+      </label>
 
-  <!-- We are inside /superbowl/, so go UP one level -->
-  <script src="../app.js"></script>
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+      <label>
+        Email
+        <input id="email" name="email" type="email" required />
+      </label>
+
+      <label>
+        Number of squares
+        <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+      </label>
+
+      <button class="btn primary" type="submit">Simulate Payment</button>
+      <div class="summary" id="summaryText"></div>
+    </form>
+  </section>
+
+  <!-- RESULTS / PAYOUTS -->
+  <section class="card">
+    <h2>Results & Payouts</h2>
+    <div class="meta">
+      <div><strong>Cost per square:</strong> £11.50</div>
+      <div><strong>Payouts:</strong> Q1 / Q2 / Q3 / Q4</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="muted small">© <span id="year"></span> Scoreline Squares</div>
+</footer>
+
+<script src="../app.js"></script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
