@@ -1,92 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Scoreline Squares</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreline Squares • Home</title>
 
-  <!-- HOMEPAGE STYLES -->
+  <!-- Use your existing working CSS -->
   <link rel="stylesheet" href="styles-v2.css" />
 </head>
+
 <body>
-
-<header class="topbar">
-  <div class="logo">🏈 Scoreline Squares</div>
-  <nav>
-    <a href="#">Competitions</a>
-    <a href="#">How it works</a>
-    <a href="index.html">Home</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <h1>Win Big With Scoreline Squares</h1>
-  <p>Simple. Fair. Transparent sports squares competitions.</p>
-  <a class="cta" href="#">View Live Competitions</a>
-</section>
-
-<section class="featured">
-  <h2>Featured Competition</h2>
-
-  <div class="card featured-card">
-    <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2" alt="Stadium">
-    <div class="card-body">
-      <h3>GAA Men’s SFC All-Ireland Final</h3>
-      <p>Coming soon under Scoreline Squares.</p>
-      <span class="tag coming">Coming Soon</span>
-    </div>
-  </div>
-</section>
-
-<section class="ending">
-  <h2>Ending Soon</h2>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b" alt="Superbowl">
-      <div class="card-body">
-        <h3>Superbowl Squares</h3>
-        <p>Quarterly payouts • NFL</p>
-        <strong>£11.50 per square</strong>
-        <a class="enter" href="index.html">Enter Now</a>
+  <header class="topbar">
+    <div class="brand">
+      <span class="ball" aria-hidden="true">🏈</span>
+      <div>
+        <div class="company">Scoreline Squares</div>
+        <div class="game">Competitions</div>
       </div>
     </div>
+
+    <div style="display:flex; gap:14px; align-items:center;">
+      <a class="btn" href="index.html">Home</a>
+      <a class="btn" href="#competitions">Competitions</a>
+      <a class="btn" href="#how">How it works</a>
+    </div>
+  </header>
+
+  <div class="notice" role="status">
+    Welcome — choose a competition below. (Trial homepage)
   </div>
-</section>
 
-<section class="competitions">
-  <h2>All Competitions</h2>
+  <main class="layout">
 
-  <ul>
-    <li>
-      <strong>Superbowl Squares</strong>
-      <span class="live">LIVE</span>
-    </li>
-    <li>
-      GAA Men’s SFC All-Ireland Final
-      <span class="coming">Coming Soon</span>
-    </li>
-    <li>
-      GAA Senior Hurling Final
-      <span class="coming">Coming Soon</span>
-    </li>
-  </ul>
-</section>
-
-<section class="how">
-  <h2>How it works</h2>
-  <ol>
-    <li>Choose a competition</li>
-    <li>Select how many squares you want</li>
-    <li>Squares are assigned randomly</li>
-    <li>Only fully sold boards are valid</li>
-    <li>View sold-out boards anytime</li>
-  </ol>
-</section>
-
-<footer>
-  © 2026 Scoreline Squares
-</footer>
-
-</body>
-</html>
+    <!-- HERO -->
