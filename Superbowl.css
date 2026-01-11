@@ -145,4 +145,211 @@ h2{
   }
 }
 
-.home-title
+.home-title{
+  grid-column: 1 / -1;
+  margin: 0 0 6px 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  font-weight:900;
+  text-align:center;
+  letter-spacing:.3px;
+}
+
+.board{
+  position:relative;
+  background: var(--card2);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 12px;
+  overflow:hidden;
+
+  /* grid for labels + squares */
+  display:grid;
+  grid-template-columns: 50px 34px 1fr;
+  grid-template-rows: 34px 1fr;
+  gap: 10px 10px;
+}
+
+.away-title{
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.away-title span{
+  display:inline-block;
+  font-weight:900;
+  letter-spacing:.4px;
+  white-space:nowrap;
+  transform: rotate(90deg); /* clockwise */
+  transform-origin: center;
+  color: rgba(234,240,255,.92);
+}
+
+.x-labels{
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+  display:grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  align-items:center;
+}
+.y-labels{
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  display:grid;
+  grid-template-rows: repeat(10, 1fr);
+  gap: 6px;
+  align-items:center;
+}
+
+.label-cell{
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  color: rgba(234,240,255,.72);
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  height: 32px;
+}
+
+.grid{
+  grid-column: 3 / 4;
+  grid-row: 2 / 3;
+
+  display:grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap:6px;
+}
+
+.grid .cell,
+.grid button,
+.grid div{
+  /* If your JS creates <button> or <div>, this keeps them styled */
+  width:100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: rgba(234,240,255,.88);
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  padding:0;
+  user-select:none;
+}
+
+.grid button{
+  cursor:pointer;
+}
+.grid button:hover{ filter: brightness(1.05); }
+
+/* Side panel */
+.sidepanel{
+  background: var(--card2);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.sidepanel-block{
+  border:1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.sidepanel-title{
+  font-weight:900;
+  font-size:13px;
+  letter-spacing:.4px;
+  margin-bottom:10px;
+}
+
+.sidepanel-box{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+  border-radius: 12px;
+  padding: 12px;
+  font-weight:900;
+  font-size:18px;
+  text-align:center;
+}
+
+.rows{ display:grid; gap:10px; }
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 10px;
+  border-radius: 12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+}
+.row .k{ font-weight:900; font-size:13px; }
+.row .v{ font-weight:900; }
+
+/* Form card */
+form{
+  display:grid;
+  gap:10px;
+  margin-top: 12px;
+}
+
+label{
+  display:grid;
+  gap:6px;
+  font-size:13px;
+  color: rgba(234,240,255,.86);
+}
+
+input{
+  background: rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  padding: 11px 12px;
+  color: var(--text);
+  outline:none;
+}
+input:focus{
+  border-color: rgba(124,58,237,.65);
+  box-shadow: 0 0 0 3px rgba(124,58,237,.20);
+}
+
+.summary{
+  margin-top: 4px;
+  min-height: 18px;
+  font-size: 13px;
+  color: rgba(234,240,255,.88);
+}
+
+.meta{
+  margin-top: 10px;
+  color: rgba(234,240,255,.86);
+}
+
+.admin{
+  margin-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 10px;
+}
+.admin summary{ cursor:pointer; font-weight:800; }
+.admin-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top: 10px;
+}
+
+.footer{
+  text-align:center;
+  padding: 18px 0;
+  color: rgba(234,240,255,.55);
+}
+
+.hidden{ display:none !important; }
