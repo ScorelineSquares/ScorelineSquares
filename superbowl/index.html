@@ -3,100 +3,415 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Superbowl Squares</title>
+  <title>Scoreline Squares • Superbowl Squares</title>
 
-  <!-- Existing CSS -->
+  <!-- Keep your existing game styling -->
   <link rel="stylesheet" href="../Superbowl.css" />
+
+  <!-- Small extra styling to match the template (safe + self-contained) -->
+  <style>
+    .board-title {
+      text-align: center;
+      letter-spacing: 2px;
+      margin: 0 0 14px 0;
+      font-weight: 900;
+    }
+
+    /* Board + side panel layout */
+    .board-area {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .board-area {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Axis labels */
+    .axis-top {
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin: 0 0 8px 0;
+    }
+
+    .board-shell {
+      position: relative;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .axis-left {
+      width: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      /* reads normally if you rotate phone clockwise */
+      transform: rotate(90deg);
+      transform-origin: center;
+
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+
+      /* center it roughly against the grid height */
+      margin-top: 140px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 980px) {
+      .axis-left {
+        margin-top: 110px;
+      }
+    }
+
+    /* Side panel */
+    .sidepanel {
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .sidepanel h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      opacity: .9;
+    }
+
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .kv:first-of-type { border-top: none; padding-top: 0; }
+
+    .kv .k {
+      opacity: .75;
+      font-size: 13px;
+    }
+    .kv .v {
+      font-weight: 900;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+
+    .admin-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .admin-grid label {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      opacity: .9;
+    }
+
+    .admin-grid input {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.92);
+      outline: none;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .note {
+      opacity: .7;
+      font-size: 12px;
+      margin-top: 8px;
+      line-height: 1.35;
+    }
+
+    /* Make the grid feel “board-like” without changing your existing grid logic */
+    .grid-wrap {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      padding: 10px;
+    }
+  </style>
 </head>
 
 <body>
-
-<header class="topbar">
-  <div class="brand">
-    <span class="ball">🏈</span>
-    <div>
-      <div class="company">Scoreline Squares</div>
-      <div class="game">Superbowl Squares</div>
+  <header class="topbar">
+    <div class="brand">
+      <span class="ball" aria-hidden="true">🏈</span>
+      <div>
+        <div class="company">Scoreline Squares</div>
+        <div class="game">Superbowl Squares <span class="badge">TRIAL</span></div>
+      </div>
     </div>
+
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <div class="price">
+        <div class="price-amount">£<span id="pricePerSquare">11.50</span></div>
+        <div class="price-label">per square</div>
+      </div>
+      <a class="btn" href="../index.html">← Back to homepage</a>
+    </div>
+  </header>
+
+  <div class="notice" role="status">
+    Trial mode: no real payments. Squares are assigned automatically for testing.
   </div>
 
-  <a class="btn" href="../index.html">← Back to homepage</a>
-</header>
+  <main class="layout">
+    <!-- BOARD FIRST -->
+    <section class="card">
+      <h1 class="board-title">SUPER BOWL SQUARES</h1>
 
-<main class="layout">
+      <div class="board-area">
+        <!-- LEFT: GRID WITH AXIS LABELS -->
+        <div>
+          <div class="axis-top">HOME TEAM</div>
 
-  <!-- BOARD FIRST -->
-  <section class="card board-card">
-    <h1 class="board-title">SUPER BOWL SQUARES</h1>
+          <div class="board-shell">
+            <div class="axis-left">AWAY TEAM</div>
 
-    <!-- TOP LABEL -->
-    <div class="axis-label top-label">
-      HOME TEAM
-    </div>
+            <div class="grid-wrap">
+              <!-- app.js expects #grid -->
+              <div class="grid" id="grid" aria-label="Squares grid"></div>
+            </div>
+          </div>
+        </div>
 
-    <div class="board-wrapper">
+        <!-- RIGHT: COST + PRIZE MONEY -->
+        <aside class="sidepanel" aria-label="Cost and prize money">
+          <h3>Cost per square</h3>
+          <div class="kv">
+            <div class="k">Entry</div>
+            <div class="v">£<span id="displayCost">11.50</span></div>
+          </div>
 
-      <!-- LEFT LABEL -->
-      <div class="axis-label left-label">
-        AWAY TEAM
+          <h3 style="margin-top:14px;">Prize money</h3>
+          <div class="kv">
+            <div class="k">QTR 1</div>
+            <div class="v">£<span id="displayQ1">250</span></div>
+          </div>
+          <div class="kv">
+            <div class="k">QTR 2</div>
+            <div class="v">£<span id="displayQ2">250</span></div>
+          </div>
+          <div class="kv">
+            <div class="k">QTR 3</div>
+            <div class="v">£<span id="displayQ3">250</span></div>
+          </div>
+          <div class="kv">
+            <div class="k">FINAL</div>
+            <div class="v">£<span id="displayFinal">250</span></div>
+          </div>
+
+          <!-- app.js sometimes expects payoutText; keep it (hidden) to avoid errors -->
+          <div id="payoutText" style="display:none;"></div>
+
+          <details class="admin" style="margin-top:14px;">
+            <summary>Admin (trial)</summary>
+
+            <div class="admin-grid">
+              <label>
+                Cost per square (£)
+                <input id="adminCost" inputmode="decimal" placeholder="11.50" />
+              </label>
+
+              <label>
+                Prize money — QTR 1 (£)
+                <input id="adminQ1" inputmode="decimal" placeholder="250" />
+              </label>
+
+              <label>
+                Prize money — QTR 2 (£)
+                <input id="adminQ2" inputmode="decimal" placeholder="250" />
+              </label>
+
+              <label>
+                Prize money — QTR 3 (£)
+                <input id="adminQ3" inputmode="decimal" placeholder="250" />
+              </label>
+
+              <label>
+                Prize money — FINAL (£)
+                <input id="adminFinal" inputmode="decimal" placeholder="250" />
+              </label>
+            </div>
+
+            <div class="admin-actions">
+              <button class="btn" id="saveAdminBtn" type="button">Save</button>
+              <button class="btn danger" id="resetAdminBtn" type="button">Reset to defaults</button>
+            </div>
+
+            <div class="note">
+              These settings save in your browser (localStorage). Public users can’t edit them.
+              Later, we can move this to a real admin login and database.
+            </div>
+
+            <!-- Keep your existing testing buttons if app.js uses them -->
+            <div class="admin-actions" style="margin-top:12px;">
+              <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
+              <button class="btn danger" id="resetBtn" type="button">Reset game</button>
+            </div>
+          </details>
+
+          <div class="note" style="margin-top:12px;">
+            Squares remaining: <strong><span id="remaining">100</span></strong>
+          </div>
+        </aside>
       </div>
+    </section>
 
-      <!-- GRID -->
-      <div class="grid" id="grid" aria-label="Superbowl squares grid">
-        <!-- JS fills 100 squares -->
-      </div>
+    <!-- FORM BELOW GRID -->
+    <section class="card">
+      <h2>Enter the game</h2>
+      <p class="muted">
+        Enter your <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want,
+        then simulate payment.
+      </p>
 
-    </div>
-  </section>
+      <form id="entryForm">
+        <label>
+          Username
+          <input id="username" name="username" autocomplete="nickname" required />
+        </label>
 
-  <!-- ENTRY FORM BELOW GRID -->
-  <section class="card">
-    <h2>Join the game</h2>
-    <p class="muted">
-      Enter your <strong>username</strong> and <strong>email</strong>, choose how many squares you want,
-      then simulate payment.
-    </p>
+        <label>
+          Email
+          <input id="email" name="email" type="email" autocomplete="email" required />
+        </label>
 
-    <form id="entryForm">
-      <label>
-        Username
-        <input id="username" name="username" required />
-      </label>
+        <label>
+          Number of squares
+          <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+        </label>
 
-      <label>
-        Email
-        <input id="email" name="email" type="email" required />
-      </label>
+        <button class="btn primary" type="submit" id="payBtn">Simulate Payment</button>
+        <div class="summary" id="summaryText"></div>
+      </form>
+    </section>
+  </main>
 
-      <label>
-        Number of squares
-        <input id="quantity" name="quantity" type="number" min="1" value="1" required />
-      </label>
+  <footer class="footer">
+    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
+  </footer>
 
-      <button class="btn primary" type="submit">Simulate Payment</button>
-      <div class="summary" id="summaryText"></div>
-    </form>
-  </section>
+  <!-- Keep your existing grid/entry logic -->
+  <script src="../app.js"></script>
 
-  <!-- RESULTS / PAYOUTS -->
-  <section class="card">
-    <h2>Results & Payouts</h2>
-    <div class="meta">
-      <div><strong>Cost per square:</strong> £11.50</div>
-      <div><strong>Payouts:</strong> Q1 / Q2 / Q3 / Q4</div>
-    </div>
-  </section>
+  <script>
+    // ---- Admin-editable amounts (browser-saved) ----
+    const KEY = "scoreline_superbowl_prizes_v1";
 
-</main>
+    const defaults = {
+      cost: "11.50",
+      q1: "250",
+      q2: "250",
+      q3: "250",
+      final: "250"
+    };
 
-<footer class="footer">
-  <div class="muted small">© <span id="year"></span> Scoreline Squares</div>
-</footer>
+    function readState() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return { ...defaults };
+        const parsed = JSON.parse(raw);
+        return { ...defaults, ...parsed };
+      } catch {
+        return { ...defaults };
+      }
+    }
 
-<script src="../app.js"></script>
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
+    function writeState(state) {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }
 
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function syncUI(state) {
+      // Topbar price
+      setText("pricePerSquare", state.cost);
+
+      // Public display panel
+      setText("displayCost", state.cost);
+      setText("displayQ1", state.q1);
+      setText("displayQ2", state.q2);
+      setText("displayQ3", state.q3);
+      setText("displayFinal", state.final);
+
+      // Hidden field for any legacy code expecting a payout summary
+      const payoutText = `Q1 £${state.q1}, Q2 £${state.q2}, Q3 £${state.q3}, Final £${state.final}`;
+      const payoutEl = document.getElementById("payoutText");
+      if (payoutEl) payoutEl.textContent = payoutText;
+
+      // Admin inputs
+      const adminCost = document.getElementById("adminCost");
+      const adminQ1 = document.getElementById("adminQ1");
+      const adminQ2 = document.getElementById("adminQ2");
+      const adminQ3 = document.getElementById("adminQ3");
+      const adminFinal = document.getElementById("adminFinal");
+
+      if (adminCost) adminCost.value = state.cost;
+      if (adminQ1) adminQ1.value = state.q1;
+      if (adminQ2) adminQ2.value = state.q2;
+      if (adminQ3) adminQ3.value = state.q3;
+      if (adminFinal) adminFinal.value = state.final;
+    }
+
+    function cleanMoney(x, fallback) {
+      const v = String(x ?? "").trim();
+      if (!v) return fallback;
+      // Keep digits + optional decimal point
+      const cleaned = v.replace(/[^0-9.]/g, "");
+      return cleaned || fallback;
+    }
+
+    // Init
+    document.getElementById("year").textContent = new Date().getFullYear();
+    let state = readState();
+    syncUI(state);
+
+    // Save / Reset
+    document.getElementById("saveAdminBtn")?.addEventListener("click", () => {
+      const next = {
+        cost: cleanMoney(document.getElementById("adminCost")?.value, defaults.cost),
+        q1: cleanMoney(document.getElementById("adminQ1")?.value, defaults.q1),
+        q2: cleanMoney(document.getElementById("adminQ2")?.value, defaults.q2),
+        q3: cleanMoney(document.getElementById("adminQ3")?.value, defaults.q3),
+        final: cleanMoney(document.getElementById("adminFinal")?.value, defaults.final),
+      };
+      state = next;
+      writeState(state);
+      syncUI(state);
+    });
+
+    document.getElementById("resetAdminBtn")?.addEventListener("click", () => {
+      state = { ...defaults };
+      writeState(state);
+      syncUI(state);
+    });
+  </script>
 </body>
 </html>
