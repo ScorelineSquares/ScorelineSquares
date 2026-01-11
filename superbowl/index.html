@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scoreline Squares — Superbowl Squares (TEST MODE)</title>
 
-  <!-- IMPORTANT: this page is /superbowl/ so we use ABSOLUTE paths -->
-  <link rel="stylesheet" href="/Superbowl.css" />
+  <!-- IMPORTANT: we're inside /superbowl/ so go UP one level for CSS -->
+  <link rel="stylesheet" href="../Superbowl.css" />
 </head>
 
 <body>
@@ -25,97 +25,45 @@
     </div>
   </header>
 
-  <div class="notice" role="status">
-    <div class="notice-left">TEST MODE: simulation only — no real money involved.</div>
-    <a class="btn" href="/">← Back to homepage</a>
+  <div class="notice" role="status" style="display:flex; gap:12px; justify-content:space-between; align-items:center;">
+    <span>TEST MODE: simulation only — no real money involved.</span>
+    <!-- Back to homepage (root index.html) -->
+    <a class="btn" href="../index.html">← Back to homepage</a>
   </div>
 
-  <main class="page">
-
-    <!-- GRID FIRST (as requested) -->
-    <section class="card grid-card">
+  <main class="layout">
+    <!-- GRID FIRST (TOP) -->
+    <section class="card">
       <div class="grid-head">
-        <h2>Superbowl Squares</h2>
+        <h2>Squares</h2>
         <div class="muted small">
-          10×10 grid (100 squares). In test mode, squares may assign in order depending on your JS logic.
+          A 10×10 grid (100 squares). In test mode, squares are assigned randomly.
         </div>
       </div>
 
-      <div class="board-shell" aria-label="Squares board">
-        <!-- HOME title (top, hugging the grid) -->
-        <div class="home-title">
-          <span>HOME TEAM: <strong>TBD</strong> (Home)</span>
-        </div>
+      <div class="grid-wrap">
+        <!-- app.js NEEDS this exact id -->
+        <div class="grid" id="grid" aria-label="Squares grid"></div>
+      </div>
 
-        <div class="board">
-          <!-- AWAY title (left, hugging the grid, rotated clockwise) -->
-          <div class="away-title">
-            <span>AWAY TEAM: <strong>TBD</strong> (Away)</span>
-          </div>
+      <div style="height:10px"></div>
 
-          <!-- top numbers 0-9 -->
-          <div class="x-labels" aria-hidden="true">
-            <div class="label-cell"></div>
-            <div class="label-cell">0</div><div class="label-cell">1</div><div class="label-cell">2</div><div class="label-cell">3</div><div class="label-cell">4</div>
-            <div class="label-cell">5</div><div class="label-cell">6</div><div class="label-cell">7</div><div class="label-cell">8</div><div class="label-cell">9</div>
-          </div>
-
-          <!-- left numbers 0-9 -->
-          <div class="y-labels" aria-hidden="true">
-            <div class="label-cell">0</div><div class="label-cell">1</div><div class="label-cell">2</div><div class="label-cell">3</div><div class="label-cell">4</div>
-            <div class="label-cell">5</div><div class="label-cell">6</div><div class="label-cell">7</div><div class="label-cell">8</div><div class="label-cell">9</div>
-          </div>
-
-          <!-- YOUR JS EXPECTS THIS -->
-          <div class="grid" id="grid" aria-label="Squares grid"></div>
-        </div>
-
-        <!-- Right info panel like your template image -->
-        <aside class="sidepanel" aria-label="Board details">
-          <div class="sidepanel-block">
-            <div class="sidepanel-title">COST PER SQUARE</div>
-            <div class="sidepanel-box">£<span id="costPerSquareDisplay">11.50</span></div>
-          </div>
-
-          <div class="sidepanel-block">
-            <div class="sidepanel-title">PRIZE MONEY</div>
-
-            <!-- NOTE: Q4 removed -->
-            <div class="rows">
-              <div class="row">
-                <div class="k">QTR 1</div>
-                <div class="v">£<span class="payout" data-p="q1">250</span></div>
-              </div>
-              <div class="row">
-                <div class="k">QTR 2</div>
-                <div class="v">£<span class="payout" data-p="q2">250</span></div>
-              </div>
-              <div class="row">
-                <div class="k">QTR 3</div>
-                <div class="v">£<span class="payout" data-p="q3">250</span></div>
-              </div>
-              <div class="row">
-                <div class="k">FINAL</div>
-                <div class="v">£<span class="payout" data-p="final">250</span></div>
-              </div>
-            </div>
-
-            <!-- Keep your old id so app.js doesn't break, but hide it -->
-            <div id="payoutText" class="muted small hidden">
-              £250 at end of 1st, 2nd, 3rd & final
-            </div>
-          </div>
-        </aside>
+      <div class="meta">
+        <div><strong>Payouts:</strong> <span id="payoutText">£250 at end of 1st, 2nd, 3rd &amp; final</span></div>
+        <!-- app.js NEEDS this exact id -->
+        <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
       </div>
     </section>
 
-    <!-- ENTRY FORM BELOW GRID (as requested) -->
-    <section class="card form-card">
+    <!-- FORM BELOW GRID -->
+    <section class="card">
       <h2>Join the game</h2>
       <p class="muted">
-        Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want, then click <strong>Simulate Payment</strong>.
+        Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want, then click
+        <strong>Simulate Payment</strong>.
       </p>
 
+      <!-- app.js NEEDS this exact id -->
       <form id="entryForm">
         <label>
           Username
@@ -136,39 +84,30 @@
           Simulate Payment
         </button>
 
+        <!-- app.js NEEDS this exact id -->
         <div class="summary" id="summaryText"></div>
       </form>
-
-      <div class="meta">
-        <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
-      </div>
 
       <details class="admin">
         <summary>Admin (trial only)</summary>
         <p class="muted">These controls are for testing.</p>
         <div class="admin-actions">
           <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
-          <button class="btn danger" id="resetBtn" type="button">Reset game</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset game / button</button>
         </div>
+        <div class="muted small">Tip: Share this page link with friends to test together.</div>
       </details>
     </section>
-
   </main>
 
   <footer class="footer">
     <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
   </footer>
 
-  <!-- IMPORTANT: this page is /superbowl/ so use ABSOLUTE path -->
-  <script src="/app.js"></script>
-
+  <!-- IMPORTANT: we're inside /superbowl/ so go UP one level for JS -->
+  <script src="../app.js"></script>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Keep cost display synced with the header price
-    const p = document.getElementById("pricePerSquare")?.textContent || "11.50";
-    const costEl = document.getElementById("costPerSquareDisplay");
-    if (costEl) costEl.textContent = p;
   </script>
 </body>
 </html>
