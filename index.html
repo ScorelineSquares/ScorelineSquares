@@ -3,249 +3,239 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares • Competitions</title>
-  <link rel="stylesheet" href="./Home.css" />
+  <title>Scoreline Squares</title>
+
+  <!-- Main homepage styles -->
+  <link rel="stylesheet" href="Home.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b0d10;
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: #000;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 18px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 420px;
+      background: url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1600&q=80")
+        center / cover no-repeat;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero-overlay {
+      width: 100%;
+      padding: 26px 20px;
+      background: linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,.15));
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 8px 0 18px;
+      color: #ddd;
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+      border: 0;
+    }
+
+    .btn-primary {
+      background: #f5c14b;
+      color: #000;
+    }
+
+    /* SECTION */
+    main {
+      padding: 22px 18px 40px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+    }
+
+    /* COMPETITIONS */
+    .competitions {
+      display: grid;
+      gap: 16px;
+    }
+
+    .comp-card {
+      position: relative;
+      height: 160px;
+      border-radius: 18px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .comp-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,.85), rgba(0,0,0,.3));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px;
+    }
+
+    .comp-info h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .badge {
+      background: rgba(0,0,0,.6);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      padding: 18px;
+      color: #aaa;
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Top nav -->
-  <header class="nav">
-    <div class="nav-inner">
-      <a class="brand" href="./index.html">
-        <span class="brand-mark" aria-hidden="true">🏈</span>
-        <span class="brand-text">
-          <span class="brand-name">Scoreline Squares</span>
-          <span class="brand-sub">Competitions</span>
-        </span>
-      </a>
 
-      <nav class="nav-links">
-        <a href="#ending">Ending soon</a>
-        <a href="#competitions">Competitions</a>
-        <a href="#how">How it works</a>
-      </nav>
-
-      <div class="nav-actions">
-        <a class="btn btn-ghost" href="#competitions">Browse</a>
-        <a class="btn btn-primary" href="/superbowl/">Enter Superbowl</a>
-      </div>
-    </div>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">🏈 Scoreline Squares</div>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="#competitions">Competitions</a>
+      <a href="#how">How it works</a>
+    </nav>
   </header>
 
-  <!-- Hero -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <div class="pill">LIVE • Public boards • Transparent</div>
-        <h1>Premium squares competitions across the biggest games</h1>
-        <p>
-          Buy squares, track the board live, and view sold-out boards anytime.
-          Superbowl Squares is live — more sports coming soon.
-        </p>
-
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="/superbowl/">Enter Superbowl Squares</a>
-          <a class="btn btn-ghost" href="#competitions">View competitions</a>
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-top">Prize pool</div>
-            <div class="stat-big">£1,000</div>
-            <div class="stat-sub">Example board payout</div>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Per square</div>
-            <div class="stat-big">£11.50</div>
-            <div class="stat-sub">Current Superbowl price</div>
-          </div>
-          <div class="stat">
-            <div class="stat-top">Boards</div>
-            <div class="stat-big">Public</div>
-            <div class="stat-sub">View anytime</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-card">
-        <div class="hero-media" role="img" aria-label="Stadium"></div>
-        <div class="hero-card-body">
-          <div class="tags">
-            <span class="tag tag-live">LIVE</span>
-            <span class="tag">NFL</span>
-            <span class="tag">Quarter payouts</span>
-          </div>
-
-          <div class="title-row">
-            <h2>Superbowl Squares</h2>
-            <div class="price">
-              <div class="price-big">£11.50</div>
-              <div class="price-sub">per square</div>
-            </div>
-          </div>
-
-          <p class="muted">
-            Random square assignment • Public board • Sold squares show buyer username on hover/click (coming).
-          </p>
-
-          <div class="bar">
-            <div class="bar-fill" style="width: 28%"></div>
-          </div>
-          <div class="bar-row">
-            <span>Board fill (example)</span>
-            <span>Open</span>
-          </div>
-
-          <div class="hero-card-cta">
-            <a class="btn btn-primary" href="/superbowl/">Enter now</a>
-            <a class="btn btn-ghost" href="#how">How it works</a>
-          </div>
-        </div>
-      </div>
+    <div class="hero-overlay">
+      <h1>Win Big with Scoreline Squares</h1>
+      <p>Simple, fair, transparent scoreline competitions across multiple sports.</p>
+      <a class="btn btn-primary" href="/superbowl/">Enter Superbowl Squares</a>
     </div>
   </section>
 
-  <!-- Ending soon -->
-  <section class="section" id="ending">
-    <div class="section-inner">
-      <div class="section-head">
-        <h3>Ending soon</h3>
-        <p class="muted">Competitions that are filling up (placeholder for now).</p>
-      </div>
+  <!-- MAIN -->
+  <main>
 
-      <div class="strip">
-        <div class="strip-left">
-          <span class="tag tag-live">LIVE</span>
-          <div>
-            <div class="strip-title">Superbowl Squares</div>
-            <div class="strip-sub muted">NFL • Public board • Quarterly payouts</div>
+    <!-- COMPETITIONS -->
+    <section id="competitions">
+      <h2>Competitions</h2>
+
+      <div class="competitions">
+
+        <!-- SUPERBOWL -->
+        <div class="comp-card"
+          style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/7/7a/Super_Bowl_LIX_logo.png')">
+          <div class="comp-overlay">
+            <div class="comp-info">
+              <h3>Superbowl Squares</h3>
+              <div class="badge">LIVE</div>
+            </div>
+            <a class="btn btn-primary" href="/superbowl/">Enter</a>
           </div>
         </div>
-        <div class="strip-right">
-          <div class="strip-price">
-            <div class="price-big">£11.50</div>
-            <div class="price-sub muted">per square</div>
-          </div>
-          <a class="btn btn-primary" href="/superbowl/">Enter</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Competitions grid -->
-  <section class="section" id="competitions">
-    <div class="section-inner">
-      <div class="section-head">
-        <h3>Competitions</h3>
-        <p class="muted">More sports will sit under Scoreline Squares (GAA finals next).</p>
-      </div>
-
-      <div class="grid">
-        <a class="card" href="/superbowl/">
-          <div class="card-top">
-            <div class="tags">
-              <span class="tag tag-live">LIVE</span>
-              <span class="tag">NFL</span>
+        <!-- GAA FOOTBALL -->
+        <div class="comp-card"
+          style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/3/3f/Sam_Maguire_Cup.jpg')">
+          <div class="comp-overlay">
+            <div class="comp-info">
+              <h3>GAA Men’s All-Ireland Final</h3>
+              <div class="badge">COMING SOON</div>
             </div>
           </div>
-          <div class="card-title">Superbowl Squares</div>
-          <div class="card-sub muted">Enter now • View public board</div>
-          <div class="card-foot">
-            <span class="muted">£11.50 / square</span>
-            <span class="chev">Enter →</span>
-          </div>
-        </a>
+        </div>
 
-        <div class="card card-disabled">
-          <div class="card-top">
-            <div class="tags">
-              <span class="tag">COMING SOON</span>
-              <span class="tag">GAA</span>
+        <!-- HURLING -->
+        <div class="comp-card"
+          style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/5e/Liam_MacCarthy_Cup.jpg')">
+          <div class="comp-overlay">
+            <div class="comp-info">
+              <h3>GAA Senior Hurling Final</h3>
+              <div class="badge">COMING SOON</div>
             </div>
           </div>
-          <div class="card-title">GAA Men’s SFC All-Ireland Final</div>
-          <div class="card-sub muted">Coming soon</div>
-          <div class="card-foot">
-            <span class="muted">TBC</span>
-            <span class="chev muted">Planned</span>
-          </div>
         </div>
 
-        <div class="card card-disabled">
-          <div class="card-top">
-            <div class="tags">
-              <span class="tag">COMING SOON</span>
-              <span class="tag">GAA</span>
-            </div>
-          </div>
-          <div class="card-title">GAA Senior Hurling Final</div>
-          <div class="card-sub muted">Coming soon</div>
-          <div class="card-foot">
-            <span class="muted">TBC</span>
-            <span class="chev muted">Planned</span>
-          </div>
-        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- How it works -->
-  <section class="section" id="how">
-    <div class="section-inner">
-      <div class="section-head">
-        <h3>How it works</h3>
-        <p class="muted">Simple, public, transparent.</p>
-      </div>
+    <!-- HOW IT WORKS -->
+    <section id="how" style="margin-top:40px;">
+      <h2>How it works</h2>
+      <ol>
+        <li>Choose a competition</li>
+        <li>Buy your squares</li>
+        <li>Squares are assigned randomly</li>
+        <li>Sold-out boards only</li>
+        <li>Winners paid automatically</li>
+      </ol>
+    </section>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div>
-            <div class="step-title">Choose a competition</div>
-            <div class="muted">Superbowl now, GAA finals next.</div>
-          </div>
-        </div>
+  </main>
 
-        <div class="step">
-          <div class="step-num">2</div>
-          <div>
-            <div class="step-title">Buy your squares</div>
-            <div class="muted">Choose quantity; squares assigned randomly.</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">3</div>
-          <div>
-            <div class="step-title">Sold-out boards only</div>
-            <div class="muted">Only fully sold boards are valid for competition.</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">4</div>
-          <div>
-            <div class="step-title">Refund rule</div>
-            <div class="muted">If not sold out 1 hour pre kick-off, entries refunded.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="muted">© <span id="year"></span> Scoreline Squares</div>
-      <div class="footer-links">
-        <a href="#competitions">Competitions</a>
-        <a href="#how">How it works</a>
-        <a href="/superbowl/">Superbowl</a>
-      </div>
-    </div>
+  <!-- FOOTER -->
+  <footer>
+    © <span id="year"></span> Scoreline Squares · Trial mode
   </footer>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
