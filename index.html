@@ -3,154 +3,245 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares • Home</title>
-
-  <!-- Homepage CSS -->
+  <title>Scoreline Squares • Competitions</title>
   <link rel="stylesheet" href="./Home.css" />
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="ball" aria-hidden="true">🏈</span>
-      <div>
-        <div class="company">Scoreline Squares</div>
-        <div class="game">Competitions</div>
+  <!-- Top nav -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true">🏈</span>
+        <span class="brand-text">
+          <span class="brand-name">Scoreline Squares</span>
+          <span class="brand-sub">Competitions</span>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#ending">Ending soon</a>
+        <a href="#competitions">Competitions</a>
+        <a href="#how">How it works</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost" href="#competitions">Browse</a>
+        <a class="btn btn-primary" href="/superbowl/">Enter Superbowl</a>
       </div>
     </div>
-
-    <nav class="topnav">
-      <a class="btn" href="./index.html">Home</a>
-      <a class="btn" href="#competitions">Competitions</a>
-      <a class="btn" href="#how">How it works</a>
-    </nav>
   </header>
 
-  <div class="notice" role="status">
-    Welcome — choose a competition below. (Trial homepage)
-  </div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="pill">LIVE • Public boards • Transparent</div>
+        <h1>Premium squares competitions across the biggest games</h1>
+        <p>
+          Buy squares, track the board live, and view sold-out boards anytime.
+          Superbowl Squares is live — more sports coming soon.
+        </p>
 
-  <main class="layout">
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="/superbowl/">Enter Superbowl Squares</a>
+          <a class="btn btn-ghost" href="#competitions">View competitions</a>
+        </div>
 
-    <section class="card">
-      <h2>Win big with Scoreline Squares</h2>
-      <div class="muted small">
-        Simple, public, transparent squares competitions across multiple sports.
-      </div>
-
-      <div style="height:14px"></div>
-
-      <div class="hero">
-        <div class="hero-inner">
-          <div class="hero-badges">
-            <span class="badge">LIVE boards</span>
-            <span class="badge">Random entries</span>
-            <span class="badge">Sold-out archives</span>
-            <span class="badge">Multiple sports</span>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-top">Prize pool</div>
+            <div class="stat-big">£1,000</div>
+            <div class="stat-sub">Example board payout</div>
           </div>
-
-          <div style="height:12px"></div>
-
-          <!-- IMPORTANT: this is the correct folder link -->
-          <div class="hero-actions">
-            <a class="btn primary" href="./superbowl/">Enter Superbowl Squares</a>
-            <a class="btn" href="#competitions">Browse competitions</a>
+          <div class="stat">
+            <div class="stat-top">Per square</div>
+            <div class="stat-big">£11.50</div>
+            <div class="stat-sub">Current Superbowl price</div>
+          </div>
+          <div class="stat">
+            <div class="stat-top">Boards</div>
+            <div class="stat-big">Public</div>
+            <div class="stat-sub">View anytime</div>
           </div>
         </div>
       </div>
-    </section>
 
-    <section class="card">
-      <h2>Ending soon</h2>
-      <div class="muted small">Boards that are filling up (placeholder for now).</div>
-
-      <div style="height:14px"></div>
-
-      <div class="listing">
-        <div class="listing-left">
-          <div class="listing-title">Superbowl Squares</div>
-          <div class="muted small">NFL • Quarterly payouts • Public board</div>
-
-          <div style="height:10px"></div>
-
-          <div class="listing-badges">
-            <span class="badge">LIVE</span>
-            <span class="badge">Open boards</span>
+      <div class="hero-card">
+        <div class="hero-media" role="img" aria-label="Stadium"></div>
+        <div class="hero-card-body">
+          <div class="tags">
+            <span class="tag tag-live">LIVE</span>
+            <span class="tag">NFL</span>
+            <span class="tag">Quarter payouts</span>
           </div>
 
-          <div style="height:10px"></div>
+          <div class="title-row">
+            <h2>Superbowl Squares</h2>
+            <div class="price">
+              <div class="price-big">£11.50</div>
+              <div class="price-sub">per square</div>
+            </div>
+          </div>
 
-          <!-- IMPORTANT: this is the correct folder link -->
-          <a class="btn primary" href="./superbowl/">Enter now</a>
-        </div>
+          <p class="muted">
+            Random square assignment • Public board • Sold squares show buyer username on hover/click (coming).
+          </p>
 
-        <div class="listing-right">
-          <div class="listing-price">£11.50</div>
-          <div class="muted small">per square</div>
+          <div class="bar">
+            <div class="bar-fill" style="width: 28%"></div>
+          </div>
+          <div class="bar-row">
+            <span>Board fill (example)</span>
+            <span>Open</span>
+          </div>
+
+          <div class="hero-card-cta">
+            <a class="btn btn-primary" href="/superbowl/">Enter now</a>
+            <a class="btn btn-ghost" href="#how">How it works</a>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="card" id="competitions">
-      <h2>Competitions</h2>
-      <div class="muted small">
-        Choose a game. Sold-out boards remain viewable for transparency.
+  <!-- Ending soon -->
+  <section class="section" id="ending">
+    <div class="section-inner">
+      <div class="section-head">
+        <h3>Ending soon</h3>
+        <p class="muted">Competitions that are filling up (placeholder for now).</p>
       </div>
 
-      <div style="height:12px"></div>
-
-      <div class="comp-list">
-
-        <div class="comp-item">
+      <div class="strip">
+        <div class="strip-left">
+          <span class="tag tag-live">LIVE</span>
           <div>
-            <div class="comp-name">Superbowl Squares</div>
-            <div class="muted small">NFL • Live</div>
-          </div>
-          <div class="comp-actions">
-            <span class="badge">LIVE</span>
-            <!-- IMPORTANT: correct folder link -->
-            <a class="btn primary" href="./superbowl/">Enter</a>
+            <div class="strip-title">Superbowl Squares</div>
+            <div class="strip-sub muted">NFL • Public board • Quarterly payouts</div>
           </div>
         </div>
-
-        <div class="comp-item muted-item">
-          <div>
-            <div class="comp-name">GAA Men’s SFC All-Ireland Final</div>
-            <div class="muted small">Football • Coming soon</div>
+        <div class="strip-right">
+          <div class="strip-price">
+            <div class="price-big">£11.50</div>
+            <div class="price-sub muted">per square</div>
           </div>
-          <span class="badge">COMING SOON</span>
+          <a class="btn btn-primary" href="/superbowl/">Enter</a>
         </div>
-
-        <div class="comp-item muted-item">
-          <div>
-            <div class="comp-name">GAA Senior Hurling Final</div>
-            <div class="muted small">Hurling • Coming soon</div>
-          </div>
-          <span class="badge">COMING SOON</span>
-        </div>
-
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="card" id="how">
-      <h2>How it works</h2>
-      <div class="muted small">Simple, public, transparent.</div>
+  <!-- Competitions grid -->
+  <section class="section" id="competitions">
+    <div class="section-inner">
+      <div class="section-head">
+        <h3>Competitions</h3>
+        <p class="muted">More sports will sit under Scoreline Squares (GAA finals next).</p>
+      </div>
 
-      <div style="height:12px"></div>
+      <div class="grid">
+        <a class="card" href="/superbowl/">
+          <div class="card-top">
+            <div class="tags">
+              <span class="tag tag-live">LIVE</span>
+              <span class="tag">NFL</span>
+            </div>
+          </div>
+          <div class="card-title">Superbowl Squares</div>
+          <div class="card-sub muted">Enter now • View public board</div>
+          <div class="card-foot">
+            <span class="muted">£11.50 / square</span>
+            <span class="chev">Enter →</span>
+          </div>
+        </a>
 
-      <ol class="how">
-        <li><strong>Choose a competition</strong><br><span class="muted small">Superbowl now, GAA finals next.</span></li>
-        <li><strong>Buy your squares</strong><br><span class="muted small">You choose quantity; squares are assigned randomly.</span></li>
-        <li><strong>Sold-out boards only</strong><br><span class="muted small">Only fully sold boards are valid for the competition.</span></li>
-        <li><strong>Refund rule</strong><br><span class="muted small">If not sold out 1 hour before kick-off, entries are refunded.</span></li>
-        <li><strong>Board archive</strong><br><span class="muted small">View sold-out boards and winners anytime.</span></li>
-      </ol>
-    </section>
+        <div class="card card-disabled">
+          <div class="card-top">
+            <div class="tags">
+              <span class="tag">COMING SOON</span>
+              <span class="tag">GAA</span>
+            </div>
+          </div>
+          <div class="card-title">GAA Men’s SFC All-Ireland Final</div>
+          <div class="card-sub muted">Coming soon</div>
+          <div class="card-foot">
+            <span class="muted">TBC</span>
+            <span class="chev muted">Planned</span>
+          </div>
+        </div>
 
-  </main>
+        <div class="card card-disabled">
+          <div class="card-top">
+            <div class="tags">
+              <span class="tag">COMING SOON</span>
+              <span class="tag">GAA</span>
+            </div>
+          </div>
+          <div class="card-title">GAA Senior Hurling Final</div>
+          <div class="card-sub muted">Coming soon</div>
+          <div class="card-foot">
+            <span class="muted">TBC</span>
+            <span class="chev muted">Planned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" id="how">
+    <div class="section-inner">
+      <div class="section-head">
+        <h3>How it works</h3>
+        <p class="muted">Simple, public, transparent.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-title">Choose a competition</div>
+            <div class="muted">Superbowl now, GAA finals next.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-title">Buy your squares</div>
+            <div class="muted">Choose quantity; squares assigned randomly.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-title">Sold-out boards only</div>
+            <div class="muted">Only fully sold boards are valid for competition.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-title">Refund rule</div>
+            <div class="muted">If not sold out 1 hour pre kick-off, entries refunded.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer class="footer">
-    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
+    <div class="footer-inner">
+      <div class="muted">© <span id="year"></span> Scoreline Squares</div>
+      <div class="footer-links">
+        <a href="#competitions">Competitions</a>
+        <a href="#how">How it works</a>
+        <a href="/superbowl/">Superbowl</a>
+      </div>
+    </div>
   </footer>
 
   <script>
