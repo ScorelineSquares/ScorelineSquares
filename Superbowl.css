@@ -1,355 +1,317 @@
+/* Superbowl.css */
+
+/* Base */
 :root{
-  --bg0:#0b1220;
-  --bg1:#0e1b2f;
+  --bg1:#050812;
+  --bg2:#062525;
   --card: rgba(255,255,255,.06);
   --card2: rgba(255,255,255,.04);
-  --line: rgba(255,255,255,.10);
-  --text:#eaf0ff;
-  --muted: rgba(234,240,255,.70);
-  --accent:#7c3aed;
-  --accent2:#22c55e;
-  --danger:#ef4444;
-  --radius:18px;
-  --shadow: 0 12px 30px rgba(0,0,0,.35);
+  --stroke: rgba(255,255,255,.10);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.70);
+
+  --blue:#6ec7ff;
+  --blue2: rgba(110,199,255,.20);
+  --red:#ff5a5a;
+  --red2: rgba(255,90,90,.20);
+
+  --accent:#8b5cf6;
 }
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:
-    radial-gradient(1200px 600px at 20% 0%, rgba(124,58,237,.25), transparent 60%),
-    radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.16), transparent 60%),
-    linear-gradient(180deg, var(--bg1), var(--bg0));
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
   color:var(--text);
+  background:
+    radial-gradient(1200px 800px at 20% 0%, rgba(16,185,129,.16) 0%, transparent 55%),
+    radial-gradient(900px 700px at 90% 20%, rgba(139,92,246,.16) 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
-a{ color: inherit; }
+a{ color:inherit; }
 
 .topbar{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+  gap:12px;
   padding:14px 16px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.10);
+  border-bottom:1px solid var(--stroke);
+  background: rgba(0,0,0,.25);
   backdrop-filter: blur(10px);
-  position: sticky;
-  top:0;
-  z-index: 20;
 }
 
 .brand{
   display:flex;
-  align-items:center;
   gap:10px;
+  align-items:center;
+  min-width: 0;
 }
-.ball{
-  font-size:20px;
-  width:34px;
-  height:34px;
-  display:grid;
-  place-items:center;
+.brand .ball{
+  width:34px; height:34px;
+  display:grid; place-items:center;
   border-radius:10px;
   background: rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.10);
+  border: 1px solid var(--stroke);
+  flex: 0 0 auto;
 }
-.company{ font-weight:800; letter-spacing:.2px; }
-.game{ font-size:12px; color: var(--muted); display:flex; gap:8px; align-items:center; }
+.company{ font-weight:900; line-height:1.1; }
+.game{ font-size:12px; color:var(--muted); }
+
+.price{
+  text-align:right;
+  line-height:1.1;
+}
+.price-amount{
+  font-weight:900;
+  font-size:16px;
+}
+.price-label{
+  font-size:12px;
+  color:var(--muted);
+}
 
 .badge{
+  display:inline-block;
   font-size:11px;
   padding:4px 8px;
   border-radius:999px;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.08);
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
   color: var(--text);
+  vertical-align: middle;
 }
-
-.price{ text-align:right; }
-.price-amount{ font-weight:900; font-size:16px; }
-.price-label{ font-size:11px; color: var(--muted); }
 
 .notice{
+  margin:12px auto 0;
+  width:min(1100px, calc(100% - 24px));
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(34,197,94,.35);
+  background: rgba(34,197,94,.10);
+  color: rgba(255,255,255,.92);
   display:flex;
-  gap:10px;
-  justify-content:space-between;
   align-items:center;
-  padding:10px 16px;
-  background: rgba(255,255,255,.06);
-  border-bottom:1px solid rgba(255,255,255,.08);
+  justify-content:space-between;
+  gap:10px;
 }
-.notice-left{ font-size:12px; color: var(--muted); }
 
-.page{
-  width:min(1100px, 94vw);
-  margin: 16px auto 50px;
+.layout{
+  width:min(1100px, calc(100% - 24px));
+  margin:12px auto 30px;
   display:grid;
   gap:14px;
 }
 
+/* Cards */
 .card{
+  border-radius:18px;
+  border:1px solid var(--stroke);
   background: var(--card);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+
+.card .card-pad{ padding:14px; }
+
+h2{
+  margin:0 0 6px;
+  font-size:22px;
+}
+.muted{ color:var(--muted); }
+.small{ font-size:12px; }
+
+/* ---- TOP AREA: GRID + INFO PANEL ---- */
+.board-row{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:14px;
   padding:14px;
 }
 
-h2{
-  margin:0 0 8px;
-  font-size:18px;
+@media (max-width: 900px){
+  .board-row{ grid-template-columns: 1fr; }
 }
-.muted{ color: var(--muted); }
-.small{ font-size:12px; }
 
+.panel{
+  border:1px solid var(--stroke);
+  background: var(--card2);
+  border-radius:16px;
+  padding:14px;
+}
+
+.panel h3{
+  margin:0 0 10px;
+  font-size:14px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color: rgba(255,255,255,.85);
+}
+
+.panel .box{
+  border:1px solid var(--stroke);
+  background: rgba(0,0,0,.22);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+}
+
+.panel .row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.12);
+}
+.panel .row:last-child{ border-bottom:none; }
+
+.panel .label{
+  font-weight:800;
+  color: rgba(255,255,255,.86);
+}
+.panel .value{
+  font-weight:900;
+}
+
+/* ---- GRID ---- */
+/* Your app.js renders 11x11 where headers are "cell header". */
+.grid-wrap{
+  border:1px solid var(--stroke);
+  background: rgba(0,0,0,.20);
+  border-radius:18px;
+  padding:12px;
+  overflow:auto;
+}
+
+.grid{
+  display:grid;
+  /* 11 columns: top-left corner + 10 header numbers + 10 squares */
+  grid-template-columns: repeat(11, 54px);
+  grid-auto-rows: 54px;
+  gap: 6px;
+  justify-content: start;
+}
+
+@media (max-width: 520px){
+  .grid{
+    grid-template-columns: repeat(11, 44px);
+    grid-auto-rows: 44px;
+    gap: 5px;
+  }
+}
+
+.cell{
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+  user-select:none;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+
+/* Headers (numbers + corner) */
+.cell.header{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  color: rgba(255,255,255,.85);
+  font-weight:900;
+}
+
+/* Make the top headers feel like "HOME TEAM" line */
+.grid .cell.header.top{
+  background: var(--blue2);
+  border-color: rgba(110,199,255,.35);
+}
+
+/* Make the left headers feel like "AWAY TEAM" line */
+.grid .cell.header.left{
+  background: var(--red2);
+  border-color: rgba(255,90,90,.35);
+}
+
+/* Squares */
+.cell.square{
+  background: rgba(255,255,255,.02);
+}
+.cell.square.taken{
+  background: rgba(34,197,94,.16);
+  border-color: rgba(34,197,94,.40);
+}
+.cell.square.taken.selected{
+  outline: 3px solid rgba(139,92,246,.75);
+  outline-offset: 2px;
+}
+
+/* Buttons & form */
 .btn{
+  appearance:none;
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+  text-decoration:none;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   gap:8px;
-  padding:10px 12px;
-  border-radius: 12px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-  text-decoration:none;
-  cursor:pointer;
-  font-weight:700;
-  font-size:13px;
 }
-.btn:hover{ filter: brightness(1.05); }
 .btn.primary{
-  background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(124,58,237,.65));
-  border-color: rgba(124,58,237,.55);
+  background: linear-gradient(180deg, rgba(139,92,246,.95), rgba(109,40,217,.95));
+  border-color: rgba(139,92,246,.55);
 }
-.btn.danger{
-  background: rgba(239,68,68,.18);
-  border-color: rgba(239,68,68,.35);
+.btn:active{ transform: translateY(1px); }
+
+.form-card{
+  padding:14px;
 }
-
-/* ---- Board Layout ---- */
-
-.board-shell{
-  margin-top:12px;
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:12px;
-}
-
-@media (min-width: 900px){
-  .board-shell{
-    grid-template-columns: 1fr 280px;
-    align-items:start;
-  }
-}
-
-.home-title{
-  grid-column: 1 / -1;
-  margin: 0 0 6px 0;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.10);
-  font-weight:900;
-  text-align:center;
-  letter-spacing:.3px;
-}
-
-.board{
-  position:relative;
-  background: var(--card2);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: 16px;
-  padding: 12px;
-  overflow:hidden;
-
-  /* grid for labels + squares */
-  display:grid;
-  grid-template-columns: 50px 34px 1fr;
-  grid-template-rows: 34px 1fr;
-  gap: 10px 10px;
-}
-
-.away-title{
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.away-title span{
-  display:inline-block;
-  font-weight:900;
-  letter-spacing:.4px;
-  white-space:nowrap;
-  transform: rotate(90deg); /* clockwise */
-  transform-origin: center;
-  color: rgba(234,240,255,.92);
-}
-
-.x-labels{
-  grid-column: 3 / 4;
-  grid-row: 1 / 2;
-  display:grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 6px;
-  align-items:center;
-}
-.y-labels{
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  display:grid;
-  grid-template-rows: repeat(10, 1fr);
-  gap: 6px;
-  align-items:center;
-}
-
-.label-cell{
-  display:grid;
-  place-items:center;
-  font-size:12px;
-  color: rgba(234,240,255,.72);
-  background: rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:10px;
-  height: 32px;
-}
-
-.grid{
-  grid-column: 3 / 4;
-  grid-row: 2 / 3;
-
-  display:grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap:6px;
-}
-
-.grid .cell,
-.grid button,
-.grid div{
-  /* If your JS creates <button> or <div>, this keeps them styled */
-  width:100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.06);
-  color: rgba(234,240,255,.88);
-  display:grid;
-  place-items:center;
-  font-size:12px;
-  padding:0;
-  user-select:none;
-}
-
-.grid button{
-  cursor:pointer;
-}
-.grid button:hover{ filter: brightness(1.05); }
-
-/* Side panel */
-.sidepanel{
-  background: var(--card2);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: 16px;
-  padding: 12px;
-}
-
-.sidepanel-block{
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.04);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.sidepanel-title{
-  font-weight:900;
-  font-size:13px;
-  letter-spacing:.4px;
-  margin-bottom:10px;
-}
-
-.sidepanel-box{
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.05);
-  border-radius: 12px;
-  padding: 12px;
-  font-weight:900;
-  font-size:18px;
-  text-align:center;
-}
-
-.rows{ display:grid; gap:10px; }
-.row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 10px;
-  border-radius: 12px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.04);
-}
-.row .k{ font-weight:900; font-size:13px; }
-.row .v{ font-weight:900; }
-
-/* Form card */
 form{
   display:grid;
   gap:10px;
-  margin-top: 12px;
 }
-
 label{
   display:grid;
   gap:6px;
-  font-size:13px;
-  color: rgba(234,240,255,.86);
+  font-size:12px;
+  color: var(--muted);
 }
-
 input{
-  background: rgba(0,0,0,.18);
+  width:100%;
+  border-radius:12px;
   border:1px solid rgba(255,255,255,.12);
-  border-radius: 12px;
-  padding: 11px 12px;
+  background: rgba(0,0,0,.25);
   color: var(--text);
+  padding:10px 12px;
   outline:none;
 }
-input:focus{
-  border-color: rgba(124,58,237,.65);
-  box-shadow: 0 0 0 3px rgba(124,58,237,.20);
-}
-
 .summary{
-  margin-top: 4px;
-  min-height: 18px;
-  font-size: 13px;
-  color: rgba(234,240,255,.88);
+  margin-top:8px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.88);
+  font-size:12px;
 }
 
 .meta{
-  margin-top: 10px;
-  color: rgba(234,240,255,.86);
+  display:grid;
+  gap:6px;
+  margin-top:10px;
+  font-size:12px;
+  color: rgba(255,255,255,.82);
 }
-
-.admin{
-  margin-top: 12px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  padding-top: 10px;
-}
-.admin summary{ cursor:pointer; font-weight:800; }
-.admin-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top: 10px;
-}
-
 .footer{
+  padding:16px;
   text-align:center;
-  padding: 18px 0;
-  color: rgba(234,240,255,.55);
+  border-top:1px solid var(--stroke);
+  color: var(--muted);
+  background: rgba(0,0,0,.18);
 }
-
-.hidden{ display:none !important; }
