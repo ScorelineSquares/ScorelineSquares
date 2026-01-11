@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scoreline Squares • Home</title>
 
-  <!-- IMPORTANT: Your homepage CSS file is Home.css -->
-  <link rel="stylesheet" href="Home.css" />
+  <!-- Homepage CSS -->
+  <link rel="stylesheet" href="./Home.css" />
 </head>
 
 <body>
@@ -19,11 +19,11 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:14px; align-items:center;">
+    <nav class="topnav">
       <a class="btn" href="./index.html">Home</a>
       <a class="btn" href="#competitions">Competitions</a>
       <a class="btn" href="#how">How it works</a>
-    </div>
+    </nav>
   </header>
 
   <div class="notice" role="status">
@@ -32,7 +32,6 @@
 
   <main class="layout">
 
-    <!-- HERO -->
     <section class="card">
       <h2>Win big with Scoreline Squares</h2>
       <div class="muted small">
@@ -41,19 +40,9 @@
 
       <div style="height:14px"></div>
 
-      <div style="
-        border-radius:16px;
-        overflow:hidden;
-        border:1px solid rgba(255,255,255,.08);
-        background: rgba(255,255,255,.04);
-      ">
-        <img
-          src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1600&q=80"
-          alt="Stadium"
-          style="width:100%; height:240px; object-fit:cover; display:block;"
-        />
-        <div style="padding:14px">
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-badges">
             <span class="badge">LIVE boards</span>
             <span class="badge">Random entries</span>
             <span class="badge">Sold-out archives</span>
@@ -62,8 +51,8 @@
 
           <div style="height:12px"></div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <!-- IMPORTANT: Your Superbowl page is /superbowl/index.html so link to /superbowl/ -->
+          <!-- IMPORTANT: this is the correct folder link -->
+          <div class="hero-actions">
             <a class="btn primary" href="./superbowl/">Enter Superbowl Squares</a>
             <a class="btn" href="#competitions">Browse competitions</a>
           </div>
@@ -71,54 +60,37 @@
       </div>
     </section>
 
-    <!-- ENDING SOON -->
     <section class="card">
       <h2>Ending soon</h2>
-      <div class="muted small">
-        Boards that are filling up (placeholder for now).
-      </div>
+      <div class="muted small">Boards that are filling up (placeholder for now).</div>
 
       <div style="height:14px"></div>
 
-      <div style="
-        display:flex; gap:12px; align-items:stretch;
-        border:1px solid rgba(255,255,255,.08);
-        background: rgba(255,255,255,.04);
-        border-radius:14px;
-        overflow:hidden;
-      ">
-        <img
-          src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80"
-          alt="American Football"
-          style="width:120px; height:120px; object-fit:cover; display:block;"
-        />
-        <div style="padding:12px; flex:1;">
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
-            <div>
-              <div style="font-weight:800; font-size:16px;">Superbowl Squares</div>
-              <div class="muted small">NFL • Quarterly payouts • Public board</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-weight:800;">£11.50</div>
-              <div class="muted small">per square</div>
-            </div>
-          </div>
+      <div class="listing">
+        <div class="listing-left">
+          <div class="listing-title">Superbowl Squares</div>
+          <div class="muted small">NFL • Quarterly payouts • Public board</div>
 
           <div style="height:10px"></div>
 
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <div class="listing-badges">
             <span class="badge">LIVE</span>
             <span class="badge">Open boards</span>
           </div>
 
           <div style="height:10px"></div>
 
+          <!-- IMPORTANT: this is the correct folder link -->
           <a class="btn primary" href="./superbowl/">Enter now</a>
+        </div>
+
+        <div class="listing-right">
+          <div class="listing-price">£11.50</div>
+          <div class="muted small">per square</div>
         </div>
       </div>
     </section>
 
-    <!-- COMPETITIONS LIST -->
     <section class="card" id="competitions">
       <h2>Competitions</h2>
       <div class="muted small">
@@ -127,81 +99,51 @@
 
       <div style="height:12px"></div>
 
-      <div style="display:grid; gap:12px;">
-        <div style="
-          border:1px solid rgba(255,255,255,.08);
-          background: rgba(255,255,255,.04);
-          border-radius:14px;
-          padding:14px;
-          display:flex;
-          justify-content:space-between;
-          gap:10px;
-          align-items:center;
-          flex-wrap:wrap;
-        ">
+      <div class="comp-list">
+
+        <div class="comp-item">
           <div>
-            <div style="font-weight:800;">Superbowl Squares</div>
+            <div class="comp-name">Superbowl Squares</div>
             <div class="muted small">NFL • Live</div>
           </div>
-          <div style="display:flex; gap:10px; align-items:center;">
+          <div class="comp-actions">
             <span class="badge">LIVE</span>
+            <!-- IMPORTANT: correct folder link -->
             <a class="btn primary" href="./superbowl/">Enter</a>
           </div>
         </div>
 
-        <div style="
-          border:1px solid rgba(255,255,255,.08);
-          background: rgba(255,255,255,.03);
-          border-radius:14px;
-          padding:14px;
-          opacity:.85;
-          display:flex;
-          justify-content:space-between;
-          gap:10px;
-          align-items:center;
-          flex-wrap:wrap;
-        ">
+        <div class="comp-item muted-item">
           <div>
-            <div style="font-weight:800;">GAA Men’s SFC All-Ireland Final</div>
+            <div class="comp-name">GAA Men’s SFC All-Ireland Final</div>
             <div class="muted small">Football • Coming soon</div>
           </div>
           <span class="badge">COMING SOON</span>
         </div>
 
-        <div style="
-          border:1px solid rgba(255,255,255,.08);
-          background: rgba(255,255,255,.03);
-          border-radius:14px;
-          padding:14px;
-          opacity:.85;
-          display:flex;
-          justify-content:space-between;
-          gap:10px;
-          align-items:center;
-          flex-wrap:wrap;
-        ">
+        <div class="comp-item muted-item">
           <div>
-            <div style="font-weight:800;">GAA Senior Hurling Final</div>
+            <div class="comp-name">GAA Senior Hurling Final</div>
             <div class="muted small">Hurling • Coming soon</div>
           </div>
           <span class="badge">COMING SOON</span>
         </div>
+
       </div>
     </section>
 
-    <!-- HOW IT WORKS -->
     <section class="card" id="how">
       <h2>How it works</h2>
       <div class="muted small">Simple, public, transparent.</div>
 
       <div style="height:12px"></div>
 
-      <ol style="margin-left:18px; display:grid; gap:10px;">
-        <li><strong>Choose a competition</strong><br/><span class="muted small">Superbowl now, GAA finals next.</span></li>
-        <li><strong>Buy your squares</strong><br/><span class="muted small">You choose quantity; squares are assigned randomly.</span></li>
-        <li><strong>Sold-out boards only</strong><br/><span class="muted small">Only fully sold boards are valid for the competition.</span></li>
-        <li><strong>Refund rule</strong><br/><span class="muted small">If not sold out 1 hour before kick-off, entries are refunded.</span></li>
-        <li><strong>Board archive</strong><br/><span class="muted small">View sold-out boards and winners anytime.</span></li>
+      <ol class="how">
+        <li><strong>Choose a competition</strong><br><span class="muted small">Superbowl now, GAA finals next.</span></li>
+        <li><strong>Buy your squares</strong><br><span class="muted small">You choose quantity; squares are assigned randomly.</span></li>
+        <li><strong>Sold-out boards only</strong><br><span class="muted small">Only fully sold boards are valid for the competition.</span></li>
+        <li><strong>Refund rule</strong><br><span class="muted small">If not sold out 1 hour before kick-off, entries are refunded.</span></li>
+        <li><strong>Board archive</strong><br><span class="muted small">View sold-out boards and winners anytime.</span></li>
       </ol>
     </section>
 
