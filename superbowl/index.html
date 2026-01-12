@@ -3,150 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scoreline Squares • Superbowl Squares (TEST MODE)</title>
+  <title>Scoreline Squares • Superbowl</title>
 
-  <!-- IMPORTANT: we're inside /superbowl/ so go UP one level for CSS -->
+  <!-- Styles (one level up) -->
   <link rel="stylesheet" href="../Superbowl.css" />
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="ball" aria-hidden="true">🏈</span>
-      <div>
-        <div class="company">Scoreline Squares</div>
-        <div class="game">
-          Superbowl Squares <span class="badge">TEST MODE</span>
-        </div>
-      </div>
+
+  <!-- TOP BAR WITH BACK LINK -->
+  <header class="sb-topbar">
+    <div>
+      <div class="sb-title">SUPERBOWL SQUARES</div>
+      <div class="sb-subtitle">Scoreline Squares • Trial mode</div>
     </div>
 
-    <div class="top-actions">
-      <a class="btn" href="../index.html">Home</a>
-    </div>
+    <!-- THIS IS THE WORKING BACK BUTTON -->
+    <a class="sb-back" href="../index.html">← Back to home</a>
   </header>
 
-  <div class="notice" role="status">
-    <span>TEST MODE: simulation only — no real money involved.</span>
-  </div>
+  <main class="sb-wrap">
 
-  <main class="layout">
-
-    <!-- BOARD FIRST (what you asked for) -->
-    <section class="card board-card">
-      <div class="board-title">
-        <h2>Superbowl Squares</h2>
-        <div class="muted small">A 10×10 grid (100 squares). Squares are assigned randomly when you buy.</div>
+    <!-- BOARD -->
+    <section class="sb-board">
+      <div class="sb-board-header">
+        <span class="sb-label-pill">HOME TEAM</span>
       </div>
 
-      <div class="board-shell">
-        <!-- HOME TEAM label (top) -->
-        <div class="home-label">
-          <span class="label-pill">HOME TEAM</span>
-          <span class="muted small" id="homeTeamText">TBD (Home)</span>
+      <div class="sb-board-body">
+        <!-- AWAY LABEL -->
+        <div class="sb-away-label">
+          <span class="sb-label-pill">AWAY TEAM</span>
         </div>
 
-        <div class="board-row">
-          <!-- AWAY TEAM label (left) -->
-          <div class="away-label">
-            <div class="away-rotate">
-              <span class="label-pill">AWAY TEAM</span>
-              <span class="muted small" id="awayTeamText">TBD (Away)</span>
+        <!-- GRID -->
+        <div class="sb-grid-shell">
+          <div class="grid" id="grid"></div>
+        </div>
+
+        <!-- SIDE INFO -->
+        <aside class="sb-side">
+          <div class="sb-side-card">
+            <div class="sb-side-heading">COST PER SQUARE</div>
+            <div class="sb-money">£<span id="pricePerSquare">11.50</span></div>
+          </div>
+
+          <div class="sb-side-card">
+            <div class="sb-side-heading">PRIZES</div>
+
+            <div class="sb-row">
+              <span class="sb-row-label">QTR 1</span>
+              <span class="sb-row-value">£<span id="payoutQ1">250</span></span>
+            </div>
+            <div class="sb-row">
+              <span class="sb-row-label">QTR 2</span>
+              <span class="sb-row-value">£<span id="payoutQ2">250</span></span>
+            </div>
+            <div class="sb-row">
+              <span class="sb-row-label">QTR 3</span>
+              <span class="sb-row-value">£<span id="payoutQ3">250</span></span>
+            </div>
+            <div class="sb-row sb-row-final">
+              <span class="sb-row-label">FINAL</span>
+              <span class="sb-row-value">£<span id="payoutFinal">250</span></span>
             </div>
           </div>
 
-          <!-- GRID -->
-          <div class="grid-wrap">
-            <div class="grid" id="grid" aria-label="Squares grid"></div>
+          <div class="sb-side-card">
+            <div class="sb-side-heading">STATUS</div>
+            <div class="sb-row">
+              <span class="sb-row-label">Squares remaining</span>
+              <span class="sb-row-value"><span id="remaining">100</span></span>
+            </div>
           </div>
-
-          <!-- SIDE INFO (cost + prizes like your template) -->
-          <aside class="side-panel" aria-label="Board info">
-            <div class="panel-block">
-              <div class="panel-title">COST PER SQUARE</div>
-              <div class="panel-value">£<span id="pricePerSquare">11.50</span></div>
-            </div>
-
-            <div class="panel-block">
-              <div class="panel-title">PRIZES</div>
-              <div class="panel-grid">
-                <div class="panel-row"><span>QTR 1</span><span class="panel-box" id="prizeQ1">£0</span></div>
-                <div class="panel-row"><span>QTR 2</span><span class="panel-box" id="prizeQ2">£0</span></div>
-                <div class="panel-row"><span>QTR 3</span><span class="panel-box" id="prizeQ3">£0</span></div>
-                <div class="panel-row"><span>FINAL</span><span class="panel-box" id="prizeFinal">£0</span></div>
-              </div>
-              <div class="muted small" style="margin-top:10px;">
-                (Admin can set prizes later — this is just the display area.)
-              </div>
-            </div>
-
-            <div class="panel-block">
-              <div class="panel-title">SQUARES REMAINING</div>
-              <div class="panel-value"><span id="remaining">100</span>/100</div>
-            </div>
-          </aside>
-        </div>
+        </aside>
       </div>
     </section>
 
-    <!-- FORM SECOND (below the grid) -->
-    <section class="card">
-      <h2>Join the game</h2>
-      <p class="muted">
-        Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want,
-        then click <strong>Simulate Payment</strong>.
+    <!-- ENTRY FORM -->
+    <section class="sb-entry">
+      <h2 class="sb-entry-title">Join the game</h2>
+      <p class="sb-entry-sub muted">
+        Enter your details, choose how many squares you want, then simulate payment.
       </p>
 
-      <form id="entryForm">
-        <label>
-          Username
-          <input id="username" name="username" autocomplete="nickname" required />
+      <form id="entryForm" class="sb-form">
+        <label class="sb-field">
+          <span>Username</span>
+          <input id="username" required />
         </label>
 
-        <label>
-          Email
-          <input id="email" name="email" type="email" autocomplete="email" required />
+        <label class="sb-field">
+          <span>Email</span>
+          <input id="email" type="email" required />
         </label>
 
-        <label>
-          Number of squares
-          <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+        <label class="sb-field">
+          <span>Number of squares</span>
+          <input id="quantity" type="number" min="1" value="1" required />
         </label>
 
-        <button class="btn primary" type="submit" id="payBtn">
-          Simulate Payment
-        </button>
+        <button class="sb-btn" type="submit">Simulate Payment</button>
 
-        <div class="summary" id="summaryText"></div>
+        <div class="sb-summary" id="summaryText"></div>
       </form>
 
-      <div class="meta">
-        <div><strong>Payouts:</strong> Q1, Q2, Q3 &amp; Final</div>
-      </div>
-
-      <details class="admin">
+      <details class="sb-admin">
         <summary>Admin (trial only)</summary>
-        <p class="muted">These controls are for testing.</p>
-        <div class="admin-actions">
-          <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
-          <button class="btn danger" id="resetBtn" type="button">Reset game (button)</button>
-        </div>
 
-        <div class="muted small">Tip: Share this page link with friends to test together.</div>
+        <div class="sb-admin-actions">
+          <button class="sb-btn sb-btn-ghost" id="exportBtn" type="button">
+            Export entries (CSV)
+          </button>
+          <button class="sb-btn sb-btn-danger" id="resetBtn" type="button">
+            Reset game
+          </button>
+        </div>
       </details>
     </section>
 
+    <footer class="sb-footer muted small">
+      © <span id="year"></span> Scoreline Squares
+    </footer>
+
   </main>
 
-  <footer class="footer">
-    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
-  </footer>
-
-  <!-- IMPORTANT: we're inside /superbowl/ so go UP one level for JS -->
+  <!-- Logic (one level up) -->
   <script src="../app.js"></script>
-
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+
 </body>
 </html>
