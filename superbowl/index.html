@@ -15,98 +15,86 @@
       <span class="ball" aria-hidden="true">🏈</span>
       <div>
         <div class="company">Scoreline Squares</div>
-        <div class="game">Superbowl Squares <span class="badge">TEST MODE</span></div>
+        <div class="game">
+          Superbowl Squares <span class="badge">TEST MODE</span>
+        </div>
       </div>
     </div>
 
-    <div class="price">
-      <div class="price-amount">£<span id="pricePerSquare">11.50</span></div>
-      <div class="price-label">per square</div>
+    <div class="top-actions">
+      <a class="btn" href="../index.html">Home</a>
     </div>
   </header>
 
   <div class="notice" role="status">
-    <span class="small"><span class="badge">TEST MODE</span> simulation only — no real money involved.</span>
-    <a class="btn" href="../index.html">Back to homepage</a>
+    <span>TEST MODE: simulation only — no real money involved.</span>
   </div>
 
   <main class="layout">
 
-    <!-- TOP: GRID + INFO PANEL (like your template) -->
-    <section class="card">
-      <div class="board-row">
+    <!-- BOARD FIRST (what you asked for) -->
+    <section class="card board-card">
+      <div class="board-title">
+        <h2>Superbowl Squares</h2>
+        <div class="muted small">A 10×10 grid (100 squares). Squares are assigned randomly when you buy.</div>
+      </div>
 
-        <!-- GRID -->
-        <div>
-          <h2 style="margin:0 0 6px;">Superbowl Squares</h2>
-          <div class="muted small" style="margin-bottom:10px;">
-            Home Team (top) • Away Team (left). Hover or tap SOLD squares to view buyer.
+      <div class="board-shell">
+        <!-- HOME TEAM label (top) -->
+        <div class="home-label">
+          <span class="label-pill">HOME TEAM</span>
+          <span class="muted small" id="homeTeamText">TBD (Home)</span>
+        </div>
+
+        <div class="board-row">
+          <!-- AWAY TEAM label (left) -->
+          <div class="away-label">
+            <div class="away-rotate">
+              <span class="label-pill">AWAY TEAM</span>
+              <span class="muted small" id="awayTeamText">TBD (Away)</span>
+            </div>
           </div>
 
+          <!-- GRID -->
           <div class="grid-wrap">
             <div class="grid" id="grid" aria-label="Squares grid"></div>
           </div>
 
-          <div class="meta">
-            <div><strong>Squares remaining:</strong> <span id="remaining">100</span></div>
-          </div>
+          <!-- SIDE INFO (cost + prizes like your template) -->
+          <aside class="side-panel" aria-label="Board info">
+            <div class="panel-block">
+              <div class="panel-title">COST PER SQUARE</div>
+              <div class="panel-value">£<span id="pricePerSquare">11.50</span></div>
+            </div>
+
+            <div class="panel-block">
+              <div class="panel-title">PRIZES</div>
+              <div class="panel-grid">
+                <div class="panel-row"><span>QTR 1</span><span class="panel-box" id="prizeQ1">£0</span></div>
+                <div class="panel-row"><span>QTR 2</span><span class="panel-box" id="prizeQ2">£0</span></div>
+                <div class="panel-row"><span>QTR 3</span><span class="panel-box" id="prizeQ3">£0</span></div>
+                <div class="panel-row"><span>FINAL</span><span class="panel-box" id="prizeFinal">£0</span></div>
+              </div>
+              <div class="muted small" style="margin-top:10px;">
+                (Admin can set prizes later — this is just the display area.)
+              </div>
+            </div>
+
+            <div class="panel-block">
+              <div class="panel-title">SQUARES REMAINING</div>
+              <div class="panel-value"><span id="remaining">100</span>/100</div>
+            </div>
+          </aside>
         </div>
-
-        <!-- RIGHT INFO PANEL -->
-        <aside class="panel" aria-label="Cost and prizes panel">
-
-          <div class="box">
-            <h3>Cost per square</h3>
-            <div class="row">
-              <div class="label">Entry</div>
-              <div class="value">£<span id="costBox">11.50</span></div>
-            </div>
-            <div class="muted small">
-              This is the price each participant pays per square.
-            </div>
-          </div>
-
-          <div class="box">
-            <h3>Prize payouts</h3>
-
-            <div class="row">
-              <div class="label">QTR 1</div>
-              <div class="value">£<span id="payoutQ1">250</span></div>
-            </div>
-
-            <div class="row">
-              <div class="label">QTR 2</div>
-              <div class="value">£<span id="payoutQ2">250</span></div>
-            </div>
-
-            <div class="row">
-              <div class="label">QTR 3</div>
-              <div class="value">£<span id="payoutQ3">250</span></div>
-            </div>
-
-            <!-- QTR 4 removed as requested -->
-
-            <div class="row">
-              <div class="label">FINAL</div>
-              <div class="value">£<span id="payoutFinal">250</span></div>
-            </div>
-
-            <div class="muted small">
-              Example values for now — we can make these editable/admin-only later.
-            </div>
-          </div>
-
-        </aside>
-
       </div>
     </section>
 
-    <!-- BELOW: JOIN FORM (grid is visible first) -->
-    <section class="card form-card">
+    <!-- FORM SECOND (below the grid) -->
+    <section class="card">
       <h2>Join the game</h2>
-      <p class="muted" style="margin-top:0;">
+      <p class="muted">
         Enter a <strong>Username</strong> and <strong>Email</strong>, choose how many squares you want,
-        then click <strong>Simulate Payment</strong>. (Random squares assigned)
+        then click <strong>Simulate Payment</strong>.
       </p>
 
       <form id="entryForm">
@@ -126,54 +114,39 @@
         </label>
 
         <button class="btn primary" type="submit" id="payBtn">
-          Simulate Payment for £<span id="payTotal">11.50</span>
+          Simulate Payment
         </button>
 
         <div class="summary" id="summaryText"></div>
       </form>
+
+      <div class="meta">
+        <div><strong>Payouts:</strong> Q1, Q2, Q3 &amp; Final</div>
+      </div>
+
+      <details class="admin">
+        <summary>Admin (trial only)</summary>
+        <p class="muted">These controls are for testing.</p>
+        <div class="admin-actions">
+          <button class="btn" id="exportBtn" type="button">Export entries (CSV)</button>
+          <button class="btn danger" id="resetBtn" type="button">Reset game (button)</button>
+        </div>
+
+        <div class="muted small">Tip: Share this page link with friends to test together.</div>
+      </details>
     </section>
 
   </main>
 
   <footer class="footer">
-    <div class="small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
+    <div class="muted small">© <span id="year"></span> Scoreline Squares • Trial mode</div>
   </footer>
-
-  <script>
-    // Set year
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Keep these values in ONE place (easy to change)
-    const PRICE_PER_SQUARE = 11.50;
-
-    const PAYOUTS = {
-      q1: 250,
-      q2: 250,
-      q3: 250,
-      final: 250
-    };
-
-    // Fill the UI
-    document.getElementById("pricePerSquare").textContent = PRICE_PER_SQUARE.toFixed(2);
-    document.getElementById("costBox").textContent = PRICE_PER_SQUARE.toFixed(2);
-
-    document.getElementById("payoutQ1").textContent = PAYOUTS.q1;
-    document.getElementById("payoutQ2").textContent = PAYOUTS.q2;
-    document.getElementById("payoutQ3").textContent = PAYOUTS.q3;
-    document.getElementById("payoutFinal").textContent = PAYOUTS.final;
-
-    // Update button total when quantity changes
-    const qty = document.getElementById("quantity");
-    const payTotal = document.getElementById("payTotal");
-    function updateTotal(){
-      const n = Math.max(1, Number(qty.value || 1));
-      payTotal.textContent = (n * PRICE_PER_SQUARE).toFixed(2);
-    }
-    qty.addEventListener("input", updateTotal);
-    updateTotal();
-  </script>
 
   <!-- IMPORTANT: we're inside /superbowl/ so go UP one level for JS -->
   <script src="../app.js"></script>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
