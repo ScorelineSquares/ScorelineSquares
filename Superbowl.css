@@ -1,98 +1,69 @@
 :root{
-  --bg0:#020617;
-  --bg1:#041226;
-  --card:rgba(255,255,255,.06);
-  --card2:rgba(255,255,255,.04);
-  --stroke:rgba(255,255,255,.10);
-  --text:#e5e7eb;
-  --muted:rgba(229,231,235,.70);
-  --accent:#7c3aed;
-  --good:#10b981;
-  --danger:#ef4444;
-  --shadow: 0 18px 50px rgba(0,0,0,.40);
+  --bg:#0b1220;
+  --card:#0f1a2e;
+  --line: rgba(255,255,255,.16);
+  --line2: rgba(255,255,255,.10);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.70);
+
+  --home: rgba(110,199,255,.22);
+  --homeLine: rgba(110,199,255,.45);
+
+  --away: rgba(255,90,90,.18);
+  --awayLine: rgba(255,90,90,.45);
+
+  --soldBg: rgba(34,197,94,.20);
+  --soldLine: rgba(34,197,94,.55);
+
+  --select: rgba(124,58,237,.85);
 }
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  color:var(--text);
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:
-    radial-gradient(1200px 600px at 80% 0%, rgba(16,185,129,.20), transparent 60%),
-    radial-gradient(900px 500px at 10% 20%, rgba(124,58,237,.22), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
+    radial-gradient(1100px 650px at 15% 0%, rgba(124,58,237,.18), transparent 55%),
+    radial-gradient(900px 520px at 90% 20%, rgba(34,197,94,.14), transparent 55%),
+    linear-gradient(180deg, #050815, var(--bg));
+  color: var(--text);
 }
 
 a{ color:inherit; }
 
 .topbar{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:14px;
+  align-items:center;
+  gap:12px;
   padding:14px 16px;
-  border-bottom:1px solid var(--stroke);
-  background: rgba(0,0,0,.18);
-  position:sticky;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.20);
+  backdrop-filter: blur(10px);
+  position: sticky;
   top:0;
-  z-index:5;
+  z-index:10;
 }
 
-.brand{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
+.brand{ display:flex; align-items:center; gap:10px; }
 .ball{
-  font-size:18px;
-  width:32px; height:32px;
+  width:34px; height:34px;
   display:grid; place-items:center;
   border-radius:10px;
-  background: rgba(255,255,255,.08);
-  border:1px solid var(--stroke);
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.07);
 }
-.company{ font-weight:800; }
-.game{ color:var(--muted); font-size:12px; margin-top:2px; display:flex; gap:8px; align-items:center; }
+.company{ font-weight:900; }
+.game{ font-size:12px; color: var(--muted); }
 
 .badge{
   font-size:11px;
-  padding:3px 8px;
+  padding:4px 8px;
   border-radius:999px;
-  border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
-  color: var(--text);
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07);
 }
-
-.notice{
-  margin:12px auto 0;
-  max-width:1100px;
-  padding:10px 12px;
-  border-radius:12px;
-  background: rgba(16,185,129,.10);
-  border:1px solid rgba(16,185,129,.25);
-  color: var(--text);
-}
-
-.layout{
-  max-width:1100px;
-  margin:14px auto 30px;
-  padding:0 12px;
-  display:grid;
-  gap:14px;
-}
-
-.card{
-  background: var(--card);
-  border:1px solid var(--stroke);
-  border-radius:18px;
-  padding:14px;
-  box-shadow: var(--shadow);
-}
-
-h2{ margin:0 0 6px; font-size:26px; }
-.muted{ color:var(--muted); }
-.small{ font-size:12px; }
 
 .btn{
   display:inline-flex;
@@ -101,260 +72,178 @@ h2{ margin:0 0 6px; font-size:26px; }
   gap:8px;
   padding:10px 12px;
   border-radius:12px;
-  border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07);
   text-decoration:none;
-  color:var(--text);
-  font-weight:700;
+  color: var(--text);
+  font-weight:800;
   cursor:pointer;
 }
 .btn.primary{
-  background: linear-gradient(180deg, rgba(124,58,237,.95), rgba(124,58,237,.70));
-  border-color: rgba(124,58,237,.55);
+  border-color: rgba(124,58,237,.45);
+  background: linear-gradient(180deg, rgba(124,58,237,.95), rgba(124,58,237,.65));
 }
 .btn.danger{
-  background: rgba(239,68,68,.12);
-  border-color: rgba(239,68,68,.35);
+  border-color: rgba(239,68,68,.45);
+  background: rgba(239,68,68,.14);
 }
 
-label{
-  display:grid;
-  gap:6px;
-  margin:12px 0;
-  font-weight:700;
-}
-input{
-  width:100%;
+.notice{
+  max-width:1100px;
+  margin:12px auto 0;
   padding:10px 12px;
   border-radius:12px;
-  border:1px solid var(--stroke);
-  background: rgba(0,0,0,.20);
-  color:var(--text);
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+}
+
+.layout{
+  max-width:1100px;
+  margin:12px auto 30px;
+  padding:0 12px;
+  display:grid;
+  gap:14px;
+}
+
+.card{
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(15,26,46,.55);
+  box-shadow: 0 18px 55px rgba(0,0,0,.35);
+  padding:14px;
+}
+
+h2{ margin:0 0 6px; }
+.muted{ color: var(--muted); }
+.small{ font-size:12px; }
+
+form{ display:grid; gap:10px; margin-top:12px; }
+label{ display:grid; gap:6px; font-size:13px; color: var(--muted); }
+input{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.22);
+  color: var(--text);
   outline:none;
 }
 input:focus{
-  border-color: rgba(124,58,237,.70);
-  box-shadow: 0 0 0 4px rgba(124,58,237,.20);
+  border-color: rgba(110,199,255,.55);
+  box-shadow: 0 0 0 4px rgba(110,199,255,.18);
 }
-
 .summary{
-  margin-top:10px;
+  min-height:18px;
   padding:10px 12px;
   border-radius:12px;
-  background: rgba(255,255,255,.04);
-  border:1px solid var(--stroke);
-  white-space:pre-wrap;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.16);
+  white-space: pre-wrap;
 }
 
 .meta{
   margin-top:10px;
   padding:10px 12px;
   border-radius:12px;
-  background: rgba(255,255,255,.04);
-  border:1px solid var(--stroke);
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.14);
+  font-size:13px;
 }
 
-.admin{ margin-top:12px; }
-.admin summary{
-  cursor:pointer;
-  font-weight:800;
-}
-.admin-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:10px 0;
-}
-
-.footer{
-  max-width:1100px;
-  margin:0 auto 30px;
-  padding:0 12px;
-}
-
-/* ===== Board layout ===== */
-
-.board-title{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  margin-bottom:10px;
-}
-
-.board-shell{
-  background: var(--card2);
-  border:1px solid var(--stroke);
+/* ====== THE BOARD LOOK ====== */
+.grid-wrap{
   border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
   padding:12px;
+  overflow:auto;
 }
 
-.home-label{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:6px 8px 12px;
-}
-
-.label-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid var(--stroke);
-  background: rgba(255,255,255,.06);
-  font-weight:900;
-  letter-spacing:.04em;
-  font-size:11px;
-}
-
-.board-row{
+/* IMPORTANT:
+   Your JS builds an 11×11 grid: corner + 0–9 headers + 10×10 squares.
+   This makes it look like a real board.
+*/
+.grid{
   display:grid;
-  grid-template-columns: 46px 1fr;
-  gap:10px;
-  align-items:start;
+  grid-template-columns: repeat(11, 54px);
+  grid-auto-rows: 54px;
+  gap: 0;                 /* board look (no gaps) */
+  border: 2px solid rgba(255,255,255,.25); /* outer frame */
+  background: rgba(255,255,255,.02);
 }
 
-@media (min-width: 920px){
-  .board-row{
-    grid-template-columns: 46px 1fr 270px;
+@media (max-width: 520px){
+  .grid{
+    grid-template-columns: repeat(11, 44px);
+    grid-auto-rows: 44px;
   }
 }
 
-.away-label{
-  display:flex;
-  align-items:stretch;
-  justify-content:center;
-  padding-top:46px; /* aligns with top header row of grid */
-}
-
-.away-rotate{
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.grid-wrap{
-  overflow:auto;
-  border-radius:14px;
-  border:1px solid var(--stroke);
-  background: rgba(0,0,0,.18);
-}
-
-/* 11×11 board: includes header row + header col */
-.grid{
-  display:grid;
-  grid-template-columns: repeat(11, 52px);
-  grid-auto-rows: 52px;
-  gap:0;
-  min-width: calc(11 * 52px);
-}
-
+/* Your JS likely uses .cell + .header + .square + .taken + .selected */
 .cell{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid rgba(255,255,255,.08);
-  font-weight:800;
-  user-select:none;
-}
-
-.cell.header{
-  background: rgba(255,255,255,.06);
-  color: rgba(229,231,235,.90);
+  display:grid;
+  place-items:center;
+  border: 1px solid rgba(255,255,255,.18);
   font-weight:900;
+  color: rgba(255,255,255,.92);
+  user-select:none;
+  position:relative;
 }
 
+/* Corner */
 .cell.corner{
   background: rgba(255,255,255,.04);
 }
 
-.cell.square{
-  background: rgba(255,255,255,.03);
+/* Headers (0–9) */
+.cell.header{
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.88);
 }
 
+/* Make top headers (home axis) bluish if your JS adds .top */
+.cell.header.top{
+  background: var(--home);
+  border-color: var(--homeLine);
+}
+
+/* Make left headers (away axis) reddish if your JS adds .left */
+.cell.header.left{
+  background: var(--away);
+  border-color: var(--awayLine);
+}
+
+/* Squares */
+.cell.square{
+  background: rgba(255,255,255,.02);
+}
+
+/* SOLD squares */
 .cell.square.taken{
-  background: rgba(16,185,129,.16);
-  border-color: rgba(16,185,129,.28);
-  position:relative;
+  background: var(--soldBg);
+  border-color: var(--soldLine);
 }
 
 .cell.square.taken::after{
   content:"SOLD";
-  font-size:12px;
-  letter-spacing:.04em;
-  padding:6px 10px;
-  border-radius:10px;
-  background: rgba(16,185,129,.25);
-  border:1px solid rgba(16,185,129,.35);
+  position:absolute;
+  inset:auto 6px 6px auto;
+  padding:4px 6px;
+  font-size:10px;
+  font-weight:900;
+  border-radius:8px;
+  border:1px solid rgba(34,197,94,.55);
+  background: rgba(34,197,94,.22);
+  color: rgba(255,255,255,.92);
 }
 
+/* Click-pinned selection */
 .cell.square.taken.selected{
-  outline: 3px solid rgba(124,58,237,.70);
+  outline: 3px solid var(--select);
   outline-offset: -3px;
-  box-shadow: 0 0 0 6px rgba(124,58,237,.15) inset;
+  box-shadow: 0 0 0 7px rgba(124,58,237,.16) inset;
 }
 
-.side-panel{
-  margin-top:12px;
-  border:1px solid var(--stroke);
-  border-radius:14px;
-  padding:12px;
-  background: rgba(0,0,0,.16);
+/* Optional: make empty squares highlight on hover */
+.cell.square:not(.taken):hover{
+  background: rgba(255,255,255,.06);
 }
-
-@media (min-width: 920px){
-  .side-panel{
-    margin-top:0;
-  }
-}
-
-.panel-block{
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.04);
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:10px;
-}
-
-.panel-title{
-  font-weight:900;
-  letter-spacing:.06em;
-  font-size:12px;
-  color: rgba(229,231,235,.90);
-  margin-bottom:8px;
-}
-
-.panel-value{
-  font-size:22px;
-  font-weight:900;
-}
-
-.panel-grid{
-  display:grid;
-  gap:8px;
-}
-
-.panel-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  font-weight:800;
-}
-
-.panel-box{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:86px;
-  padding:6px 10px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-  font-weight:900;
-}
-
-/* Tooltip injected from JS */
