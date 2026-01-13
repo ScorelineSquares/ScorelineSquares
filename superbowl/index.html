@@ -1,61 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Bowl Squares</title>
 
-  <!-- IMPORTANT: we're inside /superbowl/ so go UP one level -->
+  <!-- Uses your improved styling -->
   <link rel="stylesheet" href="../Home.css" />
 </head>
 
 <body>
-  <!-- SIMPLE TOP BAR WITH BACK LINK -->
-  <header style="
-    max-width:1100px;
-    margin: 18px auto 0;
-    padding: 0 16px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-  ">
-    <a href="../index.html" style="
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.90);
-      text-decoration:none;
-      font-weight:800;
-      font-size:14px;
-    ">← Back to Home</a>
 
-    <div style="color:rgba(255,255,255,.80); font-weight:900; letter-spacing:.2px;">
-      Scoreline Squares
-    </div>
-  </header>
+  <!-- SIMPLE TOP ROW (optional) -->
+  <div style="max-width:1100px;margin:16px auto 0;padding:0 16px;">
+    <a href="../index.html"
+       style="display:inline-flex;align-items:center;gap:8px;
+              padding:10px 12px;border-radius:12px;
+              background:rgba(255,255,255,.06);
+              border:1px solid rgba(255,255,255,.10);
+              color:#fff;text-decoration:none;font-weight:800;">
+      ← Back to Home
+    </a>
+  </div>
 
-  <!-- YOUR EXISTING BOARD UI (same IDs so app.js works) -->
   <header class="page-header">
     <h1>Super Bowl Squares</h1>
   </header>
 
   <main class="board-layout">
 
-    <!-- LEFT: GRID -->
+    <!-- LEFT: GRID SECTION -->
     <section class="grid-section">
-      <h2>Squares</h2>
-      <div id="grid" class="grid"></div>
+
+      <!-- HOME TEAM LABEL (above grid) -->
+      <div class="team-label home-label">
+        HOME TEAM
+      </div>
+
+      <!-- WRAP: AWAY LABEL + GRID -->
+      <div class="grid-axis-wrap">
+
+        <!-- AWAY TEAM LABEL (left of grid) -->
+        <div class="team-label away-label">
+          AWAY TEAM
+        </div>
+
+        <!-- GRID -->
+        <div id="grid" class="grid" aria-label="Squares grid"></div>
+      </div>
+
       <p class="remaining">
         Squares remaining: <strong><span id="remaining">100</span></strong>
       </p>
     </section>
 
-    <!-- RIGHT: INFO -->
+    <!-- RIGHT: INFO PANEL -->
     <aside class="info-panel">
       <div class="info-card">
         <h3>Cost per Square</h3>
@@ -72,9 +71,10 @@
         </ul>
       </div>
     </aside>
+
   </main>
 
-  <!-- BUY FORM BELOW GRID -->
+  <!-- BUY SECTION -->
   <section class="buy-section">
     <h2>Join the game</h2>
 
@@ -88,7 +88,6 @@
     <p id="summaryText"></p>
   </section>
 
-  <!-- IMPORTANT: app.js is in ROOT so go UP one level -->
   <script src="../app.js"></script>
 </body>
 </html>
