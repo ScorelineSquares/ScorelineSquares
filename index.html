@@ -2,22 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scoreline Squares</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreline Squares</title>
+
+  <!-- Keep your existing CSS file -->
   <link rel="stylesheet" href="Home.css" />
 </head>
+
 <body>
 
-  <header class="page-header">
-    <h1>Super Bowl Squares</h1>
+  <!-- TOP BAR -->
+  <header class="page-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h1 style="margin:0;">Super Bowl Squares</h1>
+    </div>
+
+    <!-- Back to Home -->
+    <a
+      href="/"
+      style="
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:10px 14px;
+        border-radius:10px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.10);
+        color:#fff;
+        text-decoration:none;
+        font-weight:700;
+        font-size:14px;
+        white-space:nowrap;
+      "
+      aria-label="Back to homepage"
+    >
+      ← Home
+    </a>
   </header>
 
+  <!-- BOARD + INFO -->
   <main class="board-layout">
 
     <!-- LEFT: GRID -->
     <section class="grid-section">
       <h2>Squares</h2>
-      <div id="grid" class="grid"></div>
+
+      <div id="grid" class="grid" aria-label="Squares grid"></div>
+
       <p class="remaining">
         Squares remaining: <strong><span id="remaining">100</span></strong>
       </p>
@@ -43,18 +74,21 @@
 
   </main>
 
-  <!-- BUY FORM -->
+  <!-- BUY FORM UNDER GRID -->
   <section class="buy-section">
     <h2>Join the game</h2>
+
     <form id="entryForm">
       <input name="username" placeholder="Username" required />
       <input name="email" placeholder="Email" type="email" required />
       <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
       <button type="submit">Buy Squares</button>
     </form>
+
     <p id="summaryText"></p>
   </section>
 
+  <!-- Keep your existing JS file -->
   <script src="app.js"></script>
 </body>
 </html>
