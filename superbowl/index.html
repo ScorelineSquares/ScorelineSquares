@@ -5,44 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Bowl Squares</title>
 
-  <!-- If you have a CSS file for this page, keep ONE of these.
-       Option A (recommended): board styles live in Home.css at root -->
+  <!-- IMPORTANT: we're inside /superbowl/, so go UP one level for shared CSS -->
   <link rel="stylesheet" href="../Home.css" />
-
-  <!-- If instead your board CSS file is Superbowl.css in the root, use this instead:
-  <link rel="stylesheet" href="../Superbowl.css" />
-  -->
 </head>
 
 <body>
-  <!-- TOP HEADER + BACK LINK -->
   <header class="page-header" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
     <h1 style="margin:0;">Super Bowl Squares</h1>
 
-    <!-- Back to homepage -->
-    <a
-      href="../index.html"
-      class="btn-back"
-      style="
-        text-decoration:none;
-        padding:10px 14px;
-        border-radius:10px;
-        border:1px solid rgba(255,255,255,.12);
-        background:rgba(255,255,255,.06);
-        color:inherit;
-        font-weight:600;
-      "
-    >
-      ← Back to homepage
-    </a>
+    <!-- Back button -->
+    <a href="../index.html" class="btn" style="text-decoration:none;">← Back to homepage</a>
   </header>
 
-  <!-- BOARD LAYOUT -->
   <main class="board-layout">
     <!-- LEFT: GRID -->
     <section class="grid-section">
       <h2>Squares</h2>
-
       <div id="grid" class="grid"></div>
 
       <p class="remaining">
@@ -50,7 +28,7 @@
       </p>
     </section>
 
-    <!-- RIGHT: INFO -->
+    <!-- RIGHT: BOARD INFO -->
     <aside class="info-panel">
       <div class="info-card">
         <h3>Cost per Square</h3>
@@ -83,7 +61,7 @@
     <p id="summaryText"></p>
   </section>
 
-  <!-- IMPORTANT: app.js is in the ROOT, so from /superbowl/ we must go UP one level -->
+  <!-- IMPORTANT: we're inside /superbowl/, so go UP one level for shared JS -->
   <script src="../app.js"></script>
 </body>
 </html>
