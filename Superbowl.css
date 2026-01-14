@@ -152,3 +152,49 @@ input, button {
 button {
   cursor: pointer;
 }
+/* ================================
+   TEXT COLOR FIX – SUPERBOWL PAGE
+   ================================ */
+
+body.superbowl-page {
+  color: #f8fafc; /* default text = white */
+}
+
+/* Headings */
+body.superbowl-page h1,
+body.superbowl-page h2,
+body.superbowl-page h3,
+body.superbowl-page h4 {
+  color: #ffffff;
+}
+
+/* Paragraphs & labels */
+body.superbowl-page p,
+body.superbowl-page label,
+body.superbowl-page li,
+body.superbowl-page span {
+  color: #e5e7eb;
+}
+
+/* Board surface overrides (keep board text dark) */
+body.superbowl-page .board-surface {
+  color: #0b1220;
+}
+
+/* Ensure grid headers stay dark */
+body.superbowl-page .cell.header {
+  color: #0b1220;
+}
+
+/* Back link */
+body.superbowl-page a {
+  color: #c4b5fd;
+}
+body.superbowl-page a:hover {
+  color: #ddd6fe;
+}
+
+/* Inputs */
+body.superbowl-page input {
+  color: #0b1220;
+}
