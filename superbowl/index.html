@@ -1,75 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Bowl Squares</title>
 
-  <!-- Global styling -->
-  <link rel="stylesheet" href="../Home.css" />
-
-  <!-- Page-specific styling -->
+  <!-- IMPORTANT: We're inside /superbowl/ so go up one level for CSS -->
   <link rel="stylesheet" href="../Superbowl.css" />
 </head>
-<body class="superbowl-page">
-  <div class="page">
-    <div class="board-surface">
 
-      <!-- your current page content (h1, back link, grid, cost, prizes, form, etc) -->
-
+<body class="sb-page">
+  <header class="sb-top">
+    <div class="sb-top__left">
+      <h1 class="sb-title">Super Bowl Squares</h1>
     </div>
-  </div>
-</body>
 
-    <!-- Back button -->
-    <a href="../index.html" class="btn" style="text-decoration:none;">← Back to homepage</a>
+    <a class="sb-back" href="../index.html">← Back to homepage</a>
   </header>
 
-  <main class="board-layout">
-    <!-- LEFT: GRID -->
-    <section class="grid-section">
-      <h2>Squares</h2>
-      <div id="grid" class="grid"></div>
+  <!-- PRIZE BANNER (STATIC IMAGE) -->
+  <section class="sb-banner" aria-label="Prize banner">
+    <!-- Put your image at /superbowl/prize-banner.jpg -->
+    <img
+      class="sb-banner__img"
+      src="./prize-banner.jpg"
+      alt="£1,000 pool prize"
+      loading="eager"
+    />
+  </section>
 
-      <p class="remaining">
+  <main class="sb-wrap">
+    <!-- BOARD AREA -->
+    <section class="sb-board">
+      <div class="sb-board__head">
+        <h2 class="sb-h2">Squares</h2>
+        <p class="sb-muted">Pick your squares. Sold squares show as taken.</p>
+      </div>
+
+      <!-- WHITE BOARD CONTAINER -->
+      <div class="sb-board__paper">
+        <div id="grid" class="sb-grid" aria-label="Squares grid"></div>
+      </div>
+
+      <p class="sb-remaining">
         Squares remaining: <strong><span id="remaining">100</span></strong>
       </p>
     </section>
 
-    <!-- RIGHT: BOARD INFO -->
-    <aside class="info-panel">
-      <div class="info-card">
-        <h3>Cost per Square</h3>
-        <p class="money">£<span id="costPerSquare">10</span></p>
+    <!-- INFO + BUY -->
+    <aside class="sb-side">
+      <div class="sb-card">
+        <h3 class="sb-h3">Cost per Square</h3>
+        <p class="sb-money">£<span id="costPerSquare">10</span></p>
       </div>
 
-      <div class="info-card">
-        <h3>Prizes</h3>
-        <ul class="prizes">
+      <div class="sb-card">
+        <h3 class="sb-h3">Prizes</h3>
+        <ul class="sb-list">
           <li>Q1: £<span id="prizeQ1">250</span></li>
           <li>Q2: £<span id="prizeQ2">250</span></li>
           <li>Q3: £<span id="prizeQ3">250</span></li>
           <li><strong>Final:</strong> £<span id="prizeFinal">500</span></li>
         </ul>
       </div>
+
+      <div class="sb-card">
+        <h3 class="sb-h3">Join the game</h3>
+
+        <form id="entryForm" class="sb-form">
+          <input name="username" placeholder="Username" autocomplete="nickname" required />
+          <input name="email" placeholder="Email" type="email" autocomplete="email" required />
+          <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
+          <button type="submit" class="sb-btn">Buy Squares</button>
+        </form>
+
+        <p id="summaryText" class="sb-summary"></p>
+      </div>
     </aside>
   </main>
 
-  <!-- BUY FORM -->
-  <section class="buy-section">
-    <h2>Join the game</h2>
-
-    <form id="entryForm">
-      <input name="username" placeholder="Username" required />
-      <input name="email" placeholder="Email" type="email" required />
-      <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
-      <button type="submit">Buy Squares</button>
-    </form>
-
-    <p id="summaryText"></p>
-  </section>
-
-  <!-- IMPORTANT: we're inside /superbowl/, so go UP one level for shared JS -->
+  <!-- IMPORTANT: /superbowl/ needs to go UP one level to find app.js -->
   <script src="../app.js"></script>
 </body>
 </html>
