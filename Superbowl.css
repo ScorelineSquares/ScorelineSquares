@@ -1,324 +1,154 @@
-/* Superbowl.css (refined template-style) */
+/* Superbowl.css */
 
-:root{
-  --ink:#0b1220;
-  --muted:#5c677a;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-
-  --outer:#101828;        /* strong border */
-  --inner:rgba(16,24,40,.22); /* light grid lines */
-
-  --blue:#bfe9ff;
-  --red:#ffc9c9;
-
-  --accent:#2563eb;
-}
-
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
+/* Dark outer page */
+body.superbowl-page {
+  margin: 0;
+  background: #071521; /* dark */
+  color: #0b1220;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--ink);
 }
 
-/* Top bar */
-.sb-topbar{
-  position:sticky;
-  top:0;
-  z-index:10;
-  background:rgba(245,247,251,.88);
-  backdrop-filter: blur(10px);
-  border-bottom:1px solid rgba(0,0,0,.08);
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.sb-title{
-  font-weight:1000;
-  letter-spacing:.08em;
-  font-size:20px;
-}
-.sb-subtitle{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:2px;
-}
-.sb-back{
-  text-decoration:none;
-  color:var(--accent);
-  font-weight:800;
-  background:rgba(37,99,235,.10);
-  padding:10px 12px;
-  border-radius:12px;
+/* Center page */
+.page {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
 }
 
-/* Wrapper */
-.sb-wrap{
-  max-width:1100px;
-  margin:0 auto;
-  padding:16px;
-  display:grid;
-  gap:14px;
+/* White board “card” */
+.board-surface {
+  width: min(980px, 100%);
+  background: #f8fafc; /* white-ish */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 
-/* Board card */
-.sb-board{
-  background:var(--card);
-  border:1px solid rgba(0,0,0,.08);
-  border-radius:18px;
-  padding:14px;
-  overflow:hidden;
+/* Header row layout: title + back link */
+.page-header,
+.header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.sb-board-header{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:6px 0 12px;
+/* Back link */
+a.back-link,
+.notice a,
+.back-home {
+  color: #6d28d9;
+  text-decoration: none;
+  font-weight: 600;
+}
+a.back-link:hover,
+.notice a:hover,
+.back-home:hover {
+  text-decoration: underline;
 }
 
-/* Template style label */
-.sb-label-pill{
-  display:inline-block;
-  font-weight:1000;
-  letter-spacing:.12em;
-  font-size:12px;
-  padding:8px 12px;
-  border:2px solid var(--outer);
-  border-radius:12px;
-  background:#fff;
+/* --- GRID: make it fit on mobile --- */
+
+/*
+Your JS builds an 11x11 grid (corner + 10 headers + 10 rows).
+So we size cells using viewport width so it always fits.
+*/
+:root {
+  /* board width: almost full screen on mobile, capped on large screens */
+  --board-w: min(92vw, 520px);
+  /* cell size = board width / 11 columns */
+  --cell: calc(var(--board-w) / 11);
 }
 
-/* Body layout */
-.sb-board-body{
-  display:grid;
-  grid-template-columns: 44px 1fr 270px;
-  gap:12px;
-  align-items:start;
+/* Wrap that holds grid */
+.grid-wrap,
+#grid {
+  max-width: 100%;
 }
 
-/* Away label vertical */
-.sb-away-label{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding-top:58px;
-}
-.sb-away-label .sb-label-pill{
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-}
-
-/* Grid shell - stronger outer border */
-.sb-grid-shell{
-  background:#fff;
-  border:2.5px solid var(--outer);
-  border-radius:14px;
-  padding:10px;
-  overflow:auto;
+/* If you have a .grid container */
+.grid {
+  width: var(--board-w);
+  display: grid;
+  grid-template-columns: repeat(11, var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: 0;
+  border: 2px solid #0b1220;
+  background: #ffffff;
 }
 
-/* Right side */
-.sb-side{
-  display:grid;
-  gap:12px;
-}
-.sb-side-card{
-  border:2.5px solid var(--outer);
-  border-radius:14px;
-  background:#fff;
-  padding:12px;
-}
-.sb-side-heading{
-  font-weight:1000;
-  letter-spacing:.10em;
-  font-size:12px;
-  margin-bottom:10px;
-}
-.sb-money{
-  font-weight:1000;
-  font-size:28px;
-  line-height:1.1;
-}
-.sb-row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 0;
-  border-top:1px solid rgba(0,0,0,.10);
-}
-.sb-row:first-of-type{ border-top:none; }
-.sb-row-final{ font-weight:1000; }
-.sb-row-label{ color:var(--muted); font-weight:800; }
-.sb-row-value{ font-weight:1000; }
-
-.muted{ color:var(--muted); }
-.small{ font-size:12px; }
-.sb-side-hint{ margin-top:8px; font-size:12px; }
-
-/* Entry */
-.sb-entry{
-  background:var(--card);
-  border:1px solid rgba(0,0,0,.08);
-  border-radius:18px;
-  padding:14px;
-}
-.sb-entry-title{
-  margin:0 0 6px;
-  font-size:22px;
-}
-.sb-entry-sub{
-  margin:0 0 12px;
+/* If your grid is directly #grid (some versions do that) */
+#grid {
+  width: var(--board-w);
+  display: grid;
+  grid-template-columns: repeat(11, var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: 0;
+  border: 2px solid #0b1220;
+  background: #ffffff;
 }
 
-.sb-form{
-  display:grid;
-  gap:10px;
+/* Cells */
+.cell {
+  box-sizing: border-box;
+  border: 1px solid rgba(15, 23, 42, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(10px, 2.3vw, 14px);
+  font-weight: 700;
 }
 
-.sb-field span{
-  display:block;
-  font-weight:900;
-  margin-bottom:6px;
-}
-.sb-field input{
-  width:100%;
-  padding:12px 12px;
-  border-radius:12px;
-  border:1px solid rgba(0,0,0,.18);
-  outline:none;
-  font-size:16px;
-  background:#fff;
-}
-.sb-field input:focus{
-  border-color: rgba(37,99,235,.6);
-  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+/* Header cells (top row/left col numbers) */
+.cell.header {
+  background: #eef2ff;
+  border-color: rgba(15, 23, 42, 0.35);
+  font-weight: 800;
 }
 
-.sb-btn{
-  border:none;
-  border-radius:12px;
-  padding:12px 14px;
-  font-weight:1000;
-  font-size:15px;
-  cursor:pointer;
-  background:var(--accent);
-  color:#fff;
-}
-.sb-btn-ghost{
-  background:rgba(37,99,235,.12);
-  color:var(--accent);
-}
-.sb-btn-danger{
-  background:#ef4444;
-}
-.sb-summary{
-  min-height:22px;
-  font-weight:900;
-  margin-top:6px;
+/* Square cells */
+.cell.square {
+  background: #ffffff;
 }
 
-.sb-admin{
-  margin-top:14px;
-  border-top:1px solid rgba(0,0,0,.08);
-  padding-top:12px;
-}
-.sb-admin summary{ cursor:pointer; font-weight:1000; }
-.sb-admin-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:10px 0 6px;
+/* Taken squares */
+.cell.square.taken {
+  background: #c7f9ee;
 }
 
-.sb-footer{
-  text-align:center;
-  padding:6px 0 18px;
-}
-
-/* ===== GRID ===== */
-.grid{
-  display:grid;
-  grid-template-columns: repeat(11, 46px);
-  grid-auto-rows: 46px;
-  gap:0;
-}
-
-/* Cells with lighter inner lines */
-.cell{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid var(--inner);
-  font-weight:1000;
-  user-select:none;
-}
-
-/* strengthen the outer border edges slightly */
-.grid > .cell:nth-child(-n + 11){ border-top:1px solid var(--outer); }
-.grid > .cell:nth-child(11n + 1){ border-left:1px solid var(--outer); }
-.grid > .cell:nth-child(11n){ border-right:1px solid var(--outer); }
-.grid > .cell:nth-last-child(-n + 11){ border-bottom:1px solid var(--outer); }
-
-/* Headers */
-.cell.header{
-  background:#fff;
-  font-size:13px;
-}
-.cell.header.top{
-  background: var(--blue);
-  border-color: rgba(16,24,40,.25);
-}
-.cell.header.left{
-  background: var(--red);
-  border-color: rgba(16,24,40,.25);
-}
-.cell.header.corner{
-  background:#fff;
-  border-color: rgba(16,24,40,.25);
-}
-
-/* Squares */
-.cell.square{
-  background:#fff;
-  font-weight:900;
-  font-size:12px;
-}
-.cell.square.taken{
-  background: rgba(16,185,129,.16);
-}
-.cell.square.selected{
-  outline: 3px solid rgba(37,99,235,.55);
+/* Selected square */
+.cell.square.selected {
+  outline: 3px solid #6d28d9;
   outline-offset: -3px;
 }
 
-/* Mobile: keep grid first, make side stack clean */
-@media (max-width: 900px){
-  .sb-board-body{
-    grid-template-columns: 34px 1fr;
-    grid-template-areas:
-      "away grid"
-      "away side";
-  }
-  .sb-away-label{ grid-area: away; padding-top:54px; }
-  .sb-grid-shell{ grid-area: grid; }
-  .sb-side{ grid-area: side; }
+/* Keep everything from overflowing sideways */
+.board-surface {
+  overflow-x: hidden;
 }
 
-@media (max-width: 520px){
-  .grid{
-    grid-template-columns: repeat(11, 40px);
-    grid-auto-rows: 40px;
+/* Make the “Join the game” inputs behave on mobile */
+.buy-section form,
+#entryForm {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+@media (min-width: 680px) {
+  .buy-section form,
+  #entryForm {
+    grid-template-columns: 1fr 1fr 140px auto;
+    align-items: center;
   }
-  .sb-board-body{
-    gap:10px;
-  }
-  .sb-grid-shell{
-    padding:8px;
-  }
+}
+
+/* Inputs/buttons */
+input, button {
+  font-size: 16px; /* stops iOS zoom */
+}
+
+button {
+  cursor: pointer;
 }
