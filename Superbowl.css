@@ -1,200 +1,246 @@
-/* Superbowl.css */
+/* ===== SuperBowl.css ===== */
 
-/* Dark outer page */
-body.superbowl-page {
+:root {
+  --bg: #0b1020;
+  --panel: rgba(255, 255, 255, 0.08);
+  --panelBorder: rgba(255, 255, 255, 0.12);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.75);
+  --accent: #7c3aed;
+
+  /* Grid sizing: small enough to fit mobile width */
+  --cell: clamp(22px, 7.2vw, 36px);
+  --gap: 2px;
+  --radius: 16px;
+}
+
+/* Page */
+.sb-page {
   margin: 0;
-  background: #071521; /* dark */
-  color: #0b1220;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
 }
 
-/* Center page */
-.page {
-  padding: 16px;
+/* Top bar */
+.sb-top {
   display: flex;
-  justify-content: center;
-}
-
-/* White board “card” */
-.board-surface {
-  width: min(980px, 100%);
-  background: #f8fafc; /* white-ish */
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.35);
-}
-
-/* Header row layout: title + back link */
-.page-header,
-.header-row {
-  display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  padding: 18px 16px 10px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* Back link */
-a.back-link,
-.notice a,
-.back-home {
-  color: #6d28d9;
+.sb-title {
+  margin: 0;
+  font-size: clamp(28px, 7vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.sb-back {
+  color: var(--accent);
   text-decoration: none;
-  font-weight: 600;
-}
-a.back-link:hover,
-.notice a:hover,
-.back-home:hover {
-  text-decoration: underline;
-}
-
-/* --- GRID: make it fit on mobile --- */
-
-/*
-Your JS builds an 11x11 grid (corner + 10 headers + 10 rows).
-So we size cells using viewport width so it always fits.
-*/
-:root {
-  /* board width: almost full screen on mobile, capped on large screens */
-  --board-w: min(92vw, 520px);
-  /* cell size = board width / 11 columns */
-  --cell: calc(var(--board-w) / 11);
-}
-
-/* Wrap that holds grid */
-.grid-wrap,
-#grid {
-  max-width: 100%;
-}
-
-/* If you have a .grid container */
-.grid {
-  width: var(--board-w);
-  display: grid;
-  grid-template-columns: repeat(11, var(--cell));
-  grid-auto-rows: var(--cell);
-  gap: 0;
-  border: 2px solid #0b1220;
-  background: #ffffff;
-}
-
-/* If your grid is directly #grid (some versions do that) */
-#grid {
-  width: var(--board-w);
-  display: grid;
-  grid-template-columns: repeat(11, var(--cell));
-  grid-auto-rows: var(--cell);
-  gap: 0;
-  border: 2px solid #0b1220;
-  background: #ffffff;
-}
-
-/* Cells */
-.cell {
-  box-sizing: border-box;
-  border: 1px solid rgba(15, 23, 42, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(10px, 2.3vw, 14px);
   font-weight: 700;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  white-space: nowrap;
 }
 
-/* Header cells (top row/left col numbers) */
-.cell.header {
-  background: #eef2ff;
-  border-color: rgba(15, 23, 42, 0.35);
-  font-weight: 800;
+/* Prize banner */
+.sb-banner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 16px 6px;
 }
 
-/* Square cells */
-.cell.square {
-  background: #ffffff;
+.sb-banner__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+  border: 1px solid var(--panelBorder);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
-/* Taken squares */
-.cell.square.taken {
-  background: #c7f9ee;
-}
-
-/* Selected square */
-.cell.square.selected {
-  outline: 3px solid #6d28d9;
-  outline-offset: -3px;
-}
-
-/* Keep everything from overflowing sideways */
-.board-surface {
-  overflow-x: hidden;
-}
-
-/* Make the “Join the game” inputs behave on mobile */
-.buy-section form,
-#entryForm {
+/* Layout */
+.sb-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 16px 28px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 14px;
 }
 
-@media (min-width: 680px) {
-  .buy-section form,
-  #entryForm {
-    grid-template-columns: 1fr 1fr 140px auto;
-    align-items: center;
+@media (min-width: 900px) {
+  .sb-wrap {
+    grid-template-columns: 1fr 320px;
+    align-items: start;
   }
 }
 
-/* Inputs/buttons */
-input, button {
-  font-size: 16px; /* stops iOS zoom */
+/* Board section */
+.sb-board__head {
+  margin-bottom: 10px;
 }
 
-button {
+.sb-h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.sb-muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* White board container */
+.sb-board__paper {
+  background: #ffffff;
+  border-radius: var(--radius);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px;
+  overflow: hidden; /* prevents sideways scroll */
+}
+
+/* Grid (11x11 because app.js includes headers row/col) */
+.sb-grid {
+  display: grid;
+  grid-template-columns: repeat(11, var(--cell));
+  grid-template-rows: repeat(11, var(--cell));
+  gap: var(--gap);
+  width: max-content;
+  max-width: 100%;
+}
+
+/* Cells created by app.js */
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 6px;
+  font-weight: 700;
+  user-select: none;
+}
+
+.cell.header {
+  background: #f2f4f7;
+  color: #111827;
+  font-size: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.cell.square {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  color: #111827;
+  font-size: 12px;
+}
+
+/* SOLD (app.js adds .taken) */
+.cell.square.taken {
+  background: #d1fae5;
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #065f46;
+}
+
+/* Selected */
+.cell.square.selected {
+  outline: 2px solid rgba(124, 58, 237, 0.55);
+  outline-offset: -2px;
+}
+
+/* Remaining */
+.sb-remaining {
+  margin: 12px 0 0;
+  color: var(--text);
+}
+
+/* Side cards */
+.sb-side {
+  display: grid;
+  gap: 12px;
+}
+
+.sb-card {
+  background: var(--panel);
+  border: 1px solid var(--panelBorder);
+  border-radius: var(--radius);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.sb-h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.sb-money {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.sb-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.sb-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sb-form input {
+  width: 100%;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  outline: none;
+}
+
+.sb-form input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.sb-form input[name="quantity"] {
+  grid-column: 1 / 2;
+}
+
+.sb-btn {
+  grid-column: 2 / 3;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: none;
+  background: #10b981;
+  color: #06281d;
+  font-weight: 800;
   cursor: pointer;
 }
-/* ================================
-   TEXT COLOR FIX – SUPERBOWL PAGE
-   ================================ */
 
-body.superbowl-page {
-  color: #f8fafc; /* default text = white */
+.sb-summary {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-/* Headings */
-body.superbowl-page h1,
-body.superbowl-page h2,
-body.superbowl-page h3,
-body.superbowl-page h4 {
-  color: #ffffff;
-}
-
-/* Paragraphs & labels */
-body.superbowl-page p,
-body.superbowl-page label,
-body.superbowl-page li,
-body.superbowl-page span {
-  color: #e5e7eb;
-}
-
-/* Board surface overrides (keep board text dark) */
-body.superbowl-page .board-surface {
-  color: #0b1220;
-}
-
-/* Ensure grid headers stay dark */
-body.superbowl-page .cell.header {
-  color: #0b1220;
-}
-
-/* Back link */
-body.superbowl-page a {
-  color: #c4b5fd;
-}
-body.superbowl-page a:hover {
-  color: #ddd6fe;
-}
-
-/* Inputs */
-body.superbowl-page input {
-  color: #0b1220;
+/* Mobile: keep everything readable */
+@media (max-width: 420px) {
+  .sb-form {
+    grid-template-columns: 1fr;
+  }
+  .sb-btn {
+    grid-column: 1 / 2;
+  }
 }
