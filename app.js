@@ -1,281 +1,220 @@
-/*
-  Scoreline Squares - FULL app.js (board-style headers)
-  - Random square assignment
-  - SOLD squares with hover + click tooltip
-  - Clicked SOLD square stays highlighted until click-away
-  - Creates a new board when one is fully sold (local only)
+/* Scoreline Squares — Board-locked app.js
+   Contract:
+   - 12x12 CSS grid layout (see Superbowl.css)
+   - Home team label spans top
+   - Away team label spans left
+   - Column headers 0-9, Row headers 0-9
+   - 100 squares (idx 0..99)
 */
 
 (() => {
   const GRID_SIZE = 10;
   const TOTAL = 100;
-  const SEASON_LABEL = "Superbowl 2026";
-  const STORAGE_KEY = "scoreline_squares_full_v1";
+  const STORAGE_KEY = "scoreline_squares_v2";
 
   const gridEl = document.getElementById("grid");
   const formEl = document.getElementById("entryForm");
   const remainingEl = document.getElementById("remaining");
   const summaryEl = document.getElementById("summaryText");
 
-  if (!gridEl) return; // safety if app.js is loaded on other pages
-
-  let pinned = null;
-
-  function loadState() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-        nextRef: 1,
-        activeId: null,
-        boards: []
-      };
-    } catch {
-      return { nextRef: 1, activeId: null, boards: [] };
-    }
-  }
-
-  let state = loadState();
-
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-
-  function createBoard() {
-    const ref = `${SEASON_LABEL} • Board #${String(state.nextRef).padStart(4, "0")}`;
-    state.nextRef++;
-
-    const b = {
-      id: crypto.randomUUID(),
-      ref,
-      status: "open",
-      sold: {} // idx -> {username,email}
-    };
-
-    state.boards.unshift(b);
-    state.activeId = b.id;
-    save();
-    return b;
-  }
-
-  function getActiveBoard() {
-    let b = state.boards.find(x => x.id === state.activeId);
-    if (!b || b.status !== "open") b = createBoard();
-    return b;
-  }
-
-  // ----- Tooltip -----
+  // simple tooltip
   const tooltip = document.createElement("div");
   tooltip.style.cssText = `
-    position:fixed;
-    z-index:9999;
-    background:#111827;
-    color:white;
-    padding:8px 10px;
-    border-radius:10px;
-    font-size:12px;
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow: 0 18px 40px rgba(0,0,0,.45);
-    display:none;
-    pointer-events:none;
-    max-width:240px;
+    position:fixed; z-index:9999; background:#111827; color:#fff;
+    padding:8px 10px; border-radius:10px; font-size:12px;
+    display:none; pointer-events:none; box-shadow:0 10px 24px rgba(0,0,0,.35);
   `;
   document.body.appendChild(tooltip);
 
   function showTooltip(x, y, html) {
     tooltip.innerHTML = html;
-    tooltip.style.left = (x + 12) + "px";
-    tooltip.style.top = (y + 12) + "px";
+    tooltip.style.left = `${x + 12}px`;
+    tooltip.style.top = `${y + 12}px`;
     tooltip.style.display = "block";
   }
   function hideTooltip() {
     tooltip.style.display = "none";
   }
 
-  // ----- Purchase (random squares) -----
-  function buy(username, email, qty) {
-    const b = getActiveBoard();
-    const available = [...Array(TOTAL).keys()].filter(i => !b.sold[i]);
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+        sold: {}, // idx -> { username, email }
+      };
+    } catch {
+      return { sold: {} };
+    }
+  }
 
+  let state = loadState();
+  let pinnedIdx = null;
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function squaresRemaining() {
+    return TOTAL - Object.keys(state.sold).length;
+  }
+
+  function buy(username, email, qty) {
+    const available = [...Array(TOTAL).keys()].filter((i) => !state.sold[i]);
     if (qty > available.length) {
       summaryEl.textContent = "Not enough squares left.";
       return;
     }
 
+    // random assignment
     available.sort(() => Math.random() - 0.5);
     const chosen = available.slice(0, qty);
 
-    chosen.forEach(i => {
-      b.sold[i] = { username, email };
+    chosen.forEach((idx) => {
+      state.sold[idx] = { username, email };
     });
-
-    // board sold out => mark & create a new board
-    if (Object.keys(b.sold).length === TOTAL) {
-      b.status = "soldout";
-      createBoard();
-    }
 
     save();
-
-    // summary
-    summaryEl.textContent =
-      `Purchased ${qty} square(s)\nBoard: ${b.ref}\nSquares: ` +
-      chosen.map(i => `H${i % 10}-A${Math.floor(i / 10)}`).join(", ");
-
     render();
+
+    summaryEl.textContent =
+      `Purchased ${qty} square(s): ` +
+      chosen.map((i) => `H${i % 10}-A${Math.floor(i / 10)}`).join(", ");
   }
 
-  // ----- Render board grid (11x11 with headers) -----
-  function render() {
-    const b = getActiveBoard();
+  function clearGrid() {
     gridEl.innerHTML = "";
+  }
 
-    if (remainingEl) remainingEl.textContent = TOTAL - Object.keys(b.sold).length;
+  // Helper to create a positioned cell
+  function addCell({ text = "", className = "cell", row, col, rowSpan, colSpan, datasetIdx }) {
+    const el = document.createElement("div");
+    el.className = className;
+    el.textContent = text;
 
-    // Build 11×11: [corner] + top header 0..9, left header 0..9 + 10×10 squares
-    for (let r = -1; r < GRID_SIZE; r++) {
-      for (let c = -1; c < GRID_SIZE; c++) {
-        const cell = document.createElement("div");
+    el.style.gridRow = rowSpan ? `${row} / span ${rowSpan}` : `${row}`;
+    el.style.gridColumn = colSpan ? `${col} / span ${colSpan}` : `${col}`;
 
-        // Corner
-        if (r === -1 && c === -1) {
-          cell.className = "cell header corner";
-          cell.textContent = "";
-        }
-        // Top header numbers (HOME axis)
-        else if (r === -1) {
-          cell.className = "cell header";
-          cell.textContent = String(c);
-        }
-        // Left header numbers (AWAY axis)
-        else if (c === -1) {
-          cell.className = "cell header";
-          cell.textContent = String(r);
-        }
-        // Squares
-        else {
-          const idx = r * 10 + c;
-          const entry = b.sold[idx];
+    if (datasetIdx !== undefined) el.dataset.idx = String(datasetIdx);
 
-          cell.className = "cell square";
-          cell.dataset.idx = String(idx);
+    gridEl.appendChild(el);
+    return el;
+  }
 
-          if (entry) {
-            cell.classList.add("taken");
-            // text handled via ::after SOLD badge in CSS
+  function render() {
+    clearGrid();
 
-            // hover tooltip (only if not pinned)
-            cell.addEventListener("mouseenter", (e) => {
-              if (pinned !== null) return;
-              showTooltip(e.clientX, e.clientY, `Buyer: <b>${entry.username}</b>`);
-            });
-            cell.addEventListener("mouseleave", () => {
-              if (pinned !== null) return;
-              hideTooltip();
-            });
+    // Update remaining
+    remainingEl.textContent = String(squaresRemaining());
 
-            // click pin tooltip + highlight until click-away
-            cell.addEventListener("click", (e) => {
-              e.stopPropagation();
+    // Row/col map:
+    // Grid rows: 1=home label, 2=col headers, 3-12 squares
+    // Grid cols: 1=away label, 2=row headers, 3-12 squares
 
-              // clear existing selection
-              document
-                .querySelectorAll(".cell.square.taken.selected")
-                .forEach(el => el.classList.remove("selected"));
+    // Top-left blanks
+    addCell({ className: "cell blank", row: 1, col: 1 });
+    addCell({ className: "cell blank", row: 1, col: 2 });
+    addCell({ className: "cell blank", row: 2, col: 1 });
+    addCell({ className: "cell blank header", row: 2, col: 2, text: "" });
 
-              // toggle off if clicking same
-              if (pinned === idx) {
-                pinned = null;
-                hideTooltip();
-                return;
-              }
+    // HOME label spanning square columns
+    addCell({
+      text: "HOME TEAM  TBC",
+      className: "cell team home",
+      row: 1,
+      col: 3,
+      colSpan: 10
+    });
 
-              pinned = idx;
-              cell.classList.add("selected");
+    // AWAY label spanning square rows
+    addCell({
+      text: "AWAY TEAM  TBC",
+      className: "cell team away",
+      row: 3,
+      col: 1,
+      rowSpan: 10
+    });
 
-              const rect = cell.getBoundingClientRect();
-              showTooltip(
-                rect.left + rect.width / 2,
-                rect.top,
-                `Buyer: <b>${entry.username}</b><br/><span style="color:rgba(255,255,255,.75)">Tap anywhere to close</span>`
-              );
-            });
+    // Column headers 0-9
+    for (let c = 0; c < GRID_SIZE; c++) {
+      addCell({
+        text: String(c),
+        className: "cell header",
+        row: 2,
+        col: 3 + c
+      });
+    }
+
+    // Row headers 0-9
+    for (let r = 0; r < GRID_SIZE; r++) {
+      addCell({
+        text: String(r),
+        className: "cell header",
+        row: 3 + r,
+        col: 2
+      });
+    }
+
+    // Squares 10x10
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const idx = r * 10 + c;
+        const entry = state.sold[idx];
+
+        const cell = addCell({
+          text: entry ? "" : "",
+          className: "cell square" + (entry ? " taken" : "") + (pinnedIdx === idx ? " selected" : ""),
+          row: 3 + r,
+          col: 3 + c,
+          datasetIdx: idx
+        });
+
+        // hover tooltip (only if taken)
+        cell.addEventListener("mouseenter", (e) => {
+          if (!entry) return;
+          if (pinnedIdx !== null) return;
+          showTooltip(e.clientX, e.clientY, `Buyer: <b>${entry.username}</b>`);
+        });
+        cell.addEventListener("mouseleave", () => {
+          if (pinnedIdx !== null) return;
+          hideTooltip();
+        });
+
+        // click pin/unpin
+        cell.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!entry) return;
+
+          // clear old
+          pinnedIdx = (pinnedIdx === idx) ? null : idx;
+          hideTooltip();
+          render();
+
+          if (pinnedIdx !== null) {
+            showTooltip(e.clientX, e.clientY, `Buyer: <b>${entry.username}</b>`);
           }
-        }
-
-        gridEl.appendChild(cell);
+        });
       }
     }
   }
 
-  // click-away clears pinned highlight + tooltip
+  // click away to clear pin
   document.addEventListener("click", () => {
-    pinned = null;
+    pinnedIdx = null;
     hideTooltip();
-    document
-      .querySelectorAll(".cell.square.taken.selected")
-      .forEach(el => el.classList.remove("selected"));
+    render();
   });
 
-  // ----- Form -----
-  if (formEl) {
-    formEl.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = formEl.username.value.trim();
-      const email = formEl.email.value.trim();
-      const qty = Number(formEl.quantity.value);
+  formEl.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(formEl);
+    const username = String(fd.get("username") || "").trim();
+    const email = String(fd.get("email") || "").trim();
+    const qty = Number(fd.get("quantity"));
 
-      if (!username || !email || !qty || qty < 1) {
-        summaryEl.textContent = "Please enter username, email, and quantity (min 1).";
-        return;
-      }
+    if (!username || !email || !Number.isFinite(qty) || qty <= 0) return;
 
-      buy(username, email, qty);
-    });
-  }
+    buy(username, email, qty);
+    formEl.reset();
+  });
 
-  // ----- Admin buttons (optional) -----
-  const exportBtn = document.getElementById("exportBtn");
-  const resetBtn = document.getElementById("resetBtn");
-
-  if (exportBtn) {
-    exportBtn.addEventListener("click", () => {
-      const b = getActiveBoard();
-      const rows = [["board", "idx", "homeDigit", "awayDigit", "username", "email"]];
-      Object.entries(b.sold).forEach(([idxStr, entry]) => {
-        const idx = Number(idxStr);
-        rows.push([
-          b.ref,
-          String(idx),
-          String(idx % 10),
-          String(Math.floor(idx / 10)),
-          entry.username,
-          entry.email
-        ]);
-      });
-
-      const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"', '""')}"`).join(",")).join("\n");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "scoreline-squares.csv";
-      a.click();
-
-      URL.revokeObjectURL(url);
-    });
-  }
-
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      localStorage.removeItem(STORAGE_KEY);
-      state = loadState();
-      pinned = null;
-      hideTooltip();
-      render();
-      summaryEl.textContent = "Game reset (local test only).";
-    });
-  }
-
-  // start
   render();
 })();
