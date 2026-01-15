@@ -1,22 +1,17 @@
 /* ---------- Base ---------- */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* hard stop horizontal scrolling */
+  overflow-x: hidden;              /* kill page-wide horizontal scroll */
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: #fff;
   background: radial-gradient(1200px 800px at 20% 0%, #3b1b7a 0%, #0b1020 45%, #070a12 100%);
 }
 
 /* ---------- Top bar ---------- */
-.topbar {
-  padding: 20px 16px 8px;
-}
+.topbar { padding: 20px 16px 8px; }
 
 .topbar-inner {
   max-width: 980px;
@@ -36,19 +31,20 @@ body {
 
 .subtitle {
   margin: 6px 0 0;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.7);
 }
 
 .backlink {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 10px 14px;
   border-radius: 14px;
   text-decoration: none;
   color: #fff;
   background: rgba(120, 60, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(10px);
   white-space: nowrap;
 }
@@ -65,9 +61,10 @@ body {
 .card {
   border-radius: 22px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
   backdrop-filter: blur(10px);
+  overflow: hidden;                /* IMPORTANT: stop inner stuff causing sideways scroll */
 }
 
 .card-head {
@@ -78,20 +75,10 @@ body {
   margin-bottom: 12px;
 }
 
-.card-title {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-}
+.card-title { margin: 0; font-size: 26px; font-weight: 800; }
+.card-title.small { font-size: 18px; }
 
-.card-title.small {
-  font-size: 18px;
-}
-
-.muted {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-}
+.muted { margin: 0; color: rgba(255,255,255,0.72); }
 
 .big-money {
   font-size: 44px;
@@ -99,26 +86,25 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* ---------- Board frame (fixes mobile width & scroll) ---------- */
+/* ---------- Board frame ---------- */
+/* Key rule: board MUST fit within the viewport */
 .board-frame {
-  /* This ensures the whole board always fits inside the screen width */
-  width: min(94vw, 520px);
-  max-width: 100%;
+  width: 100%;
+  max-width: min(520px, calc(100vw - 32px)); /* 32px = page padding */
   margin: 0 auto;
 
   background: #ffffff;
   border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0,0,0,0.12);
   overflow: hidden;
 
-  /* space for the strips */
+  /* strips space */
   padding-top: 44px;   /* home strip height */
   padding-left: 56px;  /* away strip width */
-
   position: relative;
 }
 
-/* Home strip (inside board) */
+/* Home strip */
 .home-strip {
   position: absolute;
   top: 0;
@@ -132,7 +118,7 @@ body {
   gap: 10px;
 
   background: #f1f4f8;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0,0,0,0.12);
 
   color: #0b1020;
   font-weight: 900;
@@ -141,12 +127,9 @@ body {
   font-size: 12px;
 }
 
-.strip-value {
-  letter-spacing: 0.06em;
-  font-weight: 900;
-}
+.strip-value { letter-spacing: 0.06em; font-weight: 900; }
 
-/* Away strip (inside board) */
+/* Away strip (vertical) */
 .away-strip {
   position: absolute;
   top: 44px;
@@ -160,7 +143,7 @@ body {
   gap: 10px;
 
   background: #f1f4f8;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0,0,0,0.12);
 
   color: #0b1020;
   font-weight: 900;
@@ -168,40 +151,40 @@ body {
   text-transform: uppercase;
   font-size: 12px;
 
-  /* make it vertical */
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
 
 /* ---------- Grid ---------- */
+/* Hard cap: grid can NEVER exceed container width */
 .grid {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;               /* square grid area */
   display: grid;
-
-  /* 11 columns/rows because app.js renders: corner + 0-9 headers + 10x10 squares */
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: repeat(11, 1fr);
-
   gap: 6px;
   padding: 10px;
-
-  /* THIS is the key: grid is a perfect square that scales down on mobile */
-  width: 100%;
-  aspect-ratio: 1 / 1;
+  overflow: hidden;                  /* IMPORTANT: prevents sideways scroll */
 }
 
-/* cells created by app.js */
+/* ---------- Cells (SQUARE, not circles) ---------- */
 .cell {
   display: grid;
   place-items: center;
   user-select: none;
 
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 4px;                /* <<< THIS removes the circle look */
+  border: 1px solid rgba(0,0,0,0.18);
   background: #ffffff;
 
   color: #0b1020;
   font-weight: 800;
   font-size: clamp(10px, 2.2vw, 14px);
+
+  /* extra safety: force square-ish cell appearance */
+  aspect-ratio: 1 / 1;
 }
 
 .cell.header {
@@ -209,13 +192,9 @@ body {
   font-weight: 900;
 }
 
-.cell.square {
-  background: #ffffff;
-}
+.cell.square { background: #ffffff; }
 
-.cell.square.taken {
-  background: #c9f2e7;
-}
+.cell.square.taken { background: #c9f2e7; }
 
 .cell.square.selected {
   outline: 2px solid rgba(120, 60, 255, 0.8);
@@ -233,15 +212,13 @@ body {
   width: 100%;
   padding: 12px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
   color: #fff;
   outline: none;
 }
 
-.buy-row input::placeholder {
-  color: rgba(255, 255, 255, 0.55);
-}
+.buy-row input::placeholder { color: rgba(255,255,255,0.55); }
 
 .buy-row button {
   padding: 12px 14px;
@@ -253,58 +230,32 @@ body {
   color: #04120b;
 }
 
-.summary {
-  margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.75);
-}
+.summary { margin: 10px 0 0; color: rgba(255,255,255,0.75); }
 
 .prize-list {
   margin: 8px 0 0;
   padding-left: 18px;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255,255,255,0.92);
 }
 
 /* ---------- Mobile tweaks ---------- */
 @media (max-width: 520px) {
-  .topbar-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  .topbar-inner { flex-direction: column; align-items: flex-start; }
+  .backlink { width: 100%; }
 
-  .backlink {
-    width: 100%;
-    justify-content: center;
-  }
+  .buy-row { grid-template-columns: 1fr; }
 
-  .buy-row {
-    grid-template-columns: 1fr;
-  }
-
-  .big-money {
-    font-size: 40px;
-  }
-
-  /* slightly tighter grid so it always fits */
-  .grid {
-    gap: 5px;
-    padding: 9px;
-  }
+  /* tighter so column 9 is always visible */
+  .grid { gap: 5px; padding: 8px; }
 
   .board-frame {
-    width: min(96vw, 520px);
+    max-width: calc(100vw - 24px);  /* slightly tighter than desktop */
     padding-left: 52px;
     padding-top: 42px;
   }
 
-  .home-strip {
-    left: 52px;
-    height: 42px;
-    font-size: 11px;
-  }
+  .home-strip { left: 52px; height: 42px; font-size: 11px; }
+  .away-strip { width: 52px; top: 42px; font-size: 11px; }
 
-  .away-strip {
-    width: 52px;
-    top: 42px;
-    font-size: 11px;
-  }
+  .cell { border-radius: 3px; }      /* even squarer look on small screens */
 }
