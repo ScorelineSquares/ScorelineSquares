@@ -1,327 +1,251 @@
+/* Superbowl.css — responsive board that ALWAYS fits on mobile (no horizontal scroll) */
+
+* { box-sizing: border-box; }
+
 :root{
-  --bg:#0b1020;
-  --panel:rgba(255,255,255,0.06);
-  --border:rgba(255,255,255,0.12);
-  --text:rgba(255,255,255,0.92);
-  --muted:rgba(255,255,255,0.65);
-  --accent:#7c3aed;
+  /* Outside spacing */
+  --page-pad: 14px;
 
-  --boardBg:#ffffff;
-  --boardStroke:rgba(15,23,42,0.22);
-  --boardText:#0f172a;
-
-  --radius:18px;
-
-  /* Board width always fits phone without sideways scroll */
-  --boardW: min(92vw, 560px);
-
-  /* Fixed sizes we must account for */
-  --gridPad: 8px;
-  --gridGap: 1px;
-
-  /* Left strip width */
-  --awayStripW: 42px;
+  /* Board “strips” */
+  --teamStrip: 42px;      /* left strip for AWAY TEAM */
+  --stroke: 2px;
+  --radius: 18px;
 
   /*
-    Cell size accounts for:
-    - away strip (not part of grid)
-    - padding left/right inside grid
-    - gaps between 11 cols (10 gaps if gap is between cells, but grid gap affects all)
-    Use slightly conservative sizing so it NEVER overflows.
+    KEY FIX:
+    The board is (left team strip) + (corner/row header column + 10 columns) = 11 “cells” wide inside.
+    We compute a responsive cell size so the whole thing fits the viewport.
+    clamp(min, ideal, max)
   */
-  --cell: calc(
-    (var(--boardW) - (var(--gridPad) * 2) - (var(--gridGap) * 12)) / 11
+  --cell: clamp(
+    22px,
+    calc((100vw - (var(--page-pad) * 2) - var(--teamStrip) - 24px) / 11),
+    44px
   );
 }
 
-*{ box-sizing:border-box; }
+html, body { height: 100%; }
 
 body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:
-    radial-gradient(1200px 700px at 18% 0%, rgba(124,58,237,0.22), transparent 55%),
-    radial-gradient(900px 600px at 90% 30%, rgba(16,185,129,0.18), transparent 55%),
-    var(--bg);
-  color:var(--text);
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 20% 10%, #3b1b7a 0%, #0b1020 55%, #070a12 100%);
+  color: #fff;
+  overflow-x: hidden; /* important: never allow sideways page scroll */
 }
+
+a{ color: #d7c6ff; text-decoration: none; }
+a:hover{ text-decoration: underline; }
 
 .page{
-  width:min(1100px, 92vw);
-  margin:0 auto;
-  padding:18px 0 36px;
+  padding: var(--page-pad);
+  max-width: 980px;
+  margin: 0 auto;
 }
 
-.topbar{
+.header{
   display:flex;
-  justify-content:space-between;
   align-items:flex-start;
-  gap:14px;
-  padding-bottom:10px;
-}
-
-.title{
-  margin:0;
-  font-size: clamp(28px, 4.6vw, 44px);
-  line-height:1.05;
-}
-
-.subtitle{
-  margin:8px 0 0;
-  color:var(--muted);
-  font-size:14px;
-}
-
-.backlink{
-  color:#fff;
-  text-decoration:none;
-  background: rgba(124,58,237,0.18);
-  border:1px solid rgba(124,58,237,0.35);
-  padding:10px 12px;
-  border-radius:12px;
-  white-space:nowrap;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns: 1fr 320px;
-  gap:16px;
-  align-items:start;
-}
-@media (max-width: 900px){
-  .layout{ grid-template-columns:1fr; }
-}
-
-/* Cards */
-.board-card, .info-card{
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-  background:var(--panel);
-  box-shadow:0 18px 50px rgba(0,0,0,0.35);
-}
-
-.board-card{ padding:14px; }
-
-.board-head{
-  display:flex;
   justify-content:space-between;
-  align-items:baseline;
-  gap:10px;
-  padding:2px 4px 12px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.section-title{
+h1{
+  margin: 0;
+  font-size: 44px;
+  line-height: 1.0;
+  letter-spacing: -0.5px;
+}
+
+.sub{
+  margin-top: 8px;
+  opacity: .75;
+  font-size: 16px;
+}
+
+.backBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.10);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.card{
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+  padding: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.cardTitleRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cardTitleRow h2{
   margin:0;
-  font-size:18px;
-  color:#fff;
+  font-size: 24px;
 }
 
-.muted{
-  margin:0;
-  color:var(--muted);
-  font-size:13px;
+.muted{ opacity: .75; }
+
+/* ===== BOARD WRAP ===== */
+.boardWrap{
+  width: 100%;
+  overflow: hidden;      /* never allow horizontal scroll inside board */
 }
 
-/* ===== BOARD FRAME (ONE UNIT) ===== */
-.board-frame{
-  width:var(--boardW);
-  max-width:100%;
-  margin:0 auto;
-  background:var(--boardBg);
-  border:2px solid rgba(15,23,42,0.35);
-  border-radius:14px;
-  overflow:hidden;           /* prevents sideways scroll from inner content */
-}
-
-/* Top strip */
-.home-strip{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  background:#f3f4f6;
-  border-bottom:1px solid var(--boardStroke);
-  color:var(--boardText);
-}
-
-.strip-label{
-  font-weight:900;
-  letter-spacing:.12em;
-  font-size:12px;
-  text-transform:uppercase;
-  opacity:.85;
-}
-.strip-value{
-  font-weight:900;
-  font-size:14px;
-}
-
-/* Left strip + grid */
-.board-inner{
-  display:grid;
-  grid-template-columns: var(--awayStripW) 1fr;
-  align-items:stretch;
-}
-
-/* LEFT STRIP = ALWAYS LEFT (cannot move to top) */
-.away-strip{
-  background:#f3f4f6;
-  border-right:1px solid var(--boardStroke);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--boardText);
-}
-
-/* Rotate content */
-.away-rot{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  white-space:nowrap;       /* prevents stacking into "Away / Team / TBC" */
-  transform: rotate(-90deg); /* rotate clockwise so it reads vertically */
-}
-
-/* ===== GRID (fits mobile) ===== */
-.grid{
-  display:grid;
-  grid-template-columns: repeat(11, var(--cell));
-  grid-auto-rows: var(--cell);
-  gap: var(--gridGap);
-  padding: var(--gridPad);
-  background:#fff;
-
-  /* Important: never allow sideways scroll */
+/*
+  The board itself is built in JS into #grid.
+  We style it so it always fits width on mobile:
+  total width = teamStrip + 11 * cell
+*/
+#grid{
+  width: calc(var(--teamStrip) + (var(--cell) * 11));
   max-width: 100%;
-  overflow: hidden;
+  margin: 0 auto;
+  display: grid;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
 }
 
-.cell{
+/* Team strip on the left (AWAY TEAM TBC) */
+.cell.teamLeft{
+  grid-row: 1 / span 11;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:7px;
+  width: var(--teamStrip);
+  border-radius: var(--radius);
+  border: var(--stroke) solid rgba(15, 23, 42, 0.25);
+  background: #ffffff;
+  color: #0b1020;
+  font-weight: 800;
+  letter-spacing: 2px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
   user-select:none;
-  font-size:12px;
-  font-weight:700;
-  border:1px solid rgba(15,23,42,0.20);
-  color:var(--boardText);
-  background:#fff;
 }
 
-.cell.header{
-  background:#eef2f7;
-  font-weight:800;
-}
-
-/* SOLD squares */
-.cell.square.taken{
-  background: rgba(16,185,129,0.18);
-  border-color: rgba(16,185,129,0.40);
-}
-
-/* Selected */
-.cell.square.selected{
-  outline:2px solid rgba(124,58,237,0.60);
-  outline-offset:-2px;
-}
-
-/* Side cards */
-.side{
+/* The “board” area (corner + headers + 10x10) */
+.cell.corner,
+.cell.header,
+.cell.square{
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 12px;
+  border: var(--stroke) solid rgba(15, 23, 42, 0.20);
+  background: #ffffff;
+  color: #0b1020;
   display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.info-card{ padding:14px; }
-
-.info-card h3{
-  margin:0 0 10px;
-  color:#fff;
-  font-size:14px;
-}
-
-.money{
-  margin:0;
-  font-size:28px;
-  font-weight:900;
-  color:#fff;
-}
-
-.prize-list{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:grid;
-  gap:8px;
-}
-
-.prize-list li{
-  display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:10px 12px;
-  border-radius:12px;
-  background: rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.12);
+  justify-content:center;
+  font-weight: 800;
+  user-select:none;
 }
 
-.prize-list li span{ color:var(--muted); font-weight:700; }
-.prize-list li strong{ color:#fff; }
-
-.prize-list li.final{
-  background: rgba(16,185,129,0.12);
-  border-color: rgba(16,185,129,0.35);
+/* Top team strip (HOME TEAM TBC) */
+.cell.teamTop{
+  grid-column: 2 / span 11;
+  height: var(--cell);
+  border-radius: var(--radius);
+  border: var(--stroke) solid rgba(15, 23, 42, 0.25);
+  background: #ffffff;
+  color: #0b1020;
+  font-weight: 900;
+  letter-spacing: 3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  user-select:none;
 }
 
-/* Buy form */
-.buy-form{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:10px;
+/* Squares visual state */
+.cell.square{
+  font-weight: 700;
+  background: #ffffff;
 }
 
-.buy-form input{
-  width:100%;
-  padding:12px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.08);
-  color:#fff;
+.cell.square.taken{
+  background: #d6f5ef;
+  border-color: rgba(24, 145, 120, 0.35);
 }
 
-.buy-form input::placeholder{ color: rgba(255,255,255,0.55); }
-
-.buy-form button{
-  padding:12px 14px;
-  border-radius:12px;
-  border:none;
-  background:#10b981;
-  color:#052012;
-  font-weight:900;
-  cursor:pointer;
+.cell.square.selected{
+  outline: 3px solid rgba(99, 102, 241, .5);
 }
 
-.summary{
-  margin:10px 0 0;
-  color: rgba(255,255,255,0.85);
-  font-size:13px;
+/* ===== INFO CARDS ===== */
+.infoCard{
+  margin-top: 14px;
 }
 
-.footer{
-  margin-top:18px;
-  text-align:center;
-  color: rgba(255,255,255,0.5);
-  font-size:12px;
+.infoCard h3{
+  margin: 0 0 8px 0;
+  font-size: 18px;
 }
 
-/* Desktop: allow board to be bigger */
-@media (min-width: 900px){
-  :root{ --boardW: min(640px, 100%); }
-  .buy-form{
-    grid-template-columns: 1fr 1fr 120px auto;
-    align-items:center;
-  }
+.bigMoney{
+  font-size: 42px;
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+/* ===== FORM ===== */
+.formRow{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+input, button{
+  font: inherit;
+}
+
+input{
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.25);
+  color: #fff;
+  min-width: 170px;
+}
+
+button{
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 0;
+  background: #16a34a;
+  color: #071012;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+button:hover{
+  filter: brightness(1.05);
+}
+
+/* ===== MOBILE TWEAKS ===== */
+@media (max-width: 420px){
+  h1{ font-size: 38px; }
+  .backBtn{ padding: 10px 12px; }
+  .card{ padding: 12px; }
 }
