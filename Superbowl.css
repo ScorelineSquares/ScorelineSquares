@@ -1,98 +1,327 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Super Bowl Squares</title>
+:root{
+  --bg:#0b1020;
+  --panel:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.12);
+  --text:rgba(255,255,255,0.92);
+  --muted:rgba(255,255,255,0.65);
+  --accent:#7c3aed;
 
-  <!-- IMPORTANT: inside /superbowl/ so go up one level -->
-  <link rel="stylesheet" href="../Superbowl.css" />
-</head>
+  --boardBg:#ffffff;
+  --boardStroke:rgba(15,23,42,0.22);
+  --boardText:#0f172a;
 
-<body>
-  <div class="page">
+  --radius:18px;
 
-    <header class="topbar">
-      <div>
-        <h1 class="title">Super Bowl Squares</h1>
-        <p class="subtitle">Public board • Trial mode</p>
-      </div>
+  /* Board width always fits phone without sideways scroll */
+  --boardW: min(92vw, 560px);
 
-      <a class="backlink" href="../index.html">← Back to homepage</a>
-    </header>
+  /* Fixed sizes we must account for */
+  --gridPad: 8px;
+  --gridGap: 1px;
 
-    <!-- MAIN -->
-    <main class="layout">
+  /* Left strip width */
+  --awayStripW: 42px;
 
-      <!-- BOARD CARD -->
-      <section class="board-card">
-        <div class="board-head">
-          <div class="board-head-left">
-            <h2 class="section-title">Board</h2>
-            <p class="muted">
-              Squares remaining: <strong><span id="remaining">100</span></strong>
-            </p>
-          </div>
-        </div>
+  /*
+    Cell size accounts for:
+    - away strip (not part of grid)
+    - padding left/right inside grid
+    - gaps between 11 cols (10 gaps if gap is between cells, but grid gap affects all)
+    Use slightly conservative sizing so it NEVER overflows.
+  */
+  --cell: calc(
+    (var(--boardW) - (var(--gridPad) * 2) - (var(--gridGap) * 12)) / 11
+  );
+}
 
-        <!-- THIS IS THE “ONE BOARD” UNIT (labels + grid) -->
-        <div class="board-frame" aria-label="Super Bowl squares board">
-          <!-- Top label (part of board) -->
-          <div class="home-strip">
-            <span class="strip-label">HOME TEAM</span>
-            <span class="strip-value">TBC</span>
-          </div>
+*{ box-sizing:border-box; }
 
-          <!-- Left label + Grid (both inside board) -->
-          <div class="board-inner">
-            <div class="away-strip">
-              <div class="away-rot">
-                <span class="strip-label">AWAY TEAM</span>
-                <span class="strip-value">TBC</span>
-              </div>
-            </div>
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:
+    radial-gradient(1200px 700px at 18% 0%, rgba(124,58,237,0.22), transparent 55%),
+    radial-gradient(900px 600px at 90% 30%, rgba(16,185,129,0.18), transparent 55%),
+    var(--bg);
+  color:var(--text);
+}
 
-            <!-- Grid target (app.js renders into this) -->
-            <div id="grid" class="grid" aria-label="Squares grid"></div>
-          </div>
-        </div>
-      </section>
+.page{
+  width:min(1100px, 92vw);
+  margin:0 auto;
+  padding:18px 0 36px;
+}
 
-      <!-- SIDE INFO -->
-      <aside class="side">
-        <div class="info-card">
-          <h3>Cost per Square</h3>
-          <p class="money">£<span id="costPerSquare">10</span></p>
-        </div>
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  padding-bottom:10px;
+}
 
-        <div class="info-card">
-          <h3>Prizes</h3>
-          <ul class="prize-list">
-            <li><span>Q1</span><strong>£<span id="prizeQ1">250</span></strong></li>
-            <li><span>Q2</span><strong>£<span id="prizeQ2">250</span></strong></li>
-            <li><span>Q3</span><strong>£<span id="prizeQ3">250</span></strong></li>
-            <li class="final"><span>Final</span><strong>£<span id="prizeFinal">500</span></strong></li>
-          </ul>
-        </div>
+.title{
+  margin:0;
+  font-size: clamp(28px, 4.6vw, 44px);
+  line-height:1.05;
+}
 
-        <div class="info-card">
-          <h3>Join the game</h3>
-          <form id="entryForm" class="buy-form">
-            <input name="username" placeholder="Username" required />
-            <input name="email" type="email" placeholder="Email" required />
-            <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
-            <button type="submit">Buy Squares</button>
-          </form>
-          <p id="summaryText" class="summary"></p>
-        </div>
-      </aside>
+.subtitle{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
 
-    </main>
+.backlink{
+  color:#fff;
+  text-decoration:none;
+  background: rgba(124,58,237,0.18);
+  border:1px solid rgba(124,58,237,0.35);
+  padding:10px 12px;
+  border-radius:12px;
+  white-space:nowrap;
+}
 
-    <footer class="footer">© 2026 Scoreline Squares • Trial</footer>
-  </div>
+.layout{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:16px;
+  align-items:start;
+}
+@media (max-width: 900px){
+  .layout{ grid-template-columns:1fr; }
+}
 
-  <!-- IMPORTANT: /superbowl/ → ../ -->
-  <script src="../app.js"></script>
-</body>
-</html>
+/* Cards */
+.board-card, .info-card{
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  background:var(--panel);
+  box-shadow:0 18px 50px rgba(0,0,0,0.35);
+}
+
+.board-card{ padding:14px; }
+
+.board-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:10px;
+  padding:2px 4px 12px;
+}
+
+.section-title{
+  margin:0;
+  font-size:18px;
+  color:#fff;
+}
+
+.muted{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* ===== BOARD FRAME (ONE UNIT) ===== */
+.board-frame{
+  width:var(--boardW);
+  max-width:100%;
+  margin:0 auto;
+  background:var(--boardBg);
+  border:2px solid rgba(15,23,42,0.35);
+  border-radius:14px;
+  overflow:hidden;           /* prevents sideways scroll from inner content */
+}
+
+/* Top strip */
+.home-strip{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  background:#f3f4f6;
+  border-bottom:1px solid var(--boardStroke);
+  color:var(--boardText);
+}
+
+.strip-label{
+  font-weight:900;
+  letter-spacing:.12em;
+  font-size:12px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.strip-value{
+  font-weight:900;
+  font-size:14px;
+}
+
+/* Left strip + grid */
+.board-inner{
+  display:grid;
+  grid-template-columns: var(--awayStripW) 1fr;
+  align-items:stretch;
+}
+
+/* LEFT STRIP = ALWAYS LEFT (cannot move to top) */
+.away-strip{
+  background:#f3f4f6;
+  border-right:1px solid var(--boardStroke);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--boardText);
+}
+
+/* Rotate content */
+.away-rot{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  white-space:nowrap;       /* prevents stacking into "Away / Team / TBC" */
+  transform: rotate(-90deg); /* rotate clockwise so it reads vertically */
+}
+
+/* ===== GRID (fits mobile) ===== */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(11, var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: var(--gridGap);
+  padding: var(--gridPad);
+  background:#fff;
+
+  /* Important: never allow sideways scroll */
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cell{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:7px;
+  user-select:none;
+  font-size:12px;
+  font-weight:700;
+  border:1px solid rgba(15,23,42,0.20);
+  color:var(--boardText);
+  background:#fff;
+}
+
+.cell.header{
+  background:#eef2f7;
+  font-weight:800;
+}
+
+/* SOLD squares */
+.cell.square.taken{
+  background: rgba(16,185,129,0.18);
+  border-color: rgba(16,185,129,0.40);
+}
+
+/* Selected */
+.cell.square.selected{
+  outline:2px solid rgba(124,58,237,0.60);
+  outline-offset:-2px;
+}
+
+/* Side cards */
+.side{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.info-card{ padding:14px; }
+
+.info-card h3{
+  margin:0 0 10px;
+  color:#fff;
+  font-size:14px;
+}
+
+.money{
+  margin:0;
+  font-size:28px;
+  font-weight:900;
+  color:#fff;
+}
+
+.prize-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:8px;
+}
+
+.prize-list li{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.prize-list li span{ color:var(--muted); font-weight:700; }
+.prize-list li strong{ color:#fff; }
+
+.prize-list li.final{
+  background: rgba(16,185,129,0.12);
+  border-color: rgba(16,185,129,0.35);
+}
+
+/* Buy form */
+.buy-form{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+.buy-form input{
+  width:100%;
+  padding:12px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color:#fff;
+}
+
+.buy-form input::placeholder{ color: rgba(255,255,255,0.55); }
+
+.buy-form button{
+  padding:12px 14px;
+  border-radius:12px;
+  border:none;
+  background:#10b981;
+  color:#052012;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.summary{
+  margin:10px 0 0;
+  color: rgba(255,255,255,0.85);
+  font-size:13px;
+}
+
+.footer{
+  margin-top:18px;
+  text-align:center;
+  color: rgba(255,255,255,0.5);
+  font-size:12px;
+}
+
+/* Desktop: allow board to be bigger */
+@media (min-width: 900px){
+  :root{ --boardW: min(640px, 100%); }
+  .buy-form{
+    grid-template-columns: 1fr 1fr 120px auto;
+    align-items:center;
+  }
+}
