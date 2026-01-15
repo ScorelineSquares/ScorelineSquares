@@ -1,90 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Super Bowl Squares</title>
 
-  <!-- IMPORTANT: superbowl/index.html must go UP one folder to reach Superbowl.css -->
-  <link rel="stylesheet" href="../Superbowl.css" />
+  <!-- MUST be Superbowl.css -->
+  <link rel="stylesheet" href="Superbowl.css" />
 </head>
-
 <body>
-  <div class="page">
-    <div class="topbar">
-      <div>
-        <h1 class="title">Super Bowl Squares</h1>
-        <p class="subtitle">Public board • Trial mode</p>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>Super Bowl Squares</h1>
+      <p class="sub">Public board • Trial mode</p>
+    </div>
+
+    <a class="back-btn" href="./">
+      ← Back to homepage
+    </a>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <div class="card-head">
+        <h2>Board</h2>
+        <div class="remaining">Squares remaining: <strong><span id="remaining">100</span></strong></div>
       </div>
 
-      <a class="backlink" href="../index.html">← Back to homepage</a>
-    </div>
+      <!-- BOARD GRID (12x12 contract) -->
+      <div class="board-wrap">
+        <div id="grid" class="board-grid" aria-label="Squares board"></div>
+      </div>
+    </section>
 
-    <div class="layout">
-      <!-- LEFT: BOARD -->
-      <section class="board-card">
-        <div class="board-head">
-          <h2 class="section-title">Board</h2>
-          <p class="muted">Squares remaining: <strong><span id="remaining">100</span></strong></p>
-        </div>
-
-        <!-- The board itself (white) -->
-        <div class="board-frame">
-          <!-- TOP STRIP (Home team) -->
-          <div class="home-strip">
-            <div class="strip-label">Home Team</div>
-            <div class="strip-value" id="homeTeamName">TBC</div>
-          </div>
-
-          <!-- LEFT STRIP (Away team) + GRID -->
-          <div class="board-inner">
-            <div class="away-strip">
-              <div class="away-rot">
-                <div class="strip-label">Away Team</div>
-                <div class="strip-value" id="awayTeamName">TBC</div>
-              </div>
-            </div>
-
-            <!-- Grid is rendered by app.js -->
-            <div id="grid" class="grid" aria-label="Squares grid"></div>
-          </div>
-        </div>
+    <aside class="side">
+      <section class="info-card">
+        <h3>Cost per Square</h3>
+        <div class="money">£<span id="costPerSquare">10</span></div>
       </section>
 
-      <!-- RIGHT: INFO -->
-      <aside class="side">
-        <div class="info-card">
-          <h3>Cost per Square</h3>
-          <p class="money">£<span id="costPerSquare">10</span></p>
-        </div>
+      <section class="info-card">
+        <h3>Prizes</h3>
+        <ul class="prize-list">
+          <li>Q1: £<span id="prizeQ1">250</span></li>
+          <li>Q2: £<span id="prizeQ2">250</span></li>
+          <li>Q3: £<span id="prizeQ3">250</span></li>
+          <li class="final">Final: £<span id="prizeFinal">500</span></li>
+        </ul>
+      </section>
+    </aside>
 
-        <div class="info-card">
-          <h3>Prizes</h3>
-          <ul class="prize-list">
-            <li><span>Q1</span><strong>£<span id="prizeQ1">250</span></strong></li>
-            <li><span>Q2</span><strong>£<span id="prizeQ2">250</span></strong></li>
-            <li><span>Q3</span><strong>£<span id="prizeQ3">250</span></strong></li>
-            <li class="final"><span>Final</span><strong>£<span id="prizeFinal">500</span></strong></li>
-          </ul>
-        </div>
+    <section class="card buy-card">
+      <h2>Join the game</h2>
 
-        <div class="info-card">
-          <h3>Join the game</h3>
-          <form id="entryForm" class="buy-form">
-            <input name="username" placeholder="Username" required />
-            <input name="email" type="email" placeholder="Email" required />
-            <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
-            <button type="submit">Buy Squares</button>
-          </form>
-          <p id="summaryText" class="summary"></p>
-        </div>
-      </aside>
-    </div>
+      <form id="entryForm" class="buy-form">
+        <input name="username" placeholder="Username" required />
+        <input name="email" placeholder="Email" type="email" required />
+        <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
+        <button type="submit">Buy Squares</button>
+      </form>
 
-    <div class="footer">© 2026 Scoreline Squares • Trial</div>
-  </div>
+      <p id="summaryText" class="summary"></p>
+    </section>
+  </main>
 
-  <!-- IMPORTANT: app.js is in root, so from /superbowl/ we go up one level -->
-  <script src="../app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
