@@ -2,73 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Super Bowl Squares</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="Superbowl.css" />
+  <title>Super Bowl Squares</title>
+
+  <!-- IMPORTANT:
+       Superbowl.css is in the ROOT of your repo (same level as app.js)
+       This file is inside /superbowl/, so we use ../ -->
+  <link rel="stylesheet" href="../Superbowl.css" />
 </head>
 
 <body>
-  <!-- HEADER -->
-  <header class="page-header">
-    <h1>Super Bowl Squares</h1>
-    <a href="../index.html" class="back-link">← Back to homepage</a>
-  </header>
+  <div class="page">
 
-  <!-- BOARD SECTION -->
-  <section class="board-wrapper">
-
-    <!-- HOME TEAM LABEL -->
-    <div class="home-team-label">
-      Home Team: <strong>TBC</strong>
-    </div>
-
-    <div class="board-with-away">
-
-      <!-- AWAY TEAM LABEL -->
-      <div class="away-team-label">
-        Away<br />Team<br /><strong>TBC</strong>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="title">Super Bowl Squares</h1>
+        <p class="subtitle">Pick your squares. Numbers are shown for now.</p>
       </div>
 
-      <!-- GRID -->
-      <div id="grid" class="grid"></div>
+      <a class="backlink" href="../index.html">← Back to homepage</a>
+    </header>
 
-    </div>
+    <!-- Optional hero image area (kept ready for later) -->
+    <!--
+    <section class="hero">
+      <img src="../images/pool-1000.jpg" alt="Prize pool" />
+    </section>
+    -->
 
-    <p class="remaining">
-      Squares remaining: <strong><span id="remaining">100</span></strong>
-    </p>
+    <!-- Team headers -->
+    <section class="teams">
+      <div class="team-pill">
+        <span class="team-label">Home team</span>
+        <span class="team-value" id="homeTeamName">TBC</span>
+      </div>
 
-  </section>
+      <div class="team-pill">
+        <span class="team-label">Away team</span>
+        <span class="team-value" id="awayTeamName">TBC</span>
+      </div>
+    </section>
 
-  <!-- INFO PANEL -->
-  <aside class="info-panel">
-    <div class="info-card">
-      <h3>Cost per Square</h3>
-      <p class="money">£10</p>
-    </div>
+    <!-- Main layout -->
+    <main class="layout">
 
-    <div class="info-card">
-      <h3>Prizes</h3>
-      <ul class="prizes">
-        <li>Q1: £250</li>
-        <li>Q2: £250</li>
-        <li>Q3: £250</li>
-        <li><strong>Final: £500</strong></li>
-      </ul>
-    </div>
-  </aside>
+      <!-- Board -->
+      <section class="board-card">
+        <div class="board-header">
+          <h2 class="section-title">Squares</h2>
+          <p class="remaining">
+            Squares remaining: <strong><span id="remaining">100</span></strong>
+          </p>
+        </div>
 
-  <!-- BUY SECTION -->
-  <section class="buy-section">
-    <h2>Join the game</h2>
-    <form id="entryForm">
-      <input name="username" placeholder="Username" required />
-      <input name="email" placeholder="Email" type="email" required />
-      <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
-      <button type="submit">Buy Squares</button>
-    </form>
-  </section>
+        <div id="grid" class="grid" aria-label="Squares grid"></div>
+      </section>
 
-  <script src="app.js"></script>
+      <!-- Side info -->
+      <aside class="side">
+        <div class="info-card">
+          <h3>Cost per Square</h3>
+          <p class="money">£<span id="costPerSquare">10</span></p>
+        </div>
+
+        <div class="info-card">
+          <h3>Prizes</h3>
+          <ul class="prize-list">
+            <li><span>Q1</span><strong>£<span id="prizeQ1">250</span></strong></li>
+            <li><span>Q2</span><strong>£<span id="prizeQ2">250</span></strong></li>
+            <li><span>Q3</span><strong>£<span id="prizeQ3">250</span></strong></li>
+            <li class="final"><span>Final</span><strong>£<span id="prizeFinal">500</span></strong></li>
+          </ul>
+        </div>
+      </aside>
+
+    </main>
+
+    <!-- Buy section -->
+    <section class="buy-card">
+      <h2 class="section-title">Join the game</h2>
+      <p class="subtitle">Enter your details and choose how many squares you want.</p>
+
+      <form id="entryForm" class="buy-form">
+        <input name="username" placeholder="Username" autocomplete="name" required />
+        <input name="email" placeholder="Email" type="email" autocomplete="email" required />
+        <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
+        <button type="submit">Buy Squares</button>
+      </form>
+
+      <p id="summaryText" class="summary"></p>
+    </section>
+
+    <footer class="footer">
+      © 2026 Scoreline Squares • Trial
+    </footer>
+
+  </div>
+
+  <!-- IMPORTANT: app.js is in the ROOT, so ../ -->
+  <script src="../app.js"></script>
 </body>
 </html>
