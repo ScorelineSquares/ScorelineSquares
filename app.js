@@ -5,15 +5,15 @@ function initBoard() {
     grid.innerHTML = '';
     allSquares = [];
 
-    // 1. Create Home Team Label (Top Row)
+    // 1. Home Team Header Row
     const hLabel = document.createElement('div');
     hLabel.className = 'cell team-header home-label';
     hLabel.innerText = "HOME TEAM";
     grid.appendChild(hLabel);
 
-    // 2. Build the 11x11 part (Numbers + Squares)
+    // 2. Build 11x11 Body (Numbers + Squares)
     for (let row = 0; row < 11; row++) {
-        // Create Away Team Label (Left Column)
+        // Away Team Header Column
         if (row === 1) {
             const aLabel = document.createElement('div');
             aLabel.className = 'cell team-header away-label';
