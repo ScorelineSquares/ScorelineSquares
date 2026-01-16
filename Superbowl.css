@@ -1,91 +1,145 @@
-:root {
-    --bg-dark: #0d1117;
-    --card-bg: #161b22;
-    --neon-green: #00ff88;
-    --home-blue: #2188ff;
-    --away-red: #ff4757;
-    --grid-border: #30363d;
+/* ===== BASE ===== */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:linear-gradient(180deg,#4b1fa6,#0c1424);
+  color:#fff;
+}
+a{text-decoration:none;color:inherit}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  padding:24px;
+}
+.topbar-inner{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+.title{font-size:52px;margin:0}
+.subtitle{opacity:.8}
+.backlink{
+  padding:14px 20px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
 }
 
-body {
-    background-color: var(--bg-dark);
-    color: #f0f6fc;
-    margin: 0;
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    overflow-x: hidden;
+/* ===== PAGE ===== */
+.page{
+  max-width:1100px;
+  margin:auto;
+  padding:0 16px 60px;
 }
 
-.main-wrapper {
-    width: 92vw; /* Ensures margins on both sides */
-    max-width: 400px;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ===== CARD ===== */
+.card{
+  background:rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:24px;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.card-title{font-size:38px;margin:0}
+.card-title.small{font-size:26px}
+.muted{opacity:.75}
+
+/* ===== BOARD ===== */
+.board-scale-wrapper{
+  margin-top:20px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  overflow:hidden;
 }
 
-/* THE 12-COLUMN GRID (Label + Number + 10 Squares) */
-#grid {
-    display: grid;
-    /* Col 1: Team Name (20px) | Col 2: Numbers (30px) | Col 3-12: Squares (Flexible) */
-    grid-template-columns: 20px 30px repeat(10, 1fr);
-    width: 100%;
-    gap: 1px;
-    background-color: var(--grid-border);
-    border: 1px solid var(--grid-border);
+.board-grid-wrapper{
+  position:relative;
+  background:#f3f6fb;
+  border-radius:20px;
+  padding:16px 16px 16px 56px;
+  color:#111;
 }
 
-.cell {
-    aspect-ratio: 1 / 1; /* FORCES PERFECT SQUARES */
-    background-color: #0d1117;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem; /* Smaller for mobile fit */
-    font-weight: bold;
-    color: #8b949e;
+/* Labels */
+.board-home{
+  text-align:center;
+  font-weight:700;
+  letter-spacing:.12em;
+  margin-bottom:10px;
+}
+.board-away{
+  position:absolute;
+  left:16px;
+  top:56px;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  font-weight:700;
+  letter-spacing:.12em;
 }
 
-/* SLEEK INTEGRATED LABELS */
-.team-header {
-    font-size: 0.5rem;
-    text-transform: uppercase;
-    font-weight: 900;
-    color: #fff;
-    letter-spacing: 1px;
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(11,44px);
+  grid-auto-rows:44px;
+  gap:6px;
 }
 
-.home-label {
-    grid-column: 3 / span 10;
-    grid-row: 1;
-    background: var(--home-blue);
-    height: 20px;
-    aspect-ratio: auto;
+.grid div{
+  background:#fff;
+  border-radius:8px;
+  border:1px solid #d6d6d6;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
 }
 
-.away-label {
-    grid-row: 3 / span 10;
-    grid-column: 1;
-    background: var(--away-red);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    width: 20px;
-    aspect-ratio: auto;
+/* ===== MONEY ===== */
+.big-money{
+  font-size:42px;
+  font-weight:800;
 }
 
-/* COORDINATE STYLING */
-.num-label { background-color: #161b22; color: #fff; }
-.num-home { grid-row: 2; border-bottom: 2px solid var(--home-blue); }
-.num-away { grid-column: 2; border-right: 2px solid var(--away-red); }
-
-/* SQUARE STATES */
-.square.available { background-color: #1c2128; color: transparent; }
-.square.assigned { 
-    background-color: rgba(0, 255, 136, 0.1);
-    color: var(--neon-green);
-    border: 1px solid var(--neon-green);
+/* ===== BUY ===== */
+.buy-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:12px;
+}
+.buy-row input,
+.buy-row button{
+  padding:14px;
+  border-radius:12px;
+  border:none;
+}
+.buy-row button{
+  background:#6c3cff;
+  color:#fff;
+  font-weight:700;
 }
 
-.spacer { background-color: transparent; }
+/* ===== MOBILE SCALE (CRITICAL) ===== */
+@media (max-width:520px){
+  .board-grid-wrapper{
+    transform-origin:top center;
+    transform:scale(clamp(0.45,(100vw - 32px)/940,0.75));
+  }
+
+  .title{font-size:42px}
+  .card-title{font-size:32px}
+
+  .buy-row{
+    grid-template-columns:1fr 1fr;
+  }
+  .buy-row input:nth-child(3){grid-column:1/2}
+  .buy-row button{grid-column:2/3}
+}
