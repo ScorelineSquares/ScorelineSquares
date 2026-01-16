@@ -1,263 +1,266 @@
-/* ---------- Base ---------- */
-* { box-sizing: border-box; }
+/* ===== Super Bowl board styles (mobile-first) ===== */
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: #fff;
-  background: radial-gradient(1200px 800px at 20% 0%, #3b1b7a 0%, #0b1020 45%, #070a12 100%);
+:root{
+  --bg-top: #3b1b7a;
+  --bg-bottom: #0b1020;
+
+  --card: rgba(255,255,255,0.08);
+  --card-border: rgba(255,255,255,0.12);
+
+  --text: #fff;
+  --muted: rgba(255,255,255,0.65);
+
+  --board-bg: #ffffff;
+  --board-border: rgba(0,0,0,0.14);
+
+  --hdr-bg: #f2f5fb;
+  --hdr-text: #0f172a;
+
+  --cell-bg: #ffffff;
+  --cell-border: rgba(15,23,42,0.22);
+
+  --sold-bg: rgba(16,185,129,0.18);
 }
 
-/* ---------- Top bar ---------- */
-.topbar { padding: 20px 16px 8px; }
+*{ box-sizing: border-box; }
+html, body{ margin:0; padding:0; }
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 600px at 20% 0%, rgba(124,58,237,0.55), transparent 60%),
+    radial-gradient(900px 600px at 80% 20%, rgba(34,197,94,0.18), transparent 55%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
 
-.topbar-inner {
+/* ---- header ---- */
+.topbar{
+  padding: 18px 16px 8px;
+}
+.topbar-inner{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
   max-width: 980px;
   margin: 0 auto;
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: space-between;
 }
-
-.title {
-  margin: 0;
-  font-size: clamp(26px, 4.8vw, 44px);
-  font-weight: 800;
+.title{
+  margin:0;
+  font-size: 32px;
+  line-height: 1.1;
   letter-spacing: -0.02em;
 }
-
-.subtitle {
-  margin: 6px 0 0;
-  color: rgba(255,255,255,0.7);
+.subtitle{
+  margin:6px 0 0;
+  color: var(--muted);
 }
-
-.backlink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.backlink{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 14px;
-  text-decoration: none;
-  color: #fff;
-  background: rgba(120, 60, 255, 0.18);
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(10px);
+  text-decoration:none;
+  color: var(--text);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
   white-space: nowrap;
 }
 
-/* ---------- Layout ---------- */
-.page {
+/* ---- page layout ---- */
+.page{
   max-width: 980px;
   margin: 0 auto;
-  padding: 12px 16px 40px;
+  padding: 10px 16px 40px;
   display: grid;
   gap: 16px;
 }
 
-.card {
+/* ---- cards ---- */
+.card{
+  background: var(--card);
+  border: 1px solid var(--card-border);
   border-radius: 22px;
   padding: 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
   backdrop-filter: blur(10px);
-  overflow: hidden; /* stops sideways scroll */
 }
-
-.card-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+.card-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
   gap: 12px;
   margin-bottom: 12px;
 }
-
-.card-title { margin: 0; font-size: 26px; font-weight: 800; }
-.card-title.small { font-size: 18px; }
-.muted { margin: 0; color: rgba(255,255,255,0.72); }
-
-.big-money {
-  font-size: 44px;
-  font-weight: 900;
-  letter-spacing: -0.02em;
+.card-title{
+  margin:0;
+  font-size: 28px;
 }
+.muted{ color: var(--muted); margin:0; }
 
-/* ---------- Board frame ---------- */
-/* MUST fit phone width (no horizontal scroll) */
-.board-frame {
-  width: 100%;
-  max-width: min(520px, calc(100vw - 32px));
-  margin: 0 auto;
+/* ===== BOARD ===== */
 
-  background: #ffffff;
+/*
+The trick: make the entire board scale to the viewport.
+We compute a cell size that guarantees 11 columns fit:
+- 1 label column + 10 number columns = 11
+We also ensure cells are perfect squares and remove big rounding.
+*/
+
+.board-frame{
+  background: var(--board-bg);
+  border: 1px solid var(--board-border);
   border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.12);
   overflow: hidden;
-
-  padding-top: 44px;   /* home strip height */
-  padding-left: 56px;  /* away strip width */
-  position: relative;
 }
 
-/* Home strip */
-.home-strip {
-  position: absolute;
-  top: 0;
-  left: 56px;
-  right: 0;
-  height: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  background: #f1f4f8;
-  border-bottom: 1px solid rgba(0,0,0,0.12);
-
-  color: #0b1020;
-  font-weight: 900;
+/* top strip (HOME TEAM) */
+.home-strip{
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  padding: 12px 12px;
+  text-align:center;
+  font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 12px;
+  border-bottom: 1px solid rgba(15,23,42,0.10);
 }
 
-.strip-value { letter-spacing: 0.06em; font-weight: 900; }
+/* left strip (AWAY TEAM) */
+.away-strip{
+  background: var(--hdr-bg);
+  color: var(--hdr-text);
+  border-right: 1px solid rgba(15,23,42,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 6px;
+}
 
-/* Away strip (vertical) */
-.away-strip {
-  position: absolute;
-  top: 44px;
-  left: 0;
-  bottom: 0;
-  width: 56px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  background: #f1f4f8;
-  border-right: 1px solid rgba(0,0,0,0.12);
-
-  color: #0b1020;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-size: 12px;
-
+/* rotate the away text */
+.away-strip .strip-text{
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-}
-
-/* ---------- GRID (TARGET #grid DIRECTLY so it never breaks) ---------- */
-#grid {
-  width: 100%;
-  max-width: 100%;
-  aspect-ratio: 1 / 1; /* makes it square */
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: repeat(11, 1fr);
-  gap: 6px;
-  padding: 10px;
-  overflow: hidden;
-}
-
-/* Cells (square, not circles) */
-#grid .cell {
-  display: grid;
-  place-items: center;
-  user-select: none;
-
-  border-radius: 4px; /* square corners */
-  border: 1px solid rgba(0,0,0,0.18);
-  background: #ffffff;
-
-  color: #0b1020;
   font-weight: 800;
-  font-size: clamp(10px, 2.2vw, 14px);
-  aspect-ratio: 1 / 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-/* Header cells (your JS uses "cell header") */
-#grid .cell.header {
-  background: #eef2f7;
-  font-weight: 900;
-}
-
-/* Square cells (your JS uses "cell square") */
-#grid .cell.square {
-  background: #ffffff;
-}
-
-/* Taken squares */
-#grid .cell.square.taken {
-  background: #c9f2e7;
-}
-
-/* Selected square */
-#grid .cell.square.selected {
-  outline: 2px solid rgba(120, 60, 255, 0.8);
-  outline-offset: 1px;
-}
-
-/* ---------- Buy form ---------- */
-.buy-row {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr 1fr 110px auto;
-}
-
-.buy-row input {
+/* grid wrapper: 2 columns = away strip + grid */
+.board-inner{
+  display:grid;
+  grid-template-columns: 56px 1fr; /* away strip + grid */
   width: 100%;
-  padding: 12px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.08);
-  color: #fff;
+}
+
+/* the grid itself (cells created by app.js) */
+.grid{
+  /* NO horizontal scroll */
+  overflow: hidden;
+  padding: 10px;
+}
+
+/* IMPORTANT:
+Your app.js likely renders buttons/divs into #grid.
+These rules target the typical structure:
+- A row/col header cell and normal cells.
+We enforce square sizing using aspect-ratio and a CSS variable cell size.
+*/
+.grid{
+  /* cell size auto-fits viewport: (viewport - padding - left strip) / 11 */
+  --boardPad: 20px;                /* internal padding approx */
+  --awayStrip: 56px;
+  --gap: 6px;
+
+  /* Use the card width (100%) rather than viewport to avoid overflow bugs */
+  --cell: calc((100% - var(--boardPad) - (var(--gap) * 10)) / 11);
+
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+}
+
+/* every cell */
+.grid > *{
+  width: 100%;
+  aspect-ratio: 1 / 1;           /* makes it a perfect square */
+  border-radius: 6px;            /* small rounding, NOT circle */
+  background: var(--cell-bg);
+  border: 1px solid var(--cell-border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 700;
+  color: #0f172a;
+  user-select: none;
+}
+
+/* header/label cells can be slightly tinted if your JS adds classes.
+If not, this still looks fine. */
+.grid .label,
+.grid .header{
+  background: #e9eef7;
+  border-color: rgba(15,23,42,0.18);
+}
+
+/* sold state if your JS adds a class or data-attr */
+.grid .sold,
+.grid [data-state="sold"]{
+  background: var(--sold-bg);
+}
+
+/* Make the whole board area not exceed the screen */
+.board-frame{
+  max-width: 100%;
+}
+
+/* tighten on very small phones */
+@media (max-width: 380px){
+  .board-inner{ grid-template-columns: 48px 1fr; }
+  .away-strip{ padding: 8px 4px; }
+  .grid{ --gap: 5px; padding: 8px; }
+}
+
+/* info cards */
+.big-money{
+  font-size: 54px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 8px;
+}
+.prize-list{ margin: 10px 0 0; padding-left: 18px; }
+.prize-list li{ margin: 6px 0; }
+
+/* buy row */
+.buy-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px auto;
+  gap: 10px;
+}
+.buy-row input, .buy-row button{
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.16);
+  padding: 0 12px;
+}
+.buy-row input{
+  background: rgba(255,255,255,0.10);
+  color: var(--text);
   outline: none;
 }
-
-.buy-row input::placeholder { color: rgba(255,255,255,0.55); }
-
-.buy-row button {
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 0;
+.buy-row input::placeholder{ color: rgba(255,255,255,0.55); }
+.buy-row button{
+  background: rgba(34,197,94,0.90);
+  border: none;
   font-weight: 800;
   cursor: pointer;
-  background: #1dbb6f;
-  color: #04120b;
 }
+.summary{ color: var(--muted); margin: 10px 0 0; }
 
-.summary { margin: 10px 0 0; color: rgba(255,255,255,0.75); }
-
-.prize-list {
-  margin: 8px 0 0;
-  padding-left: 18px;
-  color: rgba(255,255,255,0.92);
-}
-
-/* ---------- Mobile tweaks ---------- */
-@media (max-width: 520px) {
-  .topbar-inner { flex-direction: column; align-items: flex-start; }
-  .backlink { width: 100%; }
-  .buy-row { grid-template-columns: 1fr; }
-
-  /* tighter so all 0-9 always visible */
-  #grid { gap: 5px; padding: 8px; }
-
-  .board-frame {
-    max-width: calc(100vw - 24px);
-    padding-left: 52px;
-    padding-top: 42px;
+@media (max-width: 560px){
+  .buy-row{
+    grid-template-columns: 1fr 1fr;
   }
-
-  .home-strip { left: 52px; height: 42px; font-size: 11px; }
-  .away-strip { width: 52px; top: 42px; font-size: 11px; }
-
-  #grid .cell { border-radius: 3px; }
 }
