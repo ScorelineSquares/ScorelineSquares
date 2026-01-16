@@ -1,95 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Super Bowl Squares</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Bowl Squares | Pro Board</title>
+    <link rel="stylesheet" href="../Superbowl.css">
+    <style>
+        /* Specific page overrides for that betting look */
+        body {
+            background-color: #0d1117;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .top-bar {
+            background: #161b22;
+            padding: 15px;
+            border-bottom: 2px solid #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .board-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .payout-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
-    <!-- IMPORTANT: superbowl page is inside /superbowl so we go UP one level -->
-    <link rel="stylesheet" href="../Superbowl.css" />
-  </head>
-
-  <body>
-    <!-- TOP BAR -->
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div>
-          <h1 class="title">Super Bowl Squares</h1>
-          <p class="subtitle">Public board • Trial mode</p>
-        </div>
-
-        <a class="backlink" href="../index.html">← Back to homepage</a>
-      </div>
+    <header class="top-bar">
+        <h1 style="margin:0; font-size: 1.2rem;">SUPER BOWL LIX</h1>
+        <a href="../index.html" style="color: #00ff88; text-decoration: none;">← Exit</a>
     </header>
 
-    <main class="page">
-      <!-- BOARD CARD -->
-      <section class="card">
-        <div class="card-head">
-          <h2 class="card-title">Board</h2>
-          <p class="muted">
-            Squares remaining: <strong><span id="remaining">100</span></strong>
-          </p>
-        </div>
-
-        <!-- BOARD FRAME (labels are part of the board) -->
-        <div class="board-frame" aria-label="Super Bowl squares board">
-          <!-- TOP HOME TEAM STRIP -->
-          <div class="home-strip">
-            HOME TEAM <span id="homeTeam">TBC</span>
-          </div>
-
-          <!-- LEFT AWAY STRIP + GRID -->
-          <div class="board-inner">
-            <div class="away-strip">
-              <div class="strip-text">AWAY TEAM <span id="awayTeam">TBC</span></div>
+    <main class="board-container">
+        <div style="width: 100%; max-width: 600px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
+                <span>SQUARES REMAINING: <strong id="remaining-count">100</strong></span>
+                <span style="color: #00ff88;">65% SOLD</span>
             </div>
-
-            <!-- Grid rendered by app.js -->
-            <div id="grid" class="grid" aria-label="Squares grid"></div>
-          </div>
+            <div style="height: 10px; background: #333; border-radius: 5px;">
+                <div style="width: 35%; height: 100%; background: #00ff88; border-radius: 5px; box-shadow: 0 0 10px #00ff88;"></div>
+            </div>
         </div>
-      </section>
 
-      <!-- COST -->
-      <section class="card">
-        <h3 class="card-title small">Cost per Square</h3>
-        <div class="big-money">£<span id="costPerSquare">10</span></div>
-      </section>
+        <div id="grid-wrapper" style="width: 100%; overflow-x: auto;">
+            <div id="grid"></div>
+        </div>
 
-      <!-- PRIZES -->
-      <section class="card">
-        <h3 class="card-title small">Prizes</h3>
-        <ul class="prize-list">
-          <li>Q1: £<span id="prizeQ1">250</span></li>
-          <li>Q2: £<span id="prizeQ2">250</span></li>
-          <li>Q3: £<span id="prizeQ3">250</span></li>
-          <li><strong>Final:</strong> £<span id="prizeFinal">500</span></li>
-        </ul>
-      </section>
-
-      <!-- BUY -->
-      <section class="card">
-        <h3 class="card-title">Join the game</h3>
-
-        <form id="entryForm" class="buy-row">
-          <input name="username" placeholder="Username" required />
-          <input name="email" placeholder="Email" type="email" required />
-          <input
-            name="quantity"
-            type="number"
-            min="1"
-            max="100"
-            placeholder="Squares"
-            required
-          />
-          <button type="submit">Buy Squares</button>
-        </form>
-
-        <p id="summaryText" class="summary"></p>
-      </section>
+        <div class="payout-card">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <span>ENTRY COST:</span>
+                <span style="color: #ffdf1b; font-weight: bold;">£10.00</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <p style="margin: 5px 0; font-size: 0.9rem;">Q1 Winner: £250</p>
+                <p style="margin: 5px 0; font-size: 0.9rem;">Half Time: £250</p>
+                <p style="margin: 5px 0; font-size: 0.9rem;">Q3 Winner: £250</p>
+                <p style="margin: 5px 0; font-size: 0.9rem; font-weight: bold;">Final Score: £500</p>
+            </div>
+        </div>
     </main>
 
     <script src="../app.js"></script>
-  </body>
+</body>
 </html>
