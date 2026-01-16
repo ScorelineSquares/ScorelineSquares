@@ -1,10 +1,9 @@
 :root {
     --bg-dark: #0d1117;
-    --card-bg: #161b22;
     --bet-green: #00ff88;
     --bet-yellow: #ffdf1b;
-    --header-blue: #AED9F8; /* Top Team Color */
-    --header-red: #F8AEAE;  /* Left Team Color */
+    --header-blue: #AED9F8; /* Home Team Axis */
+    --header-red: #F8AEAE;  /* Away Team Axis */
 }
 
 body {
@@ -12,13 +11,12 @@ body {
     color: white;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
     overflow-x: hidden;
 }
 
 .board-container {
     width: 100%;
-    max-width: 100vw;
     padding: 10px;
     box-sizing: border-box;
     display: flex;
@@ -26,14 +24,15 @@ body {
     align-items: center;
 }
 
-/* 12-Column Grid: 1 for side team label, 1 for digits, 10 for squares */
+/* 12x12 Grid System */
 #grid {
     display: grid;
-    grid-template-columns: 20px 30px repeat(10, 1fr); 
+    /* Col 1: Team Name, Col 2: Digits, Cols 3-12: Squares */
+    grid-template-columns: 25px 30px repeat(10, 1fr); 
     gap: 1px;
-    background-color: #30363d;
+    background-color: #333;
     width: 100%;
-    max-width: 600px; /* Limits size on desktop, scales on mobile */
+    max-width: 500px; /* Optimal mobile width */
 }
 
 .cell {
@@ -42,37 +41,50 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.55rem, 2.5vw, 0.9rem); /* Dynamic text scaling */
+    font-size: clamp(0.6rem, 2.5vw, 0.9rem);
     font-weight: bold;
     color: #000;
 }
 
-/* Team Axis Headers */
-.team-header-top {
+/* Outer Team Headers */
+.team-name-top {
     grid-column: 3 / span 10;
-    background: var(--header-blue);
-    height: 30px;
+    grid-row: 1;
+    background: #161b22;
+    color: var(--header-blue);
+    height: 35px;
     aspect-ratio: auto;
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
 }
 
-.team-header-left {
+.team-name-left {
     grid-row: 3 / span 10;
-    background: var(--header-red);
+    grid-column: 1;
+    background: #161b22;
+    color: var(--header-red);
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     text-align: center;
     aspect-ratio: auto;
     font-size: 0.7rem;
+    letter-spacing: 1px;
 }
 
-.digit-label {
-    background-color: #f0f0f0;
+/* Coordinate Digit Labels */
+.digit-top {
+    background-color: var(--header-blue);
+    grid-row: 2;
 }
 
-.header-top-digit { background-color: var(--header-blue); }
-.header-side-digit { background-color: var(--header-red); }
+.digit-left {
+    background-color: var(--header-red);
+    grid-column: 2;
+}
+
+/* Spacer for the top-left corner where axes meet */
+.spacer { background-color: #161b22; }
 
 /* Interactive States */
 .open:hover { background-color: var(--bet-yellow); cursor: pointer; }
