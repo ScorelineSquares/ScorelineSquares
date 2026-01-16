@@ -5,7 +5,22 @@ function initBoard() {
     grid.innerHTML = '';
     allSquares = [];
 
+    // 1. Create Home Team Label (Top Row)
+    const hLabel = document.createElement('div');
+    hLabel.className = 'cell team-header home-label';
+    hLabel.innerText = "HOME TEAM";
+    grid.appendChild(hLabel);
+
+    // 2. Build the 11x11 part (Numbers + Squares)
     for (let row = 0; row < 11; row++) {
+        // Create Away Team Label (Left Column)
+        if (row === 1) {
+            const aLabel = document.createElement('div');
+            aLabel.className = 'cell team-header away-label';
+            aLabel.innerText = "AWAY TEAM";
+            grid.appendChild(aLabel);
+        }
+
         for (let col = 0; col < 11; col++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
@@ -30,7 +45,6 @@ function initBoard() {
 function buyRandomSquares() {
     const qty = parseInt(document.getElementById('quantity').value);
     const available = allSquares.filter(s => s.classList.contains('available'));
-
     if (!qty || qty < 1 || qty > available.length) return;
 
     for (let i = 0; i < qty; i++) {
