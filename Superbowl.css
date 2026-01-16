@@ -2,8 +2,8 @@
     --bg-dark: #0d1117;
     --card-bg: #161b22;
     --neon-green: #00ff88;
-    --home-accent: #3fb1ff; /* Sleek Blue */
-    --away-accent: #ff4757; /* Sleek Red */
+    --home-blue: #2188ff;
+    --away-red: #ff4757;
     --grid-border: #30363d;
 }
 
@@ -11,84 +11,92 @@ body {
     background-color: var(--bg-dark);
     color: #f0f6fc;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-family: sans-serif;
     display: flex;
     justify-content: center;
     overflow-x: hidden;
 }
 
-.board-container {
-    width: 95vw;
-    max-width: 450px;
-    padding: 10px;
+.main-wrapper {
+    width: 90vw; /* Reduced width to prevent cramping */
+    max-width: 400px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* THE 11x11 GRID (1 Digit row + 10 Square rows) */
+/* CONTAINER FOR LABELS + GRID */
+.board-outer-container {
+    position: relative;
+    padding-left: 35px; /* Fixed space for Away label */
+    padding-top: 35px;  /* Fixed space for Home label */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* SLEEK FLOATING LABELS */
+.team-label {
+    position: absolute;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.home-label {
+    top: 0;
+    left: 70px; /* Aligns with start of squares */
+    right: 0;
+    height: 25px;
+    background: var(--home-blue);
+}
+
+.away-label {
+    top: 70px; /* Aligns with start of squares */
+    left: 0;
+    bottom: 0;
+    width: 25px;
+    background: var(--away-red);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+/* THE 11x11 GRID */
 #grid {
     display: grid;
     grid-template-columns: 35px repeat(10, 1fr);
     width: 100%;
-    background-color: var(--grid-border);
     gap: 1px;
+    background-color: var(--grid-border);
     border: 1px solid var(--grid-border);
-    position: relative;
-    margin-top: 35px; /* Space for the thin Home label */
 }
 
-/* ALL CELLS (Numbers and Squares) */
 .cell {
-    aspect-ratio: 1 / 1; 
-    background-color: #0d1117; /* Dark background instead of white */
+    aspect-ratio: 1 / 1;
+    background-color: #0d1117;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: bold;
     color: #8b949e;
-}
-
-/* TEAM LABELS - Now thin and sleek */
-.team-label {
-    position: absolute;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 800;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.home-label {
-    top: -30px;
-    left: 35px;
-    right: 0;
-    height: 25px;
-    background: linear-gradient(90deg, var(--home-accent), #2188ff);
-    border-radius: 4px 4px 0 0;
-}
-
-.away-label {
-    top: 35px; /* Starts after the top digits */
-    left: -30px;
-    bottom: 0;
-    width: 25px;
-    background: linear-gradient(180deg, var(--away-accent), #ff6b81);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    border-radius: 0 4px 4px 0;
 }
 
 /* COORDINATE STYLING */
 .num-label { background-color: #161b22; color: #fff; }
-.num-home { border-bottom: 2px solid var(--home-accent); }
-.num-away { border-right: 2px solid var(--away-accent); }
+.num-home { border-bottom: 2px solid var(--home-blue); }
+.num-away { border-right: 2px solid var(--away-red); }
 
 /* SQUARE STATES */
-.square.available { background-color: #1c2128; color: transparent; }
+.square.available { background-color: #1c2128; }
 .square.assigned { 
-    background-color: rgba(0, 255, 136, 0.1); 
+    background-color: rgba(0, 255, 136, 0.1);
     color: var(--neon-green);
     border: 1px solid var(--neon-green);
 }
