@@ -1,220 +1,42 @@
-:root{
-  --bg1:#2a0f5e;
-  --bg2:#070a1a;
-  --card:rgba(255,255,255,.08);
-  --cardBorder:rgba(255,255,255,.10);
-
-  --text:#fff;
-  --muted:rgba(255,255,255,.75);
-
-  --boardBg:#fff;
-  --boardLine:rgba(10,20,40,.18);
-  --boardHeader:#f1f4f9;
-
-  --awayStrip:58px;
-
-  --cellGap:6px;
-  --cellRadius:6px;
+/* Update your board-grid to handle the 11x11 layout */
+#grid {
+    display: grid;
+    grid-template-columns: 40px repeat(10, 1fr); /* Fixed width for the side labels */
+    gap: 1px;
+    background-color: #444; /* Grid line color */
+    border: 2px solid #444;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:radial-gradient(1200px 900px at 20% 0%,#4a2aa6 0%,var(--bg1) 40%,var(--bg2) 100%);
-  color:var(--text);
-  overflow-x:hidden; /* kills page-level horizontal scroll */
+/* Base Square Styling */
+.cell {
+    aspect-ratio: 1;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
 }
 
-/* ===== TOP BAR ===== */
-.topbar{padding:18px 14px 10px}
-.topbar-inner{
-  max-width:980px;margin:0 auto;
-  display:flex;justify-content:space-between;gap:12px;align-items:flex-start
-}
-.title{margin:0;font-size:44px;line-height:1.05;letter-spacing:-.02em}
-.subtitle{margin:6px 0 0;color:var(--muted)}
-.backlink{
-  text-decoration:none;color:#fff;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  padding:12px 16px;border-radius:14px;white-space:nowrap
+/* Axis Styling to match your reference image */
+.header-top {
+    background-color: #aed9f8 !important; /* The light blue from your image */
+    color: #000;
 }
 
-/* ===== PAGE + CARDS ===== */
-.page{
-  max-width:980px;margin:0 auto;
-  padding:10px 14px 28px;
-  display:grid;gap:14px
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--cardBorder);
-  border-radius:26px;
-  padding:16px;
-  box-shadow:0 20px 60px rgba(0,0,0,.25)
-}
-.card-head{
-  display:flex;justify-content:space-between;gap:10px;align-items:baseline;
-  margin-bottom:12px
-}
-.card-title{margin:0;font-size:36px}
-.card-title.small{font-size:22px;margin:0 0 10px}
-.muted{margin:0;color:var(--muted)}
-.big-money{font-size:54px;font-weight:800;letter-spacing:-.02em}
-
-/* ======================================================
-   BOARD (IMPORTANT)
-   We force the board to SCALE DOWN on small screens
-   even if app.js uses fixed px cell sizes.
-====================================================== */
-
-/* The white board */
-.board-frame{
-  background:var(--boardBg);
-  border-radius:22px;
-  overflow:hidden;
-  border:1px solid rgba(0,0,0,.10);
+.header-side {
+    background-color: #f8aeae !important; /* The light red from your image */
+    color: #000;
 }
 
-/* home strip (top) */
-.home-strip{
-  background:var(--boardHeader);
-  color:#0b1220;
-  font-weight:900;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  padding:14px 12px;
-  text-align:center;
-  border-bottom:1px solid var(--boardLine);
+/* Hover effect for the "Betting" feel */
+.cell.open:hover {
+    background-color: #ffdf1b; /* Bet365 Yellow */
+    cursor: pointer;
 }
 
-/* inner board layout */
-.board-inner{
-  display:grid;
-  grid-template-columns:var(--awayStrip) 1fr;
-  width:100%;
-  min-width:0;
-}
-
-/* away strip (left) */
-.away-strip{
-  background:var(--boardHeader);
-  border-right:1px solid var(--boardLine);
-  display:flex;align-items:center;justify-content:center;
-  padding:10px 0;
-}
-.strip-text{
-  color:#0b1220;
-  font-weight:900;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  writing-mode:vertical-rl;
-  transform:rotate(180deg);
-  text-align:center;
-}
-
-/* ================================
-   SCALE-TO-FIT WRAPPER
-   This is the key fix.
-   ================================ */
-
-/* This wrapper should already exist in your HTML:
-   <div class="board-scale-wrapper">
-     <div class="board-grid-wrapper"> ... </div>
-   </div>
-*/
-.board-scale-wrapper{
-  width:100%;
-  overflow:hidden;      /* never allow sideways scroll */
-}
-
-.board-grid-wrapper{
-  /* default: no scale on desktop */
-  transform-origin: top left;
-}
-
-/* Grid container */
-#grid.grid{
-  padding:12px;
-  display:grid;
-  grid-template-columns:repeat(11, minmax(0,1fr));
-  gap:var(--cellGap);
-  width:100%;
-  min-width:0;
-}
-
-/* Make cells square + not rounded into circles */
-#grid.grid > *{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:var(--cellRadius);
-  border:1px solid var(--boardLine);
-  background:#fff;
-  color:#0b1220;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;
-  padding:0;margin:0;
-  min-width:0;
-}
-#grid.grid button{
-  appearance:none;-webkit-appearance:none;
-  background:#fff;
-  cursor:pointer;
-}
-
-/* ===== BUY ===== */
-.buy-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 120px 140px;
-  gap:10px;align-items:center
-}
-.buy-row input{
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.18);
-  padding:12px;
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  outline:none
-}
-.buy-row button{
-  border-radius:12px;border:0;
-  padding:12px;
-  font-weight:800;
-  background:#2dd4bf;color:#041015
-}
-.summary{margin:10px 0 0;color:var(--muted)}
-
-/* ==========================================
-   MOBILE: scale the entire board to fit
-   ========================================== */
-@media (max-width: 520px){
-  :root{
-    --awayStrip:52px;
-    --cellGap:5px;
-    --cellRadius:6px;
-  }
-
-  /* make sure grid area doesn't exceed viewport */
-  .board-scale-wrapper{
-    width:100%;
-  }
-
-  /* The trick:
-     If the content is wider than the phone, we scale it down.
-     This works even if app.js sets fixed pixel sizes. */
-  .board-grid-wrapper{
-    width: 560px; /* base "design width" of the board area */
-    max-width: 560px;
-    transform: scale(calc((100vw - 28px) / 560));
-  }
-
-  /* keep header text readable */
-  .title{font-size:44px}
-  .card-title{font-size:34px}
-
-  .buy-row{grid-template-columns:1fr 1fr}
-  .buy-row input:nth-child(3){grid-column:1/2}
-  .buy-row button{grid-column:2/3}
+/* Sold squares state */
+.cell.sold {
+    background-color: #e0e0e0;
+    color: #999;
 }
