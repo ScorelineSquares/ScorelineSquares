@@ -15,27 +15,23 @@ body {
 
 .board-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 500px; /* Keeps the square size manageable on desktop */
     margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-/* 12-column Grid: [Away Label] [Digits] [10 Squares] */
+/* 12-Column Grid: [Away Team Label] [Digits] [10 Squares] */
 #grid {
     display: grid;
     grid-template-columns: 25px 35px repeat(10, 1fr);
     width: 100%;
-    background-color: #333;
     gap: 1px;
-    border: 2px solid #333;
+    background-color: #333;
 }
 
 .cell {
-    aspect-ratio: 1 / 1; /* Forces perfect square */
+    aspect-ratio: 1 / 1; /* Forces the internal playable squares to be square */
     background-color: #ffffff;
     display: flex;
     align-items: center;
@@ -45,18 +41,16 @@ body {
     font-size: clamp(0.6rem, 3vw, 1rem);
 }
 
-/* Home Team Header (Top) */
+/* Team Axis Headers */
 .home-team-label {
     grid-column: 3 / span 10;
     grid-row: 1;
     background: var(--header-blue);
-    height: 40px;
-    aspect-ratio: auto; /* Allow header to be rectangular */
+    height: 35px;
+    aspect-ratio: auto; /* Rectangular label */
     text-transform: uppercase;
-    font-size: 0.8rem;
 }
 
-/* Away Team Header (Left Side) */
 .away-team-label {
     grid-row: 3 / span 10;
     grid-column: 1;
@@ -64,16 +58,14 @@ body {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     text-align: center;
-    aspect-ratio: auto; /* Allow header to be rectangular */
-    font-size: 0.8rem;
+    aspect-ratio: auto; /* Rectangular label */
 }
 
-/* Coordinate Digit Labels */
+/* Coordinate Digit Labels bordering the playable grid */
 .digit-top { background-color: var(--header-blue); grid-row: 2; }
 .digit-left { background-color: var(--header-red); grid-column: 2; }
 
-/* Interactive Square States */
-.square.available { background-color: #fff; cursor: default; }
-.square.assigned { background-color: var(--bet-green); color: #000; }
+/* Interactive States */
+.square.available { background-color: #fff; }
+.square.assigned { background-color: var(--bet-green); }
 .spacer { background-color: #1a1a1a; }
-
