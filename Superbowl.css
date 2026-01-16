@@ -1,1 +1,79 @@
+:root {
+    --bg-dark: #0d1117;
+    --bet-green: #00ff88;
+    --header-blue: #AED9F8;
+    --header-red: #F8AEAE;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: white;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.board-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 12-column Grid: [Away Label] [Digits] [10 Squares] */
+#grid {
+    display: grid;
+    grid-template-columns: 25px 35px repeat(10, 1fr);
+    width: 100%;
+    background-color: #333;
+    gap: 1px;
+    border: 2px solid #333;
+}
+
+.cell {
+    aspect-ratio: 1 / 1; /* Forces perfect square */
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #000;
+    font-size: clamp(0.6rem, 3vw, 1rem);
+}
+
+/* Home Team Header (Top) */
+.home-team-label {
+    grid-column: 3 / span 10;
+    grid-row: 1;
+    background: var(--header-blue);
+    height: 40px;
+    aspect-ratio: auto; /* Allow header to be rectangular */
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Away Team Header (Left Side) */
+.away-team-label {
+    grid-row: 3 / span 10;
+    grid-column: 1;
+    background: var(--header-red);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    aspect-ratio: auto; /* Allow header to be rectangular */
+    font-size: 0.8rem;
+}
+
+/* Coordinate Digit Labels */
+.digit-top { background-color: var(--header-blue); grid-row: 2; }
+.digit-left { background-color: var(--header-red); grid-column: 2; }
+
+/* Interactive Square States */
+.square.available { background-color: #fff; cursor: default; }
+.square.assigned { background-color: var(--bet-green); color: #000; }
+.spacer { background-color: #1a1a1a; }
 
