@@ -18,18 +18,18 @@ body {
 }
 
 .main-wrapper {
-    width: 95vw; /* Almost full width but with a tiny margin */
-    max-width: 420px;
-    margin-top: 15px;
+    width: 92vw; /* Ensures margins on both sides */
+    max-width: 400px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* THE 12x12 GRID (Label + Num + 10 Squares) */
+/* THE 12-COLUMN GRID (Label + Number + 10 Squares) */
 #grid {
     display: grid;
-    /* 1: Team Label, 2: Numbers, 3-12: Squares */
+    /* Col 1: Team Name (20px) | Col 2: Numbers (30px) | Col 3-12: Squares (Flexible) */
     grid-template-columns: 20px 30px repeat(10, 1fr);
     width: 100%;
     gap: 1px;
@@ -38,19 +38,19 @@ body {
 }
 
 .cell {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* FORCES PERFECT SQUARES */
     background-color: #0d1117;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem; /* Smaller font to fit mobile */
+    font-size: 0.65rem; /* Smaller for mobile fit */
     font-weight: bold;
     color: #8b949e;
 }
 
-/* TEAM LABELS (Integrated into the grid) */
+/* SLEEK INTEGRATED LABELS */
 .team-header {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     text-transform: uppercase;
     font-weight: 900;
     color: #fff;
@@ -61,7 +61,7 @@ body {
     grid-column: 3 / span 10;
     grid-row: 1;
     background: var(--home-blue);
-    height: 20px; /* Thin profile */
+    height: 20px;
     aspect-ratio: auto;
 }
 
@@ -71,11 +71,11 @@ body {
     background: var(--away-red);
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    width: 20px; /* Thin profile */
+    width: 20px;
     aspect-ratio: auto;
 }
 
-/* NUMBERS STYLING */
+/* COORDINATE STYLING */
 .num-label { background-color: #161b22; color: #fff; }
 .num-home { grid-row: 2; border-bottom: 2px solid var(--home-blue); }
 .num-away { grid-column: 2; border-right: 2px solid var(--away-red); }
