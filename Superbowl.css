@@ -11,61 +11,74 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
 }
 
-.board-container {
-    width: 100%;
-    max-width: 500px; /* Keeps the square size manageable on desktop */
-    margin: 0 auto;
-    padding: 10px;
-    box-sizing: border-box;
+.board-wrapper {
+    position: relative;
+    margin-top: 60px; /* Space for top team name */
+    margin-left: 40px; /* Space for left team name */
+    width: 90vw;
+    max-width: 500px;
 }
 
-/* 12-Column Grid: [Away Team Label] [Digits] [10 Squares] */
+/* THE TEAM HEADERS (Floating outside the grid) */
+.home-team-title {
+    position: absolute;
+    top: -40px;
+    left: 40px;
+    right: 0;
+    text-align: center;
+    background: var(--header-blue);
+    color: #000;
+    font-weight: bold;
+    padding: 5px 0;
+    text-transform: uppercase;
+}
+
+.away-team-title {
+    position: absolute;
+    left: -40px;
+    top: 40px;
+    bottom: 0;
+    width: 30px;
+    background: var(--header-red);
+    color: #000;
+    font-weight: bold;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    padding: 0 5px;
+    text-transform: uppercase;
+}
+
+/* THE GRID - Forced to be a perfect square */
 #grid {
     display: grid;
-    grid-template-columns: 25px 35px repeat(10, 1fr);
+    grid-template-columns: 40px repeat(10, 1fr);
+    aspect-ratio: 1 / 1; 
     width: 100%;
     gap: 1px;
     background-color: #333;
+    border: 2px solid #333;
 }
 
 .cell {
-    aspect-ratio: 1 / 1; /* Forces the internal playable squares to be square */
     background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     color: #000;
-    font-size: clamp(0.6rem, 3vw, 1rem);
+    font-size: clamp(0.7rem, 3vw, 1.1rem);
 }
 
-/* Team Axis Headers */
-.home-team-label {
-    grid-column: 3 / span 10;
-    grid-row: 1;
-    background: var(--header-blue);
-    height: 35px;
-    aspect-ratio: auto; /* Rectangular label */
-    text-transform: uppercase;
-}
+/* Number Labels */
+.digit-top { background-color: var(--header-blue); }
+.digit-left { background-color: var(--header-red); }
+.spacer { background-color: #333; }
 
-.away-team-label {
-    grid-row: 3 / span 10;
-    grid-column: 1;
-    background: var(--header-red);
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-align: center;
-    aspect-ratio: auto; /* Rectangular label */
-}
-
-/* Coordinate Digit Labels bordering the playable grid */
-.digit-top { background-color: var(--header-blue); grid-row: 2; }
-.digit-left { background-color: var(--header-red); grid-column: 2; }
-
-/* Interactive States */
+/* Square States */
 .square.available { background-color: #fff; }
-.square.assigned { background-color: var(--bet-green); }
-.spacer { background-color: #1a1a1a; }
+.square.assigned { background-color: var(--bet-green); color: #000; }
