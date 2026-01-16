@@ -1,29 +1,58 @@
-function render() {
-    grid.innerHTML = ''; // Clear previous grid
-    
-    for (let r = 0; r < 11; r++) {
-        for (let c = 0; c < 11; c++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
+// CONFIGURATION
+const TOTAL_SQUARES = 100;
+const grid = document.getElementById('grid');
+const remainingDisplay = document.getElementById('remaining-count');
 
-            if (r === 0 && c === 0) {
-                // Top left corner square
-                cell.style.backgroundColor = '#333';
-            } else if (r === 0) {
-                // Apply the BLUE header class to top row
+// Initialize State
+let squaresSold = 0; 
+let selectedSquares = [];
+
+function initBoard() {
+    grid.innerHTML = ''; // Full Clear
+
+    for (let row = 0; row < 11; row++) {
+        for (let col = 0; col < 11; col++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+
+            if (row === 0 && col === 0) {
+                cell.classList.add('corner');
+            } 
+            else if (row === 0) {
+                // Top Axis (Blue)
                 cell.classList.add('header-top');
-                cell.textContent = c - 1;
-            } else if (c === 0) {
-                // Apply the RED header class to side column
+                cell.innerText = col - 1;
+            } 
+            else if (col === 0) {
+                // Side Axis (Red)
                 cell.classList.add('header-side');
-                cell.textContent = r - 1;
-            } else {
-                // Playable squares
-                const id = `${r - 1}-${c - 1}`;
+                cell.innerText = row - 1;
+            } 
+            else {
+                // Playable Square
                 cell.classList.add('open');
-                // ... rest of your logic for checking if square is sold ...
+                cell.dataset.id = `${row-1}-${col-1}`;
+                cell.addEventListener('click', () => toggleSquare(cell));
             }
             grid.appendChild(cell);
         }
     }
 }
+
+function toggleSquare(cell) {
+    if (cell.classList.contains('sold')) return;
+
+    cell.classList.toggle('selected');
+    const id = cell.dataset.id;
+
+    if (cell.classList.contains('selected')) {
+        selectedSquares.push(id);
+    } else {
+        selectedSquares = selectedSquares.filter(s => s !== id);
+    }
+    
+    console.log("Selected:", selectedSquares);
+}
+
+// Run on load
+initBoard();
