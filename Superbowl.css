@@ -1,94 +1,61 @@
 :root {
     --bg-dark: #0d1117;
-    --card-bg: #161b22;
     --bet-green: #00ff88;
-    --bet-yellow: #ffdf1b;
     --header-blue: #AED9F8;
     --header-red: #F8AEAE;
-    --text-main: #ffffff;
 }
 
 body {
     background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    padding: 10px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevents side-scrolling */
 }
 
-/* Board Layout */
-#grid-wrapper {
+.board-container {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    overflow-x: auto;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
+/* 12 columns: 1 for Team Label, 1 for digits, 10 for squares */
 #grid {
     display: grid;
-    grid-template-columns: 40px repeat(10, 1fr); /* 1 label col + 10 squares */
+    grid-template-columns: 20px 30px repeat(10, 1fr); 
     gap: 1px;
-    background-color: #30363d; /* Grid line color */
-    border: 2px solid #30363d;
+    background-color: #30363d;
+    width: 100%;
+    max-width: 100%; /* Forces grid to stay in bounds */
 }
 
-/* Individual Cell Styling */
 .cell {
     aspect-ratio: 1;
-    background-color: #ffffff;
+    background-color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: clamp(0.6rem, 2vw, 0.9rem); /* Shrinks font for small screens */
     font-weight: bold;
-    font-size: 0.9rem;
-    color: #000;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-/* Axis Labels from your Reference Image */
-.header-top {
-    background-color: var(--header-blue) !important;
-    color: #1a1a1a;
-}
-
-.header-side {
-    background-color: var(--header-red) !important;
-    color: #1a1a1a;
-}
-
-.corner {
-    background-color: #30363d !important;
-}
-
-/* Square States */
-.cell.open:hover {
-    background-color: var(--bet-yellow);
-}
-
-.cell.selected {
-    background-color: var(--bet-green);
     color: #000;
 }
 
-.cell.sold {
-    background-color: #21262d;
-    color: #484f58;
-    cursor: not-allowed;
+/* Team Headers */
+.team-header-top {
+    grid-column: 3 / span 10;
+    background: var(--header-blue);
+    height: 30px;
+    text-transform: uppercase;
 }
 
-/* Progress Bar (Pristine Style) */
-.progress-container {
-    width: 100%;
-    height: 8px;
-    background: #30363d;
-    border-radius: 4px;
-    margin: 15px 0;
+.team-header-left {
+    grid-row: 3 / span 10;
+    background: var(--header-red);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    width: 20px;
 }
 
-.progress-fill {
-    height: 100%;
-    background: var(--bet-green);
-    border-radius: 4px;
-    box-shadow: 0 0 10px var(--bet-green);
-}
+.header-top-digit { background-color: var(--header-blue); }
+.header-side-digit { background-color: var(--header-red); }
