@@ -1,6 +1,8 @@
 const grid = document.getElementById("grid");
 
 function buildGrid(){
+  if(!grid) return;
+
   grid.innerHTML = "";
 
   // top row
@@ -17,8 +19,8 @@ function buildGrid(){
 }
 
 function cell(text){
-  const d=document.createElement("div");
-  d.textContent=text;
+  const d = document.createElement("div");
+  d.textContent = text;
   return d;
 }
 
