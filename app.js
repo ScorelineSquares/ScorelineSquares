@@ -1,27 +1,22 @@
 const grid = document.getElementById('grid');
-const homeName = "HOME TEAM";
-const awayName = "AWAY TEAM";
-
 let allSquares = [];
 
 function initBoard() {
     grid.innerHTML = '';
     allSquares = [];
 
-    // 1. Create HOME TEAM header row
+    // 1. HOME TEAM header row (Top)
     const homeHeader = document.createElement('div');
     homeHeader.className = 'cell home-team-label';
-    homeHeader.innerText = homeName;
+    homeHeader.innerText = "HOME TEAM";
     grid.appendChild(homeHeader);
 
-    // 2. Build the rest of the grid
     for (let row = 0; row < 11; row++) {
-        
-        // Inject AWAY TEAM header (vertical)
+        // 2. AWAY TEAM header (Left Side)
         if (row === 1) {
             const awayHeader = document.createElement('div');
             awayHeader.className = 'cell away-team-label';
-            awayHeader.innerText = awayName;
+            awayHeader.innerText = "AWAY TEAM";
             grid.appendChild(awayHeader);
         }
 
@@ -30,16 +25,18 @@ function initBoard() {
             cell.classList.add('cell');
 
             if (row === 0 && col === 0) {
-                cell.classList.add('spacer'); // Corner above Away digits
+                cell.classList.add('spacer');
             } else if (row === 0) {
+                // Number Header (Top)
                 cell.classList.add('digit-top');
                 cell.innerText = col - 1;
             } else if (col === 0) {
+                // Number Header (Left)
                 cell.classList.add('digit-left');
                 cell.innerText = row - 1;
             } else {
+                // The Playable Squares
                 cell.classList.add('square', 'available');
-                cell.id = `sq-${row-1}-${col-1}`;
                 allSquares.push(cell);
             }
             grid.appendChild(cell);
@@ -52,23 +49,15 @@ function buyRandomSquares() {
     const quantity = parseInt(qtyInput.value);
     const available = allSquares.filter(s => s.classList.contains('available'));
 
-    if (isNaN(quantity) || quantity < 1) {
-        alert("Please enter a valid quantity.");
-        return;
-    }
+    if (isNaN(quantity) || quantity < 1) return alert("Enter a valid amount.");
+    if (quantity > available.length) return alert("Not enough squares left!");
 
-    if (quantity > available.length) {
-        alert(`Only ${available.length} squares left!`);
-        return;
-    }
-
-    // Shuffle and assign randomly
+    // Shuffle and pick squares
     for (let i = 0; i < quantity; i++) {
         const randomIndex = Math.floor(Math.random() * available.length);
         const selected = available.splice(randomIndex, 1)[0];
-        selected.classList.remove('available');
-        selected.classList.add('assigned');
-        selected.innerText = "✓"; // Mark as bought
+        selected.classList.replace('available', 'assigned');
+        selected.innerText = "✓";
     }
 }
 
