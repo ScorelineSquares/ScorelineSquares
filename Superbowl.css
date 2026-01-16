@@ -1,8 +1,8 @@
 :root {
     --bg-dark: #0d1117;
     --bet-green: #00ff88;
-    --home-color: #AED9F8;
-    --away-color: #F8AEAE;
+    --home-bg: #AED9F8;
+    --away-bg: #F8AEAE;
 }
 
 body {
@@ -11,27 +11,30 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .board-container {
-    width: 95vw;
+    width: 98vw;
     max-width: 500px;
-    padding-top: 20px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-/* 12x12 GRID: [Label][Numbers][10 Squares] */
+/* THE 12x12 GRID */
 #grid {
     display: grid;
+    /* Col 1: Away Label | Col 2: Away Nums | Cols 3-12: Squares */
     grid-template-columns: 35px 35px repeat(10, 1fr);
     width: 100%;
     gap: 1px;
     background-color: #444;
 }
 
-/* EVERY CELL IS A PERFECT SQUARE */
+/* FORCING EVERY CELL TO BE A SQUARE */
 .cell {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; 
     background-color: #fff;
     display: flex;
     align-items: center;
@@ -41,40 +44,37 @@ body {
     font-size: clamp(0.7rem, 3vw, 1rem);
 }
 
-/* IDENTICAL TEAM HEADER STYLING */
-.team-header {
-    background-color: #161b22;
-    color: white;
+/* CONSISTENT TEAM LABELS */
+.team-label {
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #000;
 }
 
 .home-label {
     grid-column: 3 / span 10;
     grid-row: 1;
-    background-color: var(--home-color);
-    color: #000;
-    height: 35px; /* Matches width of side label */
+    background-color: var(--home-bg);
+    height: 35px; /* Matches the width of the away label */
     aspect-ratio: auto;
 }
 
 .away-label {
     grid-row: 3 / span 10;
     grid-column: 1;
-    background-color: var(--away-color);
-    color: #000;
+    background-color: var(--away-bg);
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     aspect-ratio: auto;
 }
 
-/* COORDINATE NUMBERS - FORCED SQUARE */
-.num-home { background-color: var(--home-color); grid-row: 2; }
-.num-away { background-color: var(--away-color); grid-column: 2; }
+/* COORDINATE NUMBERS */
+.num-home { background-color: var(--home-bg); grid-row: 2; }
+.num-away { background-color: var(--away-bg); grid-column: 2; }
 
 /* SQUARE STATES */
 .square.available { background-color: #fff; }
