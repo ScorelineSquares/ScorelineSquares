@@ -1,58 +1,25 @@
-const grid = document.getElementById('grid');
-let allSquares = [];
+const grid = document.getElementById("grid");
 
-function initBoard() {
-    grid.innerHTML = '';
-    allSquares = [];
+function buildGrid(){
+  grid.innerHTML = "";
 
-    // 1. Home Team Header Row
-    const hLabel = document.createElement('div');
-    hLabel.className = 'cell team-header home-label';
-    hLabel.innerText = "HOME TEAM";
-    grid.appendChild(hLabel);
+  // top row
+  grid.appendChild(cell(""));
+  for(let i=0;i<10;i++) grid.appendChild(cell(i));
 
-    // 2. Build 11x11 Body (Numbers + Squares)
-    for (let row = 0; row < 11; row++) {
-        // Away Team Header Column
-        if (row === 1) {
-            const aLabel = document.createElement('div');
-            aLabel.className = 'cell team-header away-label';
-            aLabel.innerText = "AWAY TEAM";
-            grid.appendChild(aLabel);
-        }
-
-        for (let col = 0; col < 11; col++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-
-            if (row === 0 && col === 0) {
-                cell.classList.add('spacer');
-            } else if (row === 0) {
-                cell.classList.add('num-label', 'num-home');
-                cell.innerText = col - 1;
-            } else if (col === 0) {
-                cell.classList.add('num-label', 'num-away');
-                cell.innerText = row - 1;
-            } else {
-                cell.classList.add('square', 'available');
-                allSquares.push(cell);
-            }
-            grid.appendChild(cell);
-        }
+  // rows
+  for(let r=0;r<10;r++){
+    grid.appendChild(cell(r));
+    for(let c=0;c<10;c++){
+      grid.appendChild(cell(""));
     }
+  }
 }
 
-function buyRandomSquares() {
-    const qty = parseInt(document.getElementById('quantity').value);
-    const available = allSquares.filter(s => s.classList.contains('available'));
-    if (!qty || qty < 1 || qty > available.length) return;
-
-    for (let i = 0; i < qty; i++) {
-        const idx = Math.floor(Math.random() * available.length);
-        const selected = available.splice(idx, 1)[0];
-        selected.classList.replace('available', 'assigned');
-        selected.innerText = "✓";
-    }
+function cell(text){
+  const d=document.createElement("div");
+  d.textContent=text;
+  return d;
 }
 
-initBoard();
+buildGrid();
