@@ -1,73 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScorelineSquares - Premium Squares Competitions</title>
-    <link rel="stylesheet" href="Home.css">
-    <style>
-        /* Add the CSS from your screenshot 1000044264/65/66 here */
-        :root {
-            --bg-dark: #0a0a0a;
-            --text: #f0f0f0;
-            --muted: #8b949e;
-            --stroke: #30363d;
-        }
-        
-        body {
-            background: var(--bg-dark);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        
-        /* Rest of your homepage styling from screenshots */
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreline Squares</title>
+  <link rel="stylesheet" href="Home.css" />
 </head>
 <body>
-    <div class="wrap">
-        <!-- Your homepage content from screenshot 1000044266 -->
-        <header class="topbar">
-            <div class="brand">
-                <div class="logo">Scoreline</div>
-            </div>
-            <nav class="nav">
-                <a class="btn ghost" href="#">Competitions</a>
-                <a class="btn ghost" href="#">How it works</a>
-                <a class="btn primary" href="Superbowl/">Superbowl Squares</a>
-            </nav>
-        </header>
-        
-        <section class="hero">
-            <!-- Hero content -->
-        </section>
-        
-        <div class="grid" id="competitions">
-            <!-- Competition cards -->
-            <article class="card comp">
-                <div class="compInner">
-                    <div class="compLeft">
-                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
-                            <span class="pill live">LIVE</span>
-                            <span class="pill">NFL</span>
-                            <span class="pill">PUBLIC BOARD</span>
-                        </div>
-                        <h3 class="compName">Superbowl Squares</h3>
-                        <p class="compDesc">Quarterly prizes + Final • Squares assigned randomly</p>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap:10px; align-items: flex-end;">
-                        <div class="price">£10</div>
-                        <a class="btn primary" href="Superbowl/">Enter</a>
-                    </div>
-                </div>
-            </article>
-            <!-- More competition cards... -->
-        </div>
-    </div>
-    
-    <script>
-        // Homepage JavaScript if needed
-    </script>
+  <header class="home-top">
+    <h1 class="brand">Scoreline Squares</h1>
+    <nav class="home-nav">
+      <a href="#competitions">Competitions</a>
+      <a href="#how">How it works</a>
+      <a class="cta" href="superbowl/index.html">Superbowl Squares</a>
+    </nav>
+  </header>
+
+  <main class="home">
+    <section id="competitions" class="panel">
+      <h2>LIVE NFL PUBLIC BOARD</h2>
+      <h3>Superbowl Squares</h3>
+      <p>Quarterly prizes + Final • Squares assigned randomly</p>
+
+      <div class="row">
+        <div class="price">£10</div>
+        <a class="enter" href="superbowl/index.html">Enter</a>
+      </div>
+    </section>
+
+    <section id="how" class="panel">
+      <h2>How it works</h2>
+      <ol>
+        <li>Choose a competition</li>
+        <li>Buy your squares</li>
+        <li>Sold-out boards only</li>
+        <li>Refund rule</li>
+      </ol>
+    </section>
+
+    <footer class="footer">© 2026 Scoreline Squares · Trial</footer>
+  </main>
 </body>
 </html>
