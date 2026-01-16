@@ -1,27 +1,31 @@
 const grid = document.getElementById('grid');
 
-// Editable Team Names for your different competition pages
-const teamTopName = "HOME TEAM TBC"; 
-const teamLeftName = "AWAY TEAM TBC";
+// CONFIGURATION - Change these for different sports/games
+const config = {
+    homeTeam: "HOME TEAM TBC",
+    awayTeam: "AWAY TEAM TBC",
+    cost: 10,
+    payouts: { q1: 250, q2: 250, q3: 250, final: 500 }
+};
 
 function initBoard() {
     grid.innerHTML = '';
 
-    // 1. Create Top Team Row
-    const topTeam = document.createElement('div');
-    topTeam.className = 'cell team-header-top';
-    topTeam.innerText = teamTopName;
-    grid.appendChild(topTeam);
+    // 1. Top Team Label (Spans across the 10 squares)
+    const topLabel = document.createElement('div');
+    topLabel.className = 'cell team-header-top';
+    topLabel.innerText = config.homeTeam;
+    grid.appendChild(topLabel);
 
-    // 2. Create the Grid
+    // 2. Main Grid Construction (11x11 inside the 12-column layout)
     for (let row = 0; row < 11; row++) {
         
-        // Inject the Side Team Label on the first row of digits
+        // Inject Left Team Label once at the start of the square rows
         if (row === 1) {
-            const leftTeam = document.createElement('div');
-            leftTeam.className = 'cell team-header-left';
-            leftTeam.innerText = teamLeftName;
-            grid.appendChild(leftTeam);
+            const leftLabel = document.createElement('div');
+            leftLabel.className = 'cell team-header-left';
+            leftLabel.innerText = config.awayTeam;
+            grid.appendChild(leftLabel);
         }
 
         for (let col = 0; col < 11; col++) {
@@ -29,14 +33,17 @@ function initBoard() {
             cell.classList.add('cell');
 
             if (row === 0 && col === 0) {
-                cell.style.background = "#333"; // Corner spacer
+                cell.style.backgroundColor = "#333"; // Corner spacer
             } else if (row === 0) {
+                // Top Digits
                 cell.classList.add('header-top-digit');
                 cell.innerText = col - 1;
             } else if (col === 0) {
+                // Side Digits
                 cell.classList.add('header-side-digit');
                 cell.innerText = row - 1;
             } else {
+                // Playable Squares
                 cell.classList.add('open');
                 cell.addEventListener('click', () => cell.classList.toggle('selected'));
             }
