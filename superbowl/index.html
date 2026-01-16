@@ -8,14 +8,18 @@
 </head>
 <body>
     <div class="main-wrapper">
-        <h1 style="font-size: 0.7rem; letter-spacing: 3px; color: #8b949e; margin-bottom: 20px;">BOARD COMPETITION</h1>
+        <h1 style="font-size: 0.75rem; letter-spacing: 3px; color: #8b949e; margin-bottom: 25px;">BOARD COMPETITION</h1>
+        
         <div id="grid"></div>
-        <div style="margin-top: 30px; background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; border: 1px solid var(--grid-border); box-sizing: border-box;">
+
+        <div style="margin-top: 40px; background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; border: 1px solid var(--grid-border); box-sizing: border-box;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
                 <span style="font-size: 0.8rem; color: #8b949e;">Select Quantity</span>
-                <input type="number" id="quantity" value="1" min="1" style="width: 50px; background: #0d1117; border: 1px solid var(--grid-border); color: #fff; padding: 8px; border-radius: 6px; text-align: center;">
+                <input type="number" id="quantity" value="1" min="1" style="width: 50px; background: #0d1117; border: 1px solid var(--grid-border); color: #fff; padding: 10px; border-radius: 6px; text-align: center;">
             </div>
-            <button onclick="buyRandomSquares()" style="width: 100%; padding: 14px; background: var(--neon-green); color: #000; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">RESERVE SQUARES</button>
+            <button onclick="buyRandomSquares()" style="width: 100%; padding: 15px; background: var(--neon-green); color: #000; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">
+                RESERVE SQUARES
+            </button>
         </div>
     </div>
     <script src="../app.js"></script>
