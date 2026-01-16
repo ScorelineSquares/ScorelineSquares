@@ -1,51 +1,60 @@
 :root {
     --bg-dark: #0d1117;
+    --card-bg: #161b22;
     --bet-green: #00ff88;
-    --header-blue: #AED9F8;
-    --header-red: #F8AEAE;
+    --bet-yellow: #ffdf1b;
+    --header-blue: #AED9F8; /* Top Team Color */
+    --header-red: #F8AEAE;  /* Left Team Color */
 }
 
 body {
     background-color: var(--bg-dark);
+    color: white;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow-x: hidden; /* Prevents side-scrolling */
+    overflow-x: hidden;
 }
 
 .board-container {
     width: 100%;
+    max-width: 100vw;
     padding: 10px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* 12 columns: 1 for Team Label, 1 for digits, 10 for squares */
+/* 12-Column Grid: 1 for side team label, 1 for digits, 10 for squares */
 #grid {
     display: grid;
     grid-template-columns: 20px 30px repeat(10, 1fr); 
     gap: 1px;
     background-color: #30363d;
     width: 100%;
-    max-width: 100%; /* Forces grid to stay in bounds */
+    max-width: 600px; /* Limits size on desktop, scales on mobile */
 }
 
 .cell {
-    aspect-ratio: 1;
-    background-color: #fff;
+    aspect-ratio: 1 / 1;
+    background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.6rem, 2vw, 0.9rem); /* Shrinks font for small screens */
+    font-size: clamp(0.55rem, 2.5vw, 0.9rem); /* Dynamic text scaling */
     font-weight: bold;
     color: #000;
 }
 
-/* Team Headers */
+/* Team Axis Headers */
 .team-header-top {
     grid-column: 3 / span 10;
     background: var(--header-blue);
     height: 30px;
+    aspect-ratio: auto;
     text-transform: uppercase;
+    font-size: 0.75rem;
 }
 
 .team-header-left {
@@ -54,8 +63,18 @@ body {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     text-align: center;
-    width: 20px;
+    aspect-ratio: auto;
+    font-size: 0.7rem;
+}
+
+.digit-label {
+    background-color: #f0f0f0;
 }
 
 .header-top-digit { background-color: var(--header-blue); }
 .header-side-digit { background-color: var(--header-red); }
+
+/* Interactive States */
+.open:hover { background-color: var(--bet-yellow); cursor: pointer; }
+.selected { background-color: var(--bet-green) !important; }
+.sold { background-color: #21262d; color: #484f58; cursor: not-allowed; }
