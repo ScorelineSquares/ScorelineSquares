@@ -5,17 +5,6 @@ function initBoard() {
     grid.innerHTML = '';
     allSquares = [];
 
-    // Create the labels outside the grid logic
-    const hLabel = document.createElement('div');
-    hLabel.className = 'team-label home-label';
-    hLabel.innerText = "HOME TEAM";
-    grid.appendChild(hLabel);
-
-    const aLabel = document.createElement('div');
-    aLabel.className = 'team-label away-label';
-    aLabel.innerText = "AWAY TEAM";
-    grid.appendChild(aLabel);
-
     for (let row = 0; row < 11; row++) {
         for (let col = 0; col < 11; col++) {
             const cell = document.createElement('div');
