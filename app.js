@@ -1,220 +1,225 @@
-/* Scoreline Squares — Board-locked app.js
-   Contract:
-   - 12x12 CSS grid layout (see Superbowl.css)
-   - Home team label spans top
-   - Away team label spans left
-   - Column headers 0-9, Row headers 0-9
-   - 100 squares (idx 0..99)
-*/
+/**
+ * Scoreline Squares - app.js (stabilized renderer)
+ * Goal of this version:
+ * - Always render a full 11x11 grid (corner + 0-9 headers + 100 squares)
+ * - Avoid fragile coupling to page layout changes
+ * - Auto-size to mobile width to reduce / eliminate horizontal scroll
+ * - Keep existing “random assignment” purchase behavior
+ */
 
 (() => {
-  const GRID_SIZE = 10;
-  const TOTAL = 100;
-  const STORAGE_KEY = "scoreline_squares_v2";
+  // -------------------- CONFIG --------------------
+  const GRID_SIZE = 10;         // 10x10 playable squares
+  const TOTAL = GRID_SIZE * GRID_SIZE; // 100
+  const STORAGE_KEY = "scoreline_squares_full_v1";
 
-  const gridEl = document.getElementById("grid");
-  const formEl = document.getElementById("entryForm");
-  const remainingEl = document.getElementById("remaining");
-  const summaryEl = document.getElementById("summaryText");
+  // -------------------- DOM HELPERS --------------------
+  const $ = (id) => document.getElementById(id);
 
-  // simple tooltip
-  const tooltip = document.createElement("div");
-  tooltip.style.cssText = `
-    position:fixed; z-index:9999; background:#111827; color:#fff;
-    padding:8px 10px; border-radius:10px; font-size:12px;
-    display:none; pointer-events:none; box-shadow:0 10px 24px rgba(0,0,0,.35);
-  `;
-  document.body.appendChild(tooltip);
+  const gridEl = $("grid");
+  if (!gridEl) return; // nothing to do on pages without the grid
 
-  function showTooltip(x, y, html) {
-    tooltip.innerHTML = html;
-    tooltip.style.left = `${x + 12}px`;
-    tooltip.style.top = `${y + 12}px`;
-    tooltip.style.display = "block";
-  }
-  function hideTooltip() {
-    tooltip.style.display = "none";
-  }
+  const remainingEl = $("remaining");
+  const summaryEl = $("summaryText");
+  const formEl = $("entryForm");
 
+  // Optional (won't break if missing)
+  const homeTeamEl = $("homeTeam");
+  const awayTeamEl = $("awayTeam");
+
+  // -------------------- STATE --------------------
   function loadState() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-        sold: {}, // idx -> { username, email }
-      };
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { sold: {} };
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return { sold: {} };
+      if (!parsed.sold || typeof parsed.sold !== "object") parsed.sold = {};
+      return parsed;
     } catch {
       return { sold: {} };
     }
   }
 
   let state = loadState();
-  let pinnedIdx = null;
 
   function save() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function squaresRemaining() {
-    return TOTAL - Object.keys(state.sold).length;
+  // -------------------- GRID SIZING (MOBILE-FRIENDLY) --------------------
+  // We render 11 columns (corner + 0..9) and 11 rows.
+  // We compute a cell size that fits the visible container width.
+  function applyGridSizing() {
+    // Find the nearest card/frame that contains the grid (so sizing is based on visible width)
+    const container =
+      gridEl.closest(".board-frame") ||
+      gridEl.closest(".card") ||
+      gridEl.parentElement ||
+      document.body;
+
+    const rect = container.getBoundingClientRect();
+    const paddingGuess = 24; // safety buffer for inner padding/borders
+    const available = Math.max(240, Math.floor(rect.width - paddingGuess));
+
+    // 11 cells across (corner + 10 headers)
+    // clamp so it doesn't get too big on desktop and not too tiny on mobile
+    let cell = Math.floor(available / 11);
+
+    // Hard clamps (tweak if you want)
+    cell = Math.max(22, Math.min(cell, 44));
+
+    // Force CSS grid sizing via inline styles (no dependency on CSS variables)
+    gridEl.style.display = "grid";
+    gridEl.style.gridTemplateColumns = `repeat(11, ${cell}px)`;
+    gridEl.style.gridTemplateRows = `repeat(11, ${cell}px)`;
+    gridEl.style.gap = "6px";
+    gridEl.style.width = `${cell * 11 + 6 * 10}px`;  // include gaps (10 gaps between 11 cells)
+    gridEl.style.height = `${cell * 11 + 6 * 10}px`;
+    gridEl.style.boxSizing = "content-box";
   }
 
+  window.addEventListener("resize", () => {
+    applyGridSizing();
+    render();
+  });
+
+  // -------------------- PURCHASE (RANDOM ASSIGNMENT) --------------------
   function buy(username, email, qty) {
-    const available = [...Array(TOTAL).keys()].filter((i) => !state.sold[i]);
+    const sold = state.sold || {};
+    const available = [];
+    for (let i = 0; i < TOTAL; i++) {
+      if (!sold[i]) available.push(i);
+    }
+
     if (qty > available.length) {
-      summaryEl.textContent = "Not enough squares left.";
+      if (summaryEl) summaryEl.textContent = "Not enough squares left.";
       return;
     }
 
-    // random assignment
+    // shuffle
     available.sort(() => Math.random() - 0.5);
     const chosen = available.slice(0, qty);
 
     chosen.forEach((idx) => {
-      state.sold[idx] = { username, email };
+      sold[idx] = { username, email, ts: Date.now() };
     });
 
+    state.sold = sold;
     save();
+
+    if (summaryEl) {
+      const list = chosen
+        .map((i) => `R${Math.floor(i / 10)}C${i % 10}`)
+        .join(", ");
+      summaryEl.textContent = `Purchased ${qty} square(s): ${list}`;
+    }
+
     render();
-
-    summaryEl.textContent =
-      `Purchased ${qty} square(s): ` +
-      chosen.map((i) => `H${i % 10}-A${Math.floor(i / 10)}`).join(", ");
   }
 
-  function clearGrid() {
-    gridEl.innerHTML = "";
-  }
-
-  // Helper to create a positioned cell
-  function addCell({ text = "", className = "cell", row, col, rowSpan, colSpan, datasetIdx }) {
-    const el = document.createElement("div");
-    el.className = className;
-    el.textContent = text;
-
-    el.style.gridRow = rowSpan ? `${row} / span ${rowSpan}` : `${row}`;
-    el.style.gridColumn = colSpan ? `${col} / span ${colSpan}` : `${col}`;
-
-    if (datasetIdx !== undefined) el.dataset.idx = String(datasetIdx);
-
-    gridEl.appendChild(el);
-    return el;
-  }
-
+  // -------------------- RENDER --------------------
   function render() {
-    clearGrid();
+    const sold = state.sold || {};
+    const soldCount = Object.keys(sold).length;
 
-    // Update remaining
-    remainingEl.textContent = String(squaresRemaining());
+    if (remainingEl) remainingEl.textContent = String(TOTAL - soldCount);
 
-    // Row/col map:
-    // Grid rows: 1=home label, 2=col headers, 3-12 squares
-    // Grid cols: 1=away label, 2=row headers, 3-12 squares
+    // Clear and rebuild (simple & robust)
+    gridEl.innerHTML = "";
 
-    // Top-left blanks
-    addCell({ className: "cell blank", row: 1, col: 1 });
-    addCell({ className: "cell blank", row: 1, col: 2 });
-    addCell({ className: "cell blank", row: 2, col: 1 });
-    addCell({ className: "cell blank header", row: 2, col: 2, text: "" });
+    // Build 11x11:
+    // r=0 header row, c=0 header col, (0,0) blank corner
+    for (let r = 0; r <= GRID_SIZE; r++) {
+      for (let c = 0; c <= GRID_SIZE; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
 
-    // HOME label spanning square columns
-    addCell({
-      text: "HOME TEAM  TBC",
-      className: "cell team home",
-      row: 1,
-      col: 3,
-      colSpan: 10
-    });
+        // Make them "square" not circles even if CSS changes elsewhere
+        cell.style.borderRadius = "8px";
+        cell.style.display = "flex";
+        cell.style.alignItems = "center";
+        cell.style.justifyContent = "center";
+        cell.style.userSelect = "none";
+        cell.style.fontWeight = "700";
 
-    // AWAY label spanning square rows
-    addCell({
-      text: "AWAY TEAM  TBC",
-      className: "cell team away",
-      row: 3,
-      col: 1,
-      rowSpan: 10
-    });
+        const isCorner = r === 0 && c === 0;
+        const isTopHeader = r === 0 && c > 0;
+        const isLeftHeader = c === 0 && r > 0;
 
-    // Column headers 0-9
-    for (let c = 0; c < GRID_SIZE; c++) {
-      addCell({
-        text: String(c),
-        className: "cell header",
-        row: 2,
-        col: 3 + c
-      });
-    }
+        if (isCorner) {
+          cell.classList.add("cell-corner");
+          cell.textContent = "";
+        } else if (isTopHeader) {
+          cell.classList.add("cell-header");
+          cell.textContent = String(c - 1);
+        } else if (isLeftHeader) {
+          cell.classList.add("cell-header");
+          cell.textContent = String(r - 1);
+        } else {
+          // playable square
+          const idx = (r - 1) * GRID_SIZE + (c - 1);
+          cell.classList.add("cell-square");
+          cell.dataset.idx = String(idx);
 
-    // Row headers 0-9
-    for (let r = 0; r < GRID_SIZE; r++) {
-      addCell({
-        text: String(r),
-        className: "cell header",
-        row: 3 + r,
-        col: 2
-      });
-    }
-
-    // Squares 10x10
-    for (let r = 0; r < GRID_SIZE; r++) {
-      for (let c = 0; c < GRID_SIZE; c++) {
-        const idx = r * 10 + c;
-        const entry = state.sold[idx];
-
-        const cell = addCell({
-          text: entry ? "" : "",
-          className: "cell square" + (entry ? " taken" : "") + (pinnedIdx === idx ? " selected" : ""),
-          row: 3 + r,
-          col: 3 + c,
-          datasetIdx: idx
-        });
-
-        // hover tooltip (only if taken)
-        cell.addEventListener("mouseenter", (e) => {
-          if (!entry) return;
-          if (pinnedIdx !== null) return;
-          showTooltip(e.clientX, e.clientY, `Buyer: <b>${entry.username}</b>`);
-        });
-        cell.addEventListener("mouseleave", () => {
-          if (pinnedIdx !== null) return;
-          hideTooltip();
-        });
-
-        // click pin/unpin
-        cell.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (!entry) return;
-
-          // clear old
-          pinnedIdx = (pinnedIdx === idx) ? null : idx;
-          hideTooltip();
-          render();
-
-          if (pinnedIdx !== null) {
-            showTooltip(e.clientX, e.clientY, `Buyer: <b>${entry.username}</b>`);
+          const entry = sold[idx];
+          if (entry) {
+            cell.classList.add("taken");
+            // Keep it minimal visually (CSS can style .taken)
+            // Optional label if you want:
+            // cell.textContent = "SOLD";
+            cell.title = `Sold to: ${entry.username || "Unknown"}`;
+          } else {
+            cell.classList.add("open");
+            cell.title = "Available";
           }
-        });
+        }
+
+        gridEl.appendChild(cell);
       }
     }
   }
 
-  // click away to clear pin
-  document.addEventListener("click", () => {
-    pinnedIdx = null;
-    hideTooltip();
-    render();
-  });
+  // -------------------- EVENTS --------------------
+  if (formEl) {
+    formEl.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-  formEl.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const fd = new FormData(formEl);
-    const username = String(fd.get("username") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const qty = Number(fd.get("quantity"));
+      // Support both name="" and id="" styles
+      const username =
+        (formEl.username && formEl.username.value) ||
+        (formEl.querySelector('input[name="username"]')?.value) ||
+        "";
+      const email =
+        (formEl.email && formEl.email.value) ||
+        (formEl.querySelector('input[name="email"]')?.value) ||
+        "";
+      const qtyRaw =
+        (formEl.quantity && formEl.quantity.value) ||
+        (formEl.querySelector('input[name="quantity"]')?.value) ||
+        (formEl.querySelector('input[name="qty"]')?.value) ||
+        (formEl.querySelector('input[name="Squares"]')?.value) ||
+        (formEl.querySelector('input[type="number"]')?.value) ||
+        "1";
 
-    if (!username || !email || !Number.isFinite(qty) || qty <= 0) return;
+      const qty = Math.max(1, Math.min(TOTAL, Number(qtyRaw)));
 
-    buy(username, email, qty);
-    formEl.reset();
-  });
+      buy(String(username).trim(), String(email).trim(), qty);
 
+      // Optional: clear qty only
+      const qtyInput =
+        formEl.quantity ||
+        formEl.querySelector('input[name="quantity"]') ||
+        formEl.querySelector('input[type="number"]');
+      if (qtyInput) qtyInput.value = "";
+    });
+  }
+
+  // -------------------- INIT --------------------
+  // (Team labels are in HTML/CSS; we just leave placeholders if present)
+  if (homeTeamEl && !homeTeamEl.textContent.trim()) homeTeamEl.textContent = "TBC";
+  if (awayTeamEl && !awayTeamEl.textContent.trim()) awayTeamEl.textContent = "TBC";
+
+  applyGridSizing();
   render();
 })();
