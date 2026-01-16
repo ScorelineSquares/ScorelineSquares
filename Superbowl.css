@@ -1,303 +1,220 @@
-/* =========================
-   GLOBAL
-========================= */
-:root {
-  --bg1: #2a0f5e;
-  --bg2: #070a1a;
-  --card: rgba(255, 255, 255, 0.08);
-  --cardBorder: rgba(255, 255, 255, 0.10);
+:root{
+  --bg1:#2a0f5e;
+  --bg2:#070a1a;
+  --card:rgba(255,255,255,.08);
+  --cardBorder:rgba(255,255,255,.10);
 
-  --text: #ffffff;
-  --muted: rgba(255, 255, 255, 0.75);
+  --text:#fff;
+  --muted:rgba(255,255,255,.75);
 
-  --boardBg: #ffffff;
-  --boardLine: rgba(10, 20, 40, 0.18);
-  --boardHeader: #f1f4f9;
+  --boardBg:#fff;
+  --boardLine:rgba(10,20,40,.18);
+  --boardHeader:#f1f4f9;
 
-  --gap: 8px;
+  --awayStrip:58px;
 
-  /* Left strip width (AWAY TEAM) */
-  --awayStrip: 58px;
-
-  /* Grid gap + corner radius */
-  --cellGap: 6px;
-  --cellRadius: 6px; /* <- makes them "squares", not circles */
+  --cellGap:6px;
+  --cellRadius:6px;
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-html, body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 900px at 20% 0%, #4a2aa6 0%, var(--bg1) 40%, var(--bg2) 100%);
-  color: var(--text);
-  overflow-x: hidden; /* IMPORTANT: kill horizontal page scroll */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:radial-gradient(1200px 900px at 20% 0%,#4a2aa6 0%,var(--bg1) 40%,var(--bg2) 100%);
+  color:var(--text);
+  overflow-x:hidden; /* kills page-level horizontal scroll */
 }
 
-/* =========================
-   TOP BAR
-========================= */
-.topbar {
-  padding: 18px 14px 10px;
+/* ===== TOP BAR ===== */
+.topbar{padding:18px 14px 10px}
+.topbar-inner{
+  max-width:980px;margin:0 auto;
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-start
+}
+.title{margin:0;font-size:44px;line-height:1.05;letter-spacing:-.02em}
+.subtitle{margin:6px 0 0;color:var(--muted)}
+.backlink{
+  text-decoration:none;color:#fff;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  padding:12px 16px;border-radius:14px;white-space:nowrap
 }
 
-.topbar-inner {
-  max-width: 980px;
-  margin: 0 auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+/* ===== PAGE + CARDS ===== */
+.page{
+  max-width:980px;margin:0 auto;
+  padding:10px 14px 28px;
+  display:grid;gap:14px
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--cardBorder);
+  border-radius:26px;
+  padding:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25)
+}
+.card-head{
+  display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+  margin-bottom:12px
+}
+.card-title{margin:0;font-size:36px}
+.card-title.small{font-size:22px;margin:0 0 10px}
+.muted{margin:0;color:var(--muted)}
+.big-money{font-size:54px;font-weight:800;letter-spacing:-.02em}
+
+/* ======================================================
+   BOARD (IMPORTANT)
+   We force the board to SCALE DOWN on small screens
+   even if app.js uses fixed px cell sizes.
+====================================================== */
+
+/* The white board */
+.board-frame{
+  background:var(--boardBg);
+  border-radius:22px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.10);
 }
 
-.title {
-  margin: 0;
-  font-size: 44px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+/* home strip (top) */
+.home-strip{
+  background:var(--boardHeader);
+  color:#0b1220;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:14px 12px;
+  text-align:center;
+  border-bottom:1px solid var(--boardLine);
 }
 
-.subtitle {
-  margin: 6px 0 0;
-  color: var(--muted);
+/* inner board layout */
+.board-inner{
+  display:grid;
+  grid-template-columns:var(--awayStrip) 1fr;
+  width:100%;
+  min-width:0;
 }
 
-.backlink {
-  text-decoration: none;
-  color: #ffffff;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  padding: 12px 16px;
-  border-radius: 14px;
-  white-space: nowrap;
+/* away strip (left) */
+.away-strip{
+  background:var(--boardHeader);
+  border-right:1px solid var(--boardLine);
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 0;
+}
+.strip-text{
+  color:#0b1220;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  text-align:center;
 }
 
-/* =========================
-   PAGE + CARDS
-========================= */
-.page {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 10px 14px 28px;
-  display: grid;
-  gap: 14px;
+/* ================================
+   SCALE-TO-FIT WRAPPER
+   This is the key fix.
+   ================================ */
+
+/* This wrapper should already exist in your HTML:
+   <div class="board-scale-wrapper">
+     <div class="board-grid-wrapper"> ... </div>
+   </div>
+*/
+.board-scale-wrapper{
+  width:100%;
+  overflow:hidden;      /* never allow sideways scroll */
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--cardBorder);
-  border-radius: 26px;
-  padding: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+.board-grid-wrapper{
+  /* default: no scale on desktop */
+  transform-origin: top left;
 }
 
-.card-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 12px;
+/* Grid container */
+#grid.grid{
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(11, minmax(0,1fr));
+  gap:var(--cellGap);
+  width:100%;
+  min-width:0;
 }
 
-.card-title {
-  margin: 0;
-  font-size: 36px;
+/* Make cells square + not rounded into circles */
+#grid.grid > *{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:var(--cellRadius);
+  border:1px solid var(--boardLine);
+  background:#fff;
+  color:#0b1220;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;
+  padding:0;margin:0;
+  min-width:0;
+}
+#grid.grid button{
+  appearance:none;-webkit-appearance:none;
+  background:#fff;
+  cursor:pointer;
 }
 
-.card-title.small {
-  font-size: 22px;
-  margin: 0 0 10px;
+/* ===== BUY ===== */
+.buy-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 120px 140px;
+  gap:10px;align-items:center
 }
-
-.muted {
-  margin: 0;
-  color: var(--muted);
+.buy-row input{
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  padding:12px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  outline:none
 }
-
-.big-money {
-  font-size: 54px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.buy-row button{
+  border-radius:12px;border:0;
+  padding:12px;
+  font-weight:800;
+  background:#2dd4bf;color:#041015
 }
+.summary{margin:10px 0 0;color:var(--muted)}
 
-/* =========================
-   BOARD FRAME (labels are part of board)
-========================= */
-.board-frame {
-  background: var(--boardBg);
-  border-radius: 22px;
-  overflow: hidden;           /* IMPORTANT: keep board tidy */
-  border: 1px solid rgba(0,0,0,0.10);
-}
-
-/* Home strip (top) */
-.home-strip {
-  background: var(--boardHeader);
-  color: #0b1220;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 14px 12px;
-  text-align: center;
-  border-bottom: 1px solid var(--boardLine);
-}
-
-/* Inner board: left away strip + grid */
-.board-inner {
-  display: grid;
-  grid-template-columns: var(--awayStrip) 1fr;
-  width: 100%;
-  min-width: 0; /* IMPORTANT: allow grid to shrink */
-}
-
-/* Away strip (left) */
-.away-strip {
-  background: var(--boardHeader);
-  border-right: 1px solid var(--boardLine);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 0;
-}
-
-.strip-text {
-  color: #0b1220;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  text-align: center;
-}
-
-/* =========================
-   GRID (THIS IS THE IMPORTANT PART)
-   - no fixed widths
-   - no circles
-   - no horizontal scrolling
-========================= */
-#grid.grid {
-  padding: 12px;
-  display: grid;
-
-  /* 11 columns = corner blank + 0..9 header
-     This matches the common "label row/col" approach */
-  grid-template-columns: repeat(11, minmax(0, 1fr));
-
-  gap: var(--cellGap);
-  width: 100%;
-  min-width: 0; /* allow shrink */
-}
-
-/* Make whatever app.js creates (buttons/divs) behave as square cells */
-#grid.grid > * {
-  width: 100%;
-  aspect-ratio: 1 / 1;          /* <- forces true squares */
-  border-radius: var(--cellRadius); /* <- no circles */
-  border: 1px solid var(--boardLine);
-  background: #ffffff;
-  color: #0b1220;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  user-select: none;
-  padding: 0;
-  margin: 0;
-  min-width: 0;
-}
-
-/* If app.js uses <button> for squares, make sure button defaults don't wreck sizing */
-#grid.grid button {
-  appearance: none;
-  -webkit-appearance: none;
-  background: #ffffff;
-  cursor: pointer;
-}
-
-/* Label cells (numbers). If app.js assigns a class like "label", this improves it.
-   If not, harmless. */
-#grid.grid .label,
-#grid.grid .axis,
-#grid.grid .header {
-  background: #eef2f7;
-}
-
-/* Sold/selected look (optional – tweak later) */
-#grid.grid .sold,
-#grid.grid .taken {
-  background: #c9f1e6;
-}
-
-/* =========================
-   BUY FORM
-========================= */
-.buy-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 120px 140px;
-  gap: 10px;
-  align-items: center;
-}
-
-.buy-row input {
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  padding: 12px 12px;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  outline: none;
-}
-
-.buy-row button {
-  border-radius: 12px;
-  border: 0;
-  padding: 12px 12px;
-  font-weight: 800;
-  background: #2dd4bf;
-  color: #041015;
-}
-
-.summary {
-  margin: 10px 0 0;
-  color: var(--muted);
-}
-
-/* =========================
-   MOBILE TWEAKS (MOST IMPORTANT)
-========================= */
-@media (max-width: 520px) {
-  .title { font-size: 44px; }
-  .card-title { font-size: 34px; }
-
-  .topbar-inner {
-    align-items: flex-start;
+/* ==========================================
+   MOBILE: scale the entire board to fit
+   ========================================== */
+@media (max-width: 520px){
+  :root{
+    --awayStrip:52px;
+    --cellGap:5px;
+    --cellRadius:6px;
   }
 
-  .backlink {
-    padding: 10px 12px;
-    border-radius: 12px;
+  /* make sure grid area doesn't exceed viewport */
+  .board-scale-wrapper{
+    width:100%;
   }
 
-  /* Make the grid slightly tighter so column 9 fits */
-  :root {
-    --awayStrip: 52px;
-    --cellGap: 5px;
-    --cellRadius: 6px;
+  /* The trick:
+     If the content is wider than the phone, we scale it down.
+     This works even if app.js sets fixed pixel sizes. */
+  .board-grid-wrapper{
+    width: 560px; /* base "design width" of the board area */
+    max-width: 560px;
+    transform: scale(calc((100vw - 28px) / 560));
   }
 
-  #grid.grid {
-    padding: 10px;
-  }
+  /* keep header text readable */
+  .title{font-size:44px}
+  .card-title{font-size:34px}
 
-  .buy-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .buy-row input:nth-child(3) {
-    grid-column: 1 / 2;
-  }
-
-  .buy-row button {
-    grid-column: 2 / 3;
-  }
+  .buy-row{grid-template-columns:1fr 1fr}
+  .buy-row input:nth-child(3){grid-column:1/2}
+  .buy-row button{grid-column:2/3}
 }
