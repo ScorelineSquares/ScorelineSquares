@@ -1,27 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Squares</title>
-    <link rel="stylesheet" href="../Superbowl.css">
-</head>
-<body>
-    <div class="main-wrapper">
-        <h1 style="font-size: 0.75rem; letter-spacing: 3px; color: #8b949e; margin-bottom: 25px;">BOARD COMPETITION</h1>
-        
-        <div id="grid"></div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Bowl Squares</title>
 
-        <div style="margin-top: 40px; background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; border: 1px solid var(--grid-border); box-sizing: border-box;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                <span style="font-size: 0.8rem; color: #8b949e;">Select Quantity</span>
-                <input type="number" id="quantity" value="1" min="1" style="width: 50px; background: #0d1117; border: 1px solid var(--grid-border); color: #fff; padding: 10px; border-radius: 6px; text-align: center;">
-            </div>
-            <button onclick="buyRandomSquares()" style="width: 100%; padding: 15px; background: var(--neon-green); color: #000; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">
-                RESERVE SQUARES
-            </button>
-        </div>
+  <link rel="stylesheet" href="../Superbowl.css" />
+</head>
+
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <h1 class="title">Super Bowl Squares</h1>
+        <p class="subtitle">Public board · Trial mode</p>
+      </div>
+
+      <a class="backlink" href="../index.html">← Back to homepage</a>
     </div>
-    <script src="../app.js"></script>
+  </header>
+
+  <main class="page">
+    <!-- BOARD CARD -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="card-title">Board</h2>
+        <p class="muted">
+          Squares remaining:
+          <strong><span id="remaining">100</span></strong>
+        </p>
+      </div>
+
+      <!-- SCALE WRAPPER (CRITICAL) -->
+      <div class="board-scale-wrapper">
+        <div class="board-grid-wrapper" aria-label="Super Bowl squares board">
+
+          <!-- HOME TEAM (TOP) -->
+          <div class="board-home">
+            HOME TEAM&nbsp;<span id="homeTeam">TBC</span>
+          </div>
+
+          <!-- AWAY TEAM (LEFT) -->
+          <div class="board-away">
+            AWAY TEAM&nbsp;<span id="awayTeam">TBC</span>
+          </div>
+
+          <!-- GRID -->
+          <div id="grid" class="grid" aria-label="Squares grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COST -->
+    <section class="card">
+      <h3 class="card-title small">Cost per Square</h3>
+      <div class="big-money">£<span id="costPerSquare">10</span></div>
+    </section>
+
+    <!-- PRIZES -->
+    <section class="card">
+      <h3 class="card-title small">Prizes</h3>
+      <ul class="prize-list">
+        <li>Q1: £<span id="prizeQ1">250</span></li>
+        <li>Q2: £<span id="prizeQ2">250</span></li>
+        <li>Q3: £<span id="prizeQ3">250</span></li>
+        <li><strong>Final:</strong> £<span id="prizeFinal">500</span></li>
+      </ul>
+    </section>
+
+    <!-- BUY -->
+    <section class="card">
+      <h3 class="card-title">Join the game</h3>
+
+      <form id="entryForm" class="buy-row">
+        <input name="username" placeholder="Username" required />
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="quantity" type="number" min="1" max="100" placeholder="Squares" required />
+        <button type="submit">Buy Squares</button>
+      </form>
+
+      <p id="summaryText" class="summary"></p>
+    </section>
+  </main>
+
+  <script src="../app.js"></script>
 </body>
 </html>
