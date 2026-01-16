@@ -1,8 +1,8 @@
 :root {
     --bg-dark: #0d1117;
     --bet-green: #00ff88;
-    --header-blue: #AED9F8;
-    --header-red: #F8AEAE;
+    --header-blue: #AED9F8; /* Consistent Light Blue for Home */
+    --header-red: #F8AEAE;  /* Consistent Light Red for Away */
 }
 
 body {
@@ -11,74 +11,81 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', sans-serif;
+}
+
+.board-container {
+    width: 100%;
+    max-width: 500px; /* Limits size on desktop to keep squares sharp */
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
-.board-wrapper {
-    position: relative;
-    margin-top: 60px; /* Space for top team name */
-    margin-left: 40px; /* Space for left team name */
-    width: 90vw;
-    max-width: 500px;
-}
-
-/* THE TEAM HEADERS (Floating outside the grid) */
-.home-team-title {
-    position: absolute;
-    top: -40px;
-    left: 40px;
-    right: 0;
-    text-align: center;
-    background: var(--header-blue);
-    color: #000;
-    font-weight: bold;
-    padding: 5px 0;
-    text-transform: uppercase;
-}
-
-.away-team-title {
-    position: absolute;
-    left: -40px;
-    top: 40px;
-    bottom: 0;
-    width: 30px;
-    background: var(--header-red);
-    color: #000;
-    font-weight: bold;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    text-align: center;
-    padding: 0 5px;
-    text-transform: uppercase;
-}
-
-/* THE GRID - Forced to be a perfect square */
+/* 12x12 Grid System */
 #grid {
     display: grid;
-    grid-template-columns: 40px repeat(10, 1fr);
-    aspect-ratio: 1 / 1; 
+    /* Col 1: Away Label, Col 2: Away Digits, Cols 3-12: Playable Squares */
+    grid-template-columns: 30px 40px repeat(10, 1fr); 
     width: 100%;
     gap: 1px;
     background-color: #333;
-    border: 2px solid #333;
 }
 
 .cell {
+    aspect-ratio: 1 / 1; /* FORCES EVERY CELL TO BE SQUARE */
     background-color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     color: #000;
-    font-size: clamp(0.7rem, 3vw, 1.1rem);
+    font-size: clamp(0.7rem, 3vw, 1rem);
 }
 
-/* Number Labels */
-.digit-top { background-color: var(--header-blue); }
-.digit-left { background-color: var(--header-red); }
-.spacer { background-color: #333; }
+/* CONSISTENT TEAM HEADERS */
+.team-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: #000;
+    border: 1px solid #333;
+}
 
-/* Square States */
+.home-team-label {
+    grid-column: 3 / span 10;
+    grid-row: 1;
+    background: var(--header-blue);
+    height: 40px; /* Consistent height for the top banner */
+    aspect-ratio: auto; /* Label spans width, content inside stays centered */
+}
+
+.away-team-label {
+    grid-row: 3 / span 10;
+    grid-column: 1;
+    background: var(--header-red);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    aspect-ratio: auto; /* Label spans height */
+}
+
+/* SQUARE COORDINATE DIGITS */
+.digit-top { 
+    background-color: var(--header-blue); 
+    grid-row: 2;
+    border-bottom: 2px solid #333;
+}
+
+.digit-left { 
+    background-color: var(--header-red); 
+    grid-column: 2;
+    border-right: 2px solid #333;
+}
+
+/* STATES */
 .square.available { background-color: #fff; }
 .square.assigned { background-color: var(--bet-green); color: #000; }
+.spacer { background-color: #
