@@ -5,7 +5,21 @@ function initBoard() {
     grid.innerHTML = '';
     allSquares = [];
 
+    // 1. HOME TEAM HEADER
+    const homeHeader = document.createElement('div');
+    homeHeader.className = 'cell team-label home-team-label';
+    homeHeader.innerText = "HOME TEAM";
+    grid.appendChild(homeHeader);
+
     for (let row = 0; row < 11; row++) {
+        // 2. AWAY TEAM HEADER
+        if (row === 1) {
+            const awayHeader = document.createElement('div');
+            awayHeader.className = 'cell team-label away-team-label';
+            awayHeader.innerText = "AWAY TEAM";
+            grid.appendChild(awayHeader);
+        }
+
         for (let col = 0; col < 11; col++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
@@ -13,15 +27,15 @@ function initBoard() {
             if (row === 0 && col === 0) {
                 cell.classList.add('spacer');
             } else if (row === 0) {
-                // Top Number Row (0-9)
+                // Number Header (Top) - Now forced square by CSS
                 cell.classList.add('digit-top');
                 cell.innerText = col - 1;
             } else if (col === 0) {
-                // Left Number Column (0-9)
+                // Number Header (Left) - Now forced square by CSS
                 cell.classList.add('digit-left');
                 cell.innerText = row - 1;
             } else {
-                // The 100 Playable Squares
+                // Playable Squares
                 cell.classList.add('square', 'available');
                 allSquares.push(cell);
             }
@@ -36,7 +50,7 @@ function buyRandomSquares() {
     const available = allSquares.filter(s => s.classList.contains('available'));
 
     if (isNaN(quantity) || quantity < 1) return alert("Enter a valid quantity.");
-    if (quantity > available.length) return alert("Not enough squares left.");
+    if (quantity > available.length) return alert("Only " + available.length + " left!");
 
     for (let i = 0; i < quantity; i++) {
         const randomIndex = Math.floor(Math.random() * available.length);
