@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Squares</title>
-    <link rel="stylesheet" href="../Superbowl.css">
+    <title>Superbowl Squares - Scoreline</title>
+    <link rel="stylesheet" href="Superbowl.css"> <!-- Same directory -->
 </head>
 <body>
     <div class="main-wrapper">
-        <h1 style="font-size: 0.75rem; letter-spacing: 3px; color: #8b949e; margin-bottom: 25px;">BOARD COMPETITION</h1>
+        <!-- Superbowl-specific content -->
+        <h1 style="font-size: 0.75rem; letter-spacing: 3px; color: #8b949e; margin-bottom: 25px; text-align: center;">
+            SUPERBOWL SQUARES
+        </h1>
         
-        <div id="grid"></div>
-
-        <div style="margin-top: 40px; background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; border: 1px solid var(--grid-border); box-sizing: border-box;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                <span style="font-size: 0.8rem; color: #8b949e;">Select Quantity</span>
-                <input type="number" id="quantity" value="1" min="1" style="width: 50px; background: #0d1117; border: 1px solid var(--grid-border); color: #fff; padding: 10px; border-radius: 6px; text-align: center;">
-            </div>
-            <button onclick="buyRandomSquares()" style="width: 100%; padding: 15px; background: var(--neon-green); color: #000; border: none; border-radius: 8px; font-weight: 800; cursor: pointer;">
-                RESERVE SQUARES
-            </button>
+        <!-- Prize Banner -->
+        <div style="margin-bottom: 25px; text-align: center;">
+            <img src="prize-banner.png" alt="£1000 Pool Prize" style="width: 100%; max-width: 400px; border-radius: 12px;">
         </div>
+        
+        <!-- Rest of Superbowl grid code... -->
     </div>
-    <script src="../app.js"></script>
+    
+    <script src="app.js"></script> <!-- Same directory -->
 </body>
 </html>
